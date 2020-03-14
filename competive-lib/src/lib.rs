@@ -1,3 +1,5 @@
+pub mod divisors;
+
 #[cfg(test)]
 mod tests {
     #[test]
