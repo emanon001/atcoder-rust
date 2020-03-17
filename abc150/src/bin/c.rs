@@ -1,6 +1,10 @@
 use itertools::Itertools;
 use proconio::input;
 
+struct Foo {
+  a: usize,
+}
+
 fn main() {
   input! {
     n: usize,
