@@ -1,5 +1,5 @@
 [package]
-name = "competive-lib"
+name = "competitive-lib"
 version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"

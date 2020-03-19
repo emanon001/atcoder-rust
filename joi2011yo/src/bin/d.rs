@@ -1,5 +1,7 @@
 use proconio::input;
 
+struct Foo(u32);
+
 fn main() {
   input! {
     n: usize,
