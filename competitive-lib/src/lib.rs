@@ -1,5 +1,6 @@
 pub mod bsearch;
 pub mod divisors;
+pub mod modint;
 pub mod square;
 
 #[cfg(test)]
