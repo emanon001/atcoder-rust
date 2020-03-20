@@ -1,6 +1,7 @@
-pub type Graph = Vec<Vec<(usize, i64)>>;
+pub type Graph = [Vec<usize>];
+pub type WeightedGraph = [Vec<(usize, i64)>];
 
-pub fn shortest_path(graph: &Graph, start: usize) -> Vec<i64> {
+pub fn shortest_path(graph: &WeightedGraph, start: usize) -> Vec<i64> {
   let mut dist = vec![std::i64::MAX; graph.len()];
   let mut heap = std::collections::BinaryHeap::new();
 
@@ -20,4 +21,26 @@ pub fn shortest_path(graph: &Graph, start: usize) -> Vec<i64> {
     }
   }
   dist
+}
+
+pub fn warshall_floyd(graph: &WeightedGraph) -> Vec<Vec<i64>> {
+  let inf = 1_i64 << 60;
+  let v = graph.len();
+  let mut d = vec![vec![inf; v]; v];
+  for u in 0..v {
+    for &(v, w) in &graph[u] {
+      d[u][v] = w;
+    }
+  }
+  for i in 0..v {
+    d[i][i] = 0;
+  }
+  for k in 0..v {
+    for i in 0..v {
+      for j in 0..v {
+        d[i][j] = std::cmp::min(d[i][j], d[i][k] + d[k][j]);
+      }
+    }
+  }
+  d
 }
