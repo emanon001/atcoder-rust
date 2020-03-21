@@ -27,6 +27,28 @@ pub fn bellman_ford(graph: &WeightedGraph, s: usize) -> Option<Vec<i64>> {
   }
 }
 
+pub fn prim(graph: &WeightedGraph, s: usize) -> i64 {
+  let mut used = std::collections::HashSet::new();
+  let mut heap = std::collections::BinaryHeap::new();
+
+  let mut res = 0_i64;
+  heap.push(std::cmp::Reverse((0_i64, s)));
+  while let Some(std::cmp::Reverse((cost, u))) = heap.pop() {
+    if used.contains(&u) {
+      continue;
+    }
+    used.insert(u);
+    res += cost;
+    for &(v, c) in &graph[u] {
+      if used.contains(&v) {
+        continue;
+      }
+      heap.push(std::cmp::Reverse((c, v)));
+    }
+  }
+  res
+}
+
 pub fn reachable_vertexes(graph: &WeightedGraph, s: usize) -> std::collections::HashSet<usize> {
   let mut visited = std::collections::HashSet::new();
   let mut queue = std::collections::VecDeque::new();
