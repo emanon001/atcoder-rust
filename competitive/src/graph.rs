@@ -1,6 +1,22 @@
 pub type Graph = [Vec<usize>];
 pub type WeightedGraph = [Vec<(usize, i64)>];
 
+pub fn reachable_vertexes(graph: &WeightedGraph, s: usize) -> std::collections::HashSet<usize> {
+  let mut visited = std::collections::HashSet::new();
+  let mut queue = std::collections::VecDeque::new();
+  visited.insert(s);
+  while let Some(u) = queue.pop_front() {
+    for &(v, _) in &graph[u] {
+      if visited.contains(&v) {
+        continue;
+      }
+      visited.insert(v);
+      queue.push_back(v);
+    }
+  }
+  visited
+}
+
 pub fn shortest_path(graph: &WeightedGraph, start: usize) -> Vec<i64> {
   let mut dist = vec![std::i64::MAX; graph.len()];
   let mut heap = std::collections::BinaryHeap::new();
@@ -43,20 +59,4 @@ pub fn warshall_floyd(graph: &WeightedGraph) -> Vec<Vec<i64>> {
     }
   }
   d
-}
-
-pub fn reachable_vertexes(graph: &WeightedGraph, s: usize) -> std::collections::HashSet<usize> {
-  let mut visited = std::collections::HashSet::new();
-  let mut queue = std::collections::VecDeque::new();
-  visited.insert(s);
-  while let Some(u) = queue.pop_front() {
-    for &(v, _) in &graph[u] {
-      if visited.contains(&v) {
-        continue;
-      }
-      visited.insert(v);
-      queue.push_back(v);
-    }
-  }
-  visited
 }
