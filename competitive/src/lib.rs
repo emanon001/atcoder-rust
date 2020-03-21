@@ -1,3 +1,4 @@
+pub mod bit;
 pub mod bsearch;
 pub mod divisors;
 pub mod graph;
