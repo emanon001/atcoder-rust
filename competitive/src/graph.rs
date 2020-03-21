@@ -1,6 +1,29 @@
 pub type Graph = [Vec<usize>];
 pub type WeightedGraph = [Vec<(usize, i64)>];
 
+pub fn bellman_ford(edges: &[(usize, usize, i64)], v: usize, s: usize) -> Option<Vec<i64>> {
+  let inf = 1_i64 << 60;
+  let mut d = vec![inf; v];
+  d[s] = 0;
+  let mut count = 0;
+  loop {
+    let mut is_update = false;
+    for &(u, v, w) in edges {
+      if d[u] != inf && d[u] + w < d[v] {
+        d[v] = d[u] + w;
+        is_update = true;
+      }
+    }
+    if !is_update {
+      return Some(d);
+    }
+    count += 1;
+    if count == v {
+      return None;
+    }
+  }
+}
+
 pub fn reachable_vertexes(graph: &WeightedGraph, s: usize) -> std::collections::HashSet<usize> {
   let mut visited = std::collections::HashSet::new();
   let mut queue = std::collections::VecDeque::new();
