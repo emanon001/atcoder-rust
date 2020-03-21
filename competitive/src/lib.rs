@@ -3,6 +3,7 @@ pub mod divisors;
 pub mod graph;
 pub mod mod_int;
 pub mod square;
+pub mod union_find;
 
 #[cfg(test)]
 mod tests {
