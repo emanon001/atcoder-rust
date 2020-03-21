@@ -44,3 +44,19 @@ pub fn warshall_floyd(graph: &WeightedGraph) -> Vec<Vec<i64>> {
   }
   d
 }
+
+pub fn reachable_vertexes(graph: &WeightedGraph, s: usize) -> std::collections::HashSet<usize> {
+  let mut visited = std::collections::HashSet::new();
+  let mut queue = std::collections::VecDeque::new();
+  visited.insert(s);
+  while let Some(u) = queue.pop_front() {
+    for &(v, _) in &graph[u] {
+      if visited.contains(&v) {
+        continue;
+      }
+      visited.insert(v);
+      queue.push_back(v);
+    }
+  }
+  visited
+}
