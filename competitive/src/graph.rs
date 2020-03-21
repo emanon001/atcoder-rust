@@ -1,20 +1,23 @@
 pub type Graph = [Vec<usize>];
 pub type WeightedGraph = [Vec<(usize, i64)>];
 
-pub fn bellman_ford(edges: &[(usize, usize, i64)], v: usize, s: usize) -> Option<Vec<i64>> {
+pub fn bellman_ford(graph: &WeightedGraph, s: usize) -> Option<Vec<i64>> {
   let inf = 1_i64 << 60;
+  let v = graph.len();
   let mut d = vec![inf; v];
   d[s] = 0;
   let mut count = 0;
   loop {
-    let mut is_update = false;
-    for &(u, v, w) in edges {
-      if d[u] != inf && d[u] + w < d[v] {
-        d[v] = d[u] + w;
-        is_update = true;
+    let mut updated = false;
+    for u in 0..v {
+      for &(v, w) in &graph[u] {
+        if d[u] != inf && d[u] + w < d[v] {
+          d[v] = d[u] + w;
+          updated = true;
+        }
       }
     }
-    if !is_update {
+    if !updated {
       return Some(d);
     }
     count += 1;
