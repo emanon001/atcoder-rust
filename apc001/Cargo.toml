@@ -7,6 +7,7 @@ edition = "2018"
 # dependencies added to new project
 [dependencies]
 proconio = "*"
+num = "=0.2.1"
 
 [profile.release]
 lto = true
