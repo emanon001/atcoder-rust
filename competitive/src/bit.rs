@@ -1,6 +1,6 @@
 pub struct Bit {
   n: usize,
-  data: Vec<u64>,
+  data: Vec<i64>,
 }
 
 // [0, n)
@@ -13,7 +13,7 @@ impl Bit {
   }
 
   // 0-origin
-  pub fn add(&mut self, i: usize, x: u64) {
+  pub fn add(&mut self, i: usize, x: i64) {
     if i >= self.n {
       panic!();
     }
@@ -25,7 +25,7 @@ impl Bit {
   }
 
   // 0-origin
-  pub fn sum(&self, i: usize) -> u64 {
+  pub fn sum(&self, i: usize) -> i64 {
     if i >= self.n {
       panic!();
     }
@@ -52,7 +52,7 @@ mod tests {
   }
 
   #[test]
-  fn test_add_sum() {
+  fn test_add_and_sum() {
     let mut bit = Bit::new(3);
     assert_eq!(0, bit.sum(0));
     assert_eq!(0, bit.sum(1));
@@ -69,5 +69,9 @@ mod tests {
     assert_eq!(1, bit.sum(0));
     assert_eq!(3, bit.sum(1));
     assert_eq!(6, bit.sum(2));
+    bit.add(0, -4);
+    assert_eq!(-3, bit.sum(0));
+    assert_eq!(-1, bit.sum(1));
+    assert_eq!(2, bit.sum(2));
   }
 }
