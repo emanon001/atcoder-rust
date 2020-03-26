@@ -75,7 +75,7 @@ mod tests {
     assert_eq!(map(Vec::new()), prime_factor(1));
     assert_eq!(map(vec![(2, 2), (3, 1)]), prime_factor(12));
     assert_eq!(
-      map(vec![(2, 2), (41, 2), (148721, 1)]),
+      map(vec![(2, 2), (41, 2), (148_721, 1)]),
       prime_factor(1_000_000_004)
     );
     assert_eq!(map(vec![(1_000_000_007, 1)]), prime_factor(1_000_000_007));

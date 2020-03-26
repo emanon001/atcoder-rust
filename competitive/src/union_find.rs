@@ -7,7 +7,7 @@ pub struct UnionFind {
 
 impl UnionFind {
   pub fn new(n: usize) -> Self {
-    let root = (0..n).into_iter().collect();
+    let root = (0..n).collect();
     let rank = vec![0; n];
     let size = vec![1; n];
     Self {
