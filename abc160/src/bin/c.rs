@@ -10,13 +10,13 @@ fn main() {
   a_l.sort();
   let mut diff = 0;
   for i in 0..n {
-    let n = if i == n - 1 {
+    let x = if i == n - 1 {
       (k as isize) - a_l[i] + a_l[0]
     } else {
       a_l[i + 1] - a_l[i]
     };
-    if n > diff {
-      diff = n;
+    if x > diff {
+      diff = x;
     }
   }
   let res = (k as isize) - diff;

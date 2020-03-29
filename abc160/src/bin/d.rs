@@ -1,9 +1,9 @@
 use proconio::input;
 
-pub type WeightedGraph = [Vec<usize>];
+pub type Graph = [Vec<usize>];
 
 pub fn shortest_path(
-  graph: &WeightedGraph,
+  graph: &Graph,
   start: usize,
   res: &mut std::collections::HashMap<usize, usize>,
 ) {
