@@ -4,6 +4,8 @@ pub struct Graph {
 }
 
 impl Graph {
+  pub const INF: usize = std::usize::MAX;
+
   pub fn new(edges: &[(usize, usize)], v: usize) -> Self {
     let mut graph = vec![Vec::new(); v];
     for &(u, v) in edges {
@@ -23,7 +25,7 @@ impl Graph {
 
   pub fn shortest_path(&self, start: usize) -> Vec<usize> {
     let mut visited = std::collections::HashSet::new();
-    let mut cost_l = vec![std::usize::MAX; self.v];
+    let mut cost_l = vec![Self::INF; self.v];
     let mut que = std::collections::VecDeque::new();
     cost_l[start] = 0;
     visited.insert(start);
@@ -46,18 +48,18 @@ impl Graph {
 pub struct WeightedGraph {
   graph: Vec<Vec<(usize, i64)>>,
   v: usize,
-  inf: i64,
 }
 
 impl WeightedGraph {
+  pub const INF: i64 = 1 << 60;
+
   pub fn new(edges: &[(usize, usize, i64)], v: usize) -> Self {
     let mut graph = vec![Vec::new(); v];
     for &(u, v, w) in edges {
       graph[u].push((v, w));
       graph[v].push((u, w));
     }
-    let inf = 1 << 60;
-    Self { graph, v, inf }
+    Self { graph, v }
   }
 
   pub fn new_directed(edges: &[(usize, usize, i64)], v: usize) -> Self {
@@ -65,13 +67,12 @@ impl WeightedGraph {
     for &(u, v, w) in edges {
       graph[u].push((v, w));
     }
-    let inf = 1 << 60;
-    Self { graph, v, inf }
+    Self { graph, v }
   }
 
   pub fn bellman_ford(&self, s: usize) -> Option<Vec<i64>> {
     let v = self.v;
-    let inf = self.inf;
+    let inf = Self::INF;
     let mut cost_l = vec![inf; v];
     cost_l[s] = 0;
     let mut count = 0;
@@ -93,10 +94,6 @@ impl WeightedGraph {
         return None;
       }
     }
-  }
-
-  pub fn inf(&self) -> i64 {
-    self.inf
   }
 
   pub fn prim(&self, s: usize) -> i64 {
@@ -138,7 +135,7 @@ impl WeightedGraph {
   }
 
   pub fn shortest_path(&self, start: usize) -> Vec<i64> {
-    let mut cost_l = vec![self.inf; self.v];
+    let mut cost_l = vec![Self::INF; self.v];
     let mut heap = std::collections::BinaryHeap::new();
 
     cost_l[start] = 0;
@@ -160,7 +157,7 @@ impl WeightedGraph {
   }
 
   pub fn warshall_floyd(&self) -> Vec<Vec<i64>> {
-    let inf = self.inf;
+    let inf = Self::INF;
     let v = self.v;
     let mut cost = vec![vec![inf; v]; v];
     for u in 0..v {
