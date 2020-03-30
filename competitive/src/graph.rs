@@ -60,7 +60,7 @@ impl WeightedGraph {
     Self { graph, v, inf }
   }
 
-  pub fn new_undirected(edges: &[(usize, usize, i64)], v: usize) -> Self {
+  pub fn new_directed(edges: &[(usize, usize, i64)], v: usize) -> Self {
     let mut graph = vec![Vec::new(); v];
     for &(u, v, w) in edges {
       graph[u].push((v, w));
