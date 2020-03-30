@@ -25,9 +25,9 @@ impl Graph {
 
   pub fn shortest_path(&self, start: usize) -> Vec<usize> {
     let mut visited = std::collections::HashSet::new();
-    let mut cost_l = vec![Self::INF; self.v];
+    let mut cost_list = vec![Self::INF; self.v];
     let mut que = std::collections::VecDeque::new();
-    cost_l[start] = 0;
+    cost_list[start] = 0;
     visited.insert(start);
     que.push_back(start);
     while let Some(u) = que.pop_front() {
@@ -36,12 +36,12 @@ impl Graph {
           continue;
         }
         visited.insert(v);
-        let new_cost = cost_l[u] + 1;
-        cost_l[v] = new_cost;
+        let new_cost = cost_list[u] + 1;
+        cost_list[v] = new_cost;
         que.push_back(v);
       }
     }
-    cost_l
+    cost_list
   }
 }
 
@@ -73,21 +73,21 @@ impl WeightedGraph {
   pub fn bellman_ford(&self, s: usize) -> Option<Vec<i64>> {
     let v = self.v;
     let inf = Self::INF;
-    let mut cost_l = vec![inf; v];
-    cost_l[s] = 0;
+    let mut cost_list = vec![inf; v];
+    cost_list[s] = 0;
     let mut count = 0;
     loop {
       let mut updated = false;
       for u in 0..v {
         for &(v, w) in &self.graph[u] {
-          if cost_l[u] != inf && cost_l[u] + w < cost_l[v] {
-            cost_l[v] = cost_l[u] + w;
+          if cost_list[u] != inf && cost_list[u] + w < cost_list[v] {
+            cost_list[v] = cost_list[u] + w;
             updated = true;
           }
         }
       }
       if !updated {
-        return Some(cost_l);
+        return Some(cost_list);
       }
       count += 1;
       if count == v {
@@ -135,25 +135,25 @@ impl WeightedGraph {
   }
 
   pub fn shortest_path(&self, start: usize) -> Vec<i64> {
-    let mut cost_l = vec![Self::INF; self.v];
+    let mut cost_list = vec![Self::INF; self.v];
     let mut heap = std::collections::BinaryHeap::new();
 
-    cost_l[start] = 0;
+    cost_list[start] = 0;
     heap.push(std::cmp::Reverse((0_i64, start)));
 
     while let Some(std::cmp::Reverse((cost, u))) = heap.pop() {
-      if cost > cost_l[u] {
+      if cost > cost_list[u] {
         continue;
       }
       for &(v, c) in &self.graph[u] {
         let new_cost = cost + c;
-        if new_cost < cost_l[v] {
+        if new_cost < cost_list[v] {
           heap.push(std::cmp::Reverse((new_cost, v)));
-          cost_l[v] = new_cost;
+          cost_list[v] = new_cost;
         }
       }
     }
-    cost_l
+    cost_list
   }
 
   pub fn warshall_floyd(&self) -> Vec<Vec<i64>> {
