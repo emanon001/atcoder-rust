@@ -95,6 +95,10 @@ impl WeightedGraph {
     }
   }
 
+  pub fn inf(&self) -> i64 {
+    self.inf
+  }
+
   pub fn prim(&self, s: usize) -> i64 {
     let mut used = std::collections::HashSet::new();
     let mut heap = std::collections::BinaryHeap::new();
