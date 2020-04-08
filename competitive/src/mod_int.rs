@@ -1,14 +1,14 @@
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct ModInt(u32);
 
-const MOD: u32 = 1_000_000_007;
-
 impl ModInt {
+  pub const MOD: u32 = 1_000_000_007;
+
   pub fn inv(self) -> Self {
     if self.0 == 0 {
       panic!();
     }
-    self.pow(MOD - 2)
+    self.pow(Self::MOD - 2)
   }
 
   pub fn pow(self, e: u32) -> Self {
@@ -24,9 +24,9 @@ impl ModInt {
   }
 
   fn new(n: i64) -> Self {
-    let mut n = n % (MOD as i64);
+    let mut n = n % (Self::MOD as i64);
     if n.is_negative() {
-      n += MOD as i64;
+      n += Self::MOD as i64;
     }
     Self(n as u32)
   }
