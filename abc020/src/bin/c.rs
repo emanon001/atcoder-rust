@@ -36,9 +36,9 @@ fn shortest_path(
   let dj = vec![0, 1, 0, -1];
   let mut cost_list = vec![vec![inf; w]; h];
   cost_list[start.0][start.1] = 0;
-  let mut que = std::collections::VecDeque::new();
-  que.push_back((start, 0_u64));
-  while let Some(((i, j), cost)) = que.pop_front() {
+  let mut que = std::collections::BinaryHeap::new();
+  que.push(std::cmp::Reverse((0_u64, start)));
+  while let Some(std::cmp::Reverse((cost, (i, j)))) = que.pop() {
     if cost_list[i][j] < cost {
       continue;
     }
@@ -61,7 +61,7 @@ fn shortest_path(
         };
       if new_cost < cost_list[new_pos.0][new_pos.1] {
         cost_list[new_pos.0][new_pos.1] = new_cost;
-        que.push_back((new_pos, new_cost));
+        que.push(std::cmp::Reverse((new_cost, new_pos)));
       }
     }
   }
