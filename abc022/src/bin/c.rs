@@ -37,8 +37,8 @@ fn main() {
     graph[v].push_back((u, w));
   }
   let mut res = INF;
-  for (u, w) in graph[0].clone() {
-    graph[0].pop_front();
+  for _ in 0..graph[0].len() {
+    let (u, w) = graph[0].pop_front().unwrap();
     let cost = shortest_path(&graph, 0);
     if cost[u] + w < res {
       res = cost[u] + w;
