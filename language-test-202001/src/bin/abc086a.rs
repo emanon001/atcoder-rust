@@ -8,5 +8,9 @@ use proconio::marker::*;
 
 fn main() {
   input! {
+    a: usize, b: usize
   };
+
+  let res = if a * b % 2 == 1 { "Odd" } else { "Even" };
+  println!("{}", res);
 }
