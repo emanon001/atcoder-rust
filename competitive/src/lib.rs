@@ -5,6 +5,7 @@ pub mod graph;
 pub mod mod_comb;
 pub mod mod_int;
 pub mod prime;
+pub mod segment_tree;
 pub mod square;
 pub mod union_find;
 
