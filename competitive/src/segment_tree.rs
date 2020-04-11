@@ -16,11 +16,7 @@ where
   T: Monoid + Clone + Copy,
 {
   pub fn new(size: usize) -> Self {
-    let mut n = 1;
-    while n < size {
-      n *= 2;
-    }
-    let size = n;
+    let size = Self::normalize_data_size(size);
     let data = vec![T::empty(); size * 2 - 1];
     Self { size, data }
   }
@@ -29,6 +25,9 @@ where
     let mut st = SegmentTree::new(values.len());
     for (i, v) in values.into_iter().enumerate() {
       st.data[i + st.size - 1] = *v;
+    }
+    if st.size < 2 {
+      return st;
     }
     for i in (0..=(st.size - 2)).rev() {
       st.data[i] = st.data[i * 2 + 1].append(&st.data[i * 2 + 2]);
@@ -50,6 +49,14 @@ where
   // 0-origin
   pub fn query(&self, a: usize, b: usize) -> T {
     self.execute_query(a, b, 0, 0, self.size)
+  }
+
+  fn normalize_data_size(size: usize) -> usize {
+    let mut n = 1;
+    while n < size {
+      n *= 2;
+    }
+    n
   }
 
   fn execute_query(&self, a: usize, b: usize, i: usize, l: usize, r: usize) -> T {
@@ -95,6 +102,13 @@ mod tests {
     assert_eq!(3, st.query(1, 2));
     assert_eq!(3, st.query(1, 3));
     assert_eq!(2, st.query(2, 3));
+  }
+
+  #[test]
+  fn from_slice_size1() {
+    let v = vec![1];
+    let st = SegmentTree::from_slice(&v);
+    assert_eq!(1, st.query(0, 1));
   }
 
   #[test]
