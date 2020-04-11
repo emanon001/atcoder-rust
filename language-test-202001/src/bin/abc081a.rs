@@ -8,5 +8,9 @@ use proconio::marker::*;
 
 fn main() {
   input! {
+    s: Chars
   };
+
+  let res = s.into_iter().filter(|&ch| ch == '1').count();
+  println!("{}", res);
 }
