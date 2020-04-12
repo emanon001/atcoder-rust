@@ -8,5 +8,9 @@ use proconio::marker::*;
 
 fn main() {
   input! {
+    s: String
   };
+
+  let res = if s.contains("7") { "Yes" } else { "No" };
+  println!("{}", res);
 }
