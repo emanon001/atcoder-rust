@@ -8,5 +8,11 @@ use proconio::marker::*;
 
 fn main() {
   input! {
+    n: usize, m: usize,
+    av: [usize; m]
   };
+
+  let sum: usize = av.into_iter().sum();
+  let res = if sum > n { -1 } else { (n - sum) as isize };
+  println!("{}", res);
 }
