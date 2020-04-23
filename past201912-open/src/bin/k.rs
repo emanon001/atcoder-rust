@@ -82,37 +82,105 @@ where
   }
 }
 
-fn dfs(
-  u: usize,
-  p: usize,
-  d: usize,
-  k: &mut usize,
-  graph: &[Vec<usize>],
-  id: &mut [usize],
-  vs: &mut [usize],
-  depth: &mut [usize],
-) {
-  id[u] = *k;
-  vs[*k] = u;
-  depth[*k] = d;
-  *k += 1;
-  for &v in &graph[u] {
-    if v != p {
-      dfs(v, u, d + 1, k, graph, id, vs, depth);
-      vs[*k] = u;
-      depth[*k] = d;
-      *k += 1;
+#[derive(Debug, Copy, Clone)]
+pub struct LcaDepth {
+  depth: usize,
+  idx: usize,
+}
+
+impl Monoid for LcaDepth {
+  fn empty() -> Self {
+    Self {
+      depth: std::usize::MAX,
+      idx: 0,
+    }
+  }
+
+  fn append(&self, other: &Self) -> Self {
+    if self.depth <= other.depth {
+      *self
+    } else {
+      *other
     }
   }
 }
 
-impl Monoid for usize {
-  fn empty() -> Self {
-    1 << 60
+pub struct Lca {
+  vs: Vec<usize>,
+  vdepth: Vec<usize>,
+  vidx: Vec<usize>,
+  vn: usize,
+  st: SegmentTree<LcaDepth>,
+}
+
+impl Lca {
+  pub fn new(edges: &[(usize, usize)], vn: usize, root: usize) -> Self {
+    let mut graph = vec![Vec::new(); vn];
+    for &(u, v) in edges {
+      graph[u].push(v);
+      graph[v].push(u);
+    }
+    let mut vidx = vec![0; vn];
+    let mut vs = vec![0; vn * 2 - 1];
+    let mut vdepth = vec![0; vn * 2 - 1];
+    let mut k = 0;
+    Self::traverse(root, vn, 0, &mut k, &graph, &mut vidx, &mut vs, &mut vdepth);
+    let lca_depth = vdepth
+      .iter()
+      .copied()
+      .enumerate()
+      .map(|(i, d)| LcaDepth { depth: d, idx: i })
+      .collect::<Vec<_>>();
+    let st = SegmentTree::from_slice(&lca_depth);
+    Self {
+      vs,
+      vdepth,
+      vidx,
+      vn,
+      st,
+    }
   }
 
-  fn append(&self, other: &Self) -> Self {
-    std::cmp::min(*self, *other)
+  // 0-origin
+  pub fn depth(&self, u: usize) -> usize {
+    if u >= self.vn {
+      panic!("u >= self.vn");
+    }
+    let i = self.vidx[u];
+    self.vdepth[i]
+  }
+
+  pub fn query(&self, u: usize, v: usize) -> usize {
+    let ui = self.vidx[u];
+    let vi = self.vidx[v];
+    let LcaDepth { idx, .. } = self
+      .st
+      .query(std::cmp::min(ui, vi), std::cmp::max(ui, vi) + 1);
+    self.vs[idx]
+  }
+
+  fn traverse(
+    u: usize,
+    p: usize,
+    d: usize,
+    k: &mut usize,
+    graph: &[Vec<usize>],
+    vidx: &mut [usize],
+    vs: &mut [usize],
+    vdepth: &mut [usize],
+  ) {
+    vidx[u] = *k;
+    vs[*k] = u;
+    vdepth[*k] = d;
+    *k += 1;
+    for &v in &graph[u] {
+      if v != p {
+        Self::traverse(v, u, d + 1, k, graph, vidx, vs, vdepth);
+        vs[*k] = u;
+        vdepth[*k] = d;
+        *k += 1;
+      }
+    }
   }
 }
 
@@ -125,25 +193,23 @@ fn main() {
   };
 
   let mut root = 0;
-  let mut graph = vec![Vec::new(); n];
+  let mut edges = Vec::new();
   for (u, v) in pv.into_iter().enumerate() {
     if v == -1 {
       root = u;
       continue;
     }
     let v = (v - 1) as usize;
-    graph[u].push(v);
-    graph[v].push(u);
+    edges.push((u, v));
   }
-  let mut id = vec![0; n];
-  let mut vs = vec![0; n * 2 - 1];
-  let mut depth = vec![0; n * 2 - 1];
-  let mut k = 0;
-  dfs(root, n, 0, &mut k, &graph, &mut id, &mut vs, &mut depth);
-  let st = SegmentTree::from_slice(&depth);
+  let lca = Lca::new(&edges, n, root);
   for (u, v) in queries {
-    let d = st.query(std::cmp::min(id[u], id[v]), std::cmp::max(id[u], id[v]) + 1);
-    let res = if depth[id[v]] == d { "Yes" } else { "No" };
+    let i = lca.query(u, v);
+    let res = if lca.depth(i) == lca.depth(v) {
+      "Yes"
+    } else {
+      "No"
+    };
     println!("{}", res);
   }
 }
