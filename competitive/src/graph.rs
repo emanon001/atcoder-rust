@@ -3,10 +3,11 @@ pub struct Graph {
   v: usize,
 }
 
+type Edge = (usize, usize);
 impl Graph {
   pub const INF: usize = std::usize::MAX;
 
-  pub fn new(edges: &[(usize, usize)], v: usize) -> Self {
+  pub fn new(edges: &[Edge], v: usize) -> Self {
     let mut graph = vec![Vec::new(); v];
     for &(u, v) in edges {
       graph[u].push(v);
@@ -15,12 +16,21 @@ impl Graph {
     Self { graph, v }
   }
 
-  pub fn new_directed(edges: &[(usize, usize)], v: usize) -> Self {
+  pub fn new_directed(edges: &[Edge], v: usize) -> Self {
     let mut graph = vec![Vec::new(); v];
     for &(u, v) in edges {
       graph[u].push(v);
     }
     Self { graph, v }
+  }
+
+  pub fn add_directed_edge(&mut self, e: Edge) {
+    self.graph[e.0].push(e.1);
+  }
+
+  pub fn add_edge(&mut self, e: Edge) {
+    self.graph[e.0].push(e.1);
+    self.graph[e.1].push(e.0);
   }
 
   pub fn shortest_path(&self, start: usize) -> Vec<usize> {
@@ -50,10 +60,11 @@ pub struct WeightedGraph {
   v: usize,
 }
 
+type WeightedEdge = (usize, usize, i64);
 impl WeightedGraph {
   pub const INF: i64 = 1 << 60;
 
-  pub fn new(edges: &[(usize, usize, i64)], v: usize) -> Self {
+  pub fn new(edges: &[WeightedEdge], v: usize) -> Self {
     let mut graph = vec![Vec::new(); v];
     for &(u, v, w) in edges {
       graph[u].push((v, w));
@@ -62,12 +73,21 @@ impl WeightedGraph {
     Self { graph, v }
   }
 
-  pub fn new_directed(edges: &[(usize, usize, i64)], v: usize) -> Self {
+  pub fn new_directed(edges: &[WeightedEdge], v: usize) -> Self {
     let mut graph = vec![Vec::new(); v];
     for &(u, v, w) in edges {
       graph[u].push((v, w));
     }
     Self { graph, v }
+  }
+
+  pub fn add_directed_edge(&mut self, e: WeightedEdge) {
+    self.graph[e.0].push((e.1, e.2));
+  }
+
+  pub fn add_edge(&mut self, e: WeightedEdge) {
+    self.graph[e.0].push((e.1, e.2));
+    self.graph[e.1].push((e.0, e.2));
   }
 
   pub fn bellman_ford(&self, s: usize) -> Option<Vec<i64>> {
