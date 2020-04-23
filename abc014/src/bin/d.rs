@@ -132,7 +132,7 @@ fn main() {
   let mut depth = vec![0; n * 2 - 1];
   let mut k = 0;
   dfs(0, n, 0, &mut k, &graph, &mut id, &mut vs, &mut depth);
-  let st: SegmentTree<usize> = SegmentTree::from_slice(&depth);
+  let st = SegmentTree::from_slice(&depth);
   for (u, v) in queries {
     let d = st.query(std::cmp::min(id[u], id[v]), std::cmp::max(id[u], id[v]) + 1);
     let res = depth[id[u]] - d + depth[id[v]] - d + 1;
