@@ -2,6 +2,7 @@ pub mod bit;
 pub mod bsearch;
 pub mod divisors;
 pub mod graph;
+pub mod lca;
 pub mod mod_comb;
 pub mod mod_int;
 pub mod prime;
