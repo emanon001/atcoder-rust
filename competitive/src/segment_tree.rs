@@ -5,7 +5,7 @@ pub trait Monoid {
 
 pub struct SegmentTree<T>
 where
-  T: Monoid + Clone + Copy,
+  T: Monoid + Clone,
 {
   size: usize,
   data: Vec<T>,
@@ -13,7 +13,7 @@ where
 
 impl<T> SegmentTree<T>
 where
-  T: Monoid + Clone + Copy,
+  T: Monoid + Clone,
 {
   pub fn new(size: usize) -> Self {
     let size = Self::normalize_data_size(size);
@@ -24,7 +24,7 @@ where
   pub fn from_slice(values: &[T]) -> Self {
     let mut st = SegmentTree::new(values.len());
     for (i, v) in values.into_iter().enumerate() {
-      st.data[i + st.size - 1] = *v;
+      st.data[i + st.size - 1] = v.clone();
     }
     if st.size < 2 {
       return st;
@@ -64,7 +64,7 @@ where
       return T::empty();
     }
     if a <= l && r <= b {
-      return self.data[i];
+      return self.data[i].clone();
     }
     let vl = self.execute_query(a, b, i * 2 + 1, l, (l + r) / 2);
     let vr = self.execute_query(a, b, i * 2 + 2, (l + r) / 2, r);
