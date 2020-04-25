@@ -8,7 +8,7 @@ pub trait Monoid {
 
 pub struct SegmentTree<T>
 where
-  T: Monoid + Clone + Copy,
+  T: Monoid + Clone,
 {
   size: usize,
   data: Vec<T>,
@@ -16,14 +16,10 @@ where
 
 impl<T> SegmentTree<T>
 where
-  T: Monoid + Clone + Copy,
+  T: Monoid + Clone,
 {
   pub fn new(size: usize) -> Self {
-    let mut n = 1;
-    while n < size {
-      n *= 2;
-    }
-    let size = n;
+    let size = Self::normalize_data_size(size);
     let data = vec![T::empty(); size * 2 - 1];
     Self { size, data }
   }
@@ -31,7 +27,7 @@ where
   pub fn from_slice(values: &[T]) -> Self {
     let mut st = SegmentTree::new(values.len());
     for (i, v) in values.into_iter().enumerate() {
-      st.data[i + st.size - 1] = *v;
+      st.data[i + st.size - 1] = v.clone();
     }
     if st.size < 2 {
       return st;
@@ -58,12 +54,20 @@ where
     self.execute_query(a, b, 0, 0, self.size)
   }
 
+  fn normalize_data_size(size: usize) -> usize {
+    let mut n = 1;
+    while n < size {
+      n *= 2;
+    }
+    n
+  }
+
   fn execute_query(&self, a: usize, b: usize, i: usize, l: usize, r: usize) -> T {
     if r <= a || b <= l {
       return T::empty();
     }
     if a <= l && r <= b {
-      return self.data[i];
+      return self.data[i].clone();
     }
     let vl = self.execute_query(a, b, i * 2 + 1, l, (l + r) / 2);
     let vr = self.execute_query(a, b, i * 2 + 2, (l + r) / 2, r);
