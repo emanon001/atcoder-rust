@@ -10,5 +10,8 @@ use std::collections::*;
 
 fn main() {
   input! {
+    a: usize
   };
+
+  println!("{} {}", a + 1, 2);
 }
