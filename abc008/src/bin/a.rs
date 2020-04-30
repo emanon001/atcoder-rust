@@ -10,5 +10,9 @@ use std::collections::*;
 
 fn main() {
   input! {
+    s: usize, t: usize
   };
+
+  let res = t - s + 1;
+  println!("{}", res);
 }
