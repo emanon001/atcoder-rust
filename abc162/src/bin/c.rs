@@ -11,28 +11,13 @@ fn main() {
     k: usize,
   };
 
-  let mut v = Vec::new();
-  for a in 1..=k {
-    for b in 1..=k {
-      let x = a.gcd(&b);
-      v.push(x);
+  let mut res = 0_usize;
+  for a in 1..k + 1 {
+    for b in 1..k + 1 {
+      for c in 1..k + 1 {
+        res += a.gcd(&b).gcd(&c);
+      }
     }
   }
-
-  let mut table = vec![vec![1; k + 1]; k + 1];
-  for a in 1..=k {
-    for b in 1..=k {
-      let x = a.gcd(&b);
-      table[a][b] = x;
-    }
-  }
-
-  let mut res = 0;
-  for a in 1..=k {
-    for &b in &v {
-      res += table[a][b];
-    }
-  }
-
   println!("{}", res);
 }
