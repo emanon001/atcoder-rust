@@ -10,5 +10,15 @@ use std::collections::*;
 
 fn main() {
   input! {
+    k: usize,
+    a: usize, b:usize
   };
+
+  for x in a..b + 1 {
+    if x % k == 0 {
+      println!("OK");
+      std::process::exit(0);
+    }
+  }
+  println!("NG");
 }

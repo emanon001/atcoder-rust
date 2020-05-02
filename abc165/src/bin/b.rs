@@ -10,5 +10,14 @@ use std::collections::*;
 
 fn main() {
   input! {
+    mut x: usize
   };
+
+  let mut cur = 100;
+  let mut res = 0;
+  while cur < x {
+    res += 1;
+    cur += cur / 100;
+  }
+  println!("{}", res);
 }

@@ -9,6 +9,5 @@ use proconio::marker::*;
 use std::collections::*;
 
 fn main() {
-  input! {
-  };
+  input! {};
 }
