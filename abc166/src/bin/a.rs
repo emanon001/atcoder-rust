@@ -10,5 +10,8 @@ use std::collections::*;
 
 fn main() {
   input! {
+    s: String
   };
+  let res = if s == "ABC" { "ARC" } else { "ABC" };
+  println!("{}", res);
 }
