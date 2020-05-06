@@ -10,5 +10,12 @@ use std::collections::*;
 
 fn main() {
   input! {
+    x: usize, y: usize,
+    k: usize
   };
+
+  let a = std::cmp::min(y, k);
+  let b = k - a;
+  let res = a + x - b;
+  println!("{}", res);
 }
