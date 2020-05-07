@@ -10,5 +10,9 @@ use std::collections::*;
 
 fn main() {
   input! {
+    a: usize, b: usize, c: usize
   };
+
+  let res = std::cmp::min(b / a, c);
+  println!("{}", res);
 }
