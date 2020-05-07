@@ -27,7 +27,9 @@ pub fn prime_factor(n: u64) -> std::collections::HashMap<u64, u64> {
     }
     i += 1;
   }
-  res.insert(n, 1);
+  if n != 1 {
+    res.insert(n, 1);
+  }
   res
 }
 
@@ -74,6 +76,7 @@ mod tests {
     assert_eq!(map(Vec::new()), prime_factor(0));
     assert_eq!(map(Vec::new()), prime_factor(1));
     assert_eq!(map(vec![(2, 2), (3, 1)]), prime_factor(12));
+    assert_eq!(map(vec![(2, 2), (3, 2)]), prime_factor(36));
     assert_eq!(
       map(vec![(2, 2), (41, 2), (148_721, 1)]),
       prime_factor(1_000_000_004)
