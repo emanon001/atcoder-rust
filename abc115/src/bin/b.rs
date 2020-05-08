@@ -10,5 +10,12 @@ use std::collections::*;
 
 fn main() {
   input! {
+    n: usize,
+    pv: [usize; n]
   };
+
+  let sum = pv.iter().sum::<usize>();
+  let max = pv.iter().max().unwrap();
+  let res = sum - max / 2;
+  println!("{}", res);
 }

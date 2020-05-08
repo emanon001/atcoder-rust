@@ -10,5 +10,12 @@ use std::collections::*;
 
 fn main() {
   input! {
+    d: usize
   };
+
+  let mut res = "Christmas".to_string();
+  for _ in 0..25 - d {
+    res += " Eve";
+  }
+  println!("{}", res);
 }
