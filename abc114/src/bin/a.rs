@@ -10,5 +10,15 @@ use std::collections::*;
 
 fn main() {
   input! {
+    x: usize
   };
+
+  let is_ok = match x {
+    7 => true,
+    5 => true,
+    3 => true,
+    _ => false,
+  };
+  let res = if is_ok { "YES" } else { "NO" };
+  println!("{}", res);
 }
