@@ -1,13 +1,14 @@
 use proconio::input;
 
-fn divisors_count(n: i32) -> i32 {
-  let mut res = 0;
+pub fn divisors(n: u64) -> Vec<u64> {
+  let mut res = Vec::new();
   let mut x = 1;
   while x * x <= n {
     if n % x == 0 {
-      res += 1;
-      if n / x != x {
-        res += 1;
+      res.push(x);
+      let y = n / x;
+      if y != x {
+        res.push(y);
       }
     }
     x += 1;
@@ -17,11 +18,11 @@ fn divisors_count(n: i32) -> i32 {
 
 fn main() {
   input! {
-    n: i32
+    n: usize
   };
-  let ans = (1..=n)
-    .filter(|x| x % 2 == 1)
-    .filter(|x| divisors_count(*x) == 8)
+
+  let res = (1..=n)
+    .filter(|&a| a % 2 == 1 && divisors(a as u64).len() == 8)
     .count();
-  println!("{}", ans);
+  println!("{}", res);
 }
