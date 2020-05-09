@@ -27,12 +27,12 @@ impl Bit {
     }
   }
 
-  // 0-origin
+  // [0, i)
   pub fn sum(&self, i: usize) -> i64 {
-    if i >= self.n {
+    if i > self.n {
       panic!();
     }
-    let mut i = i + 1;
+    let mut i = i;
     let mut res = 0;
     while i > 0 {
       res += self.data[i];
@@ -78,7 +78,7 @@ fn main() {
         bit.add(l, 1);
       }
       Event::Query(i, l, r) => {
-        let c = bit.sum(r) - if l == 0 { 0 } else { bit.sum(l - 1) };
+        let c = bit.sum(r + 1) - bit.sum(l);
         res[i] = c;
       }
     }
