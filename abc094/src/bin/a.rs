@@ -10,5 +10,9 @@ use std::collections::*;
 
 fn main() {
   input! {
+    a: usize, b: usize, x: usize
   };
+
+  let res = if a <= x && a + b >= x { "YES" } else { "NO" };
+  println!("{}", res);
 }
