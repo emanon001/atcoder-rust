@@ -10,5 +10,9 @@ use std::collections::*;
 
 fn main() {
   input! {
+    n: usize, k: usize
   };
+
+  let res = if n % k == 0 { 0 } else { 1 };
+  println!("{}", res);
 }

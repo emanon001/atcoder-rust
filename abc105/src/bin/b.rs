@@ -10,5 +10,15 @@ use std::collections::*;
 
 fn main() {
   input! {
+    n: usize
   };
+
+  for a in 0..=n / 4 {
+    let rest = n - a * 4;
+    if rest % 7 == 0 {
+      println!("Yes");
+      std::process::exit(0);
+    }
+  }
+  println!("No");
 }
