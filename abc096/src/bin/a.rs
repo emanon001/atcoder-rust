@@ -10,5 +10,9 @@ use std::collections::*;
 
 fn main() {
   input! {
+    a: usize, b: usize
   };
+
+  let res = (a - 1) + if b >= a { 1 } else { 0 };
+  println!("{}", res);
 }
