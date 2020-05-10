@@ -10,5 +10,19 @@ use std::collections::*;
 
 fn main() {
   input! {
+    a: isize,
+    b: isize,
+    c: isize,
+    k: isize
   };
+
+  let res: isize = if k <= a {
+    k
+  } else if k <= a + b {
+    a
+  } else {
+    let rest = k - (a + b);
+    a - std::cmp::min(rest, c)
+  };
+  println!("{}", res);
 }

@@ -10,5 +10,10 @@ use std::collections::*;
 
 fn main() {
   input! {
+    s: String,
+    t: String
   };
+
+  let res = if s == &t[0..s.len()] { "Yes" } else { "No" };
+  println!("{}", res);
 }
