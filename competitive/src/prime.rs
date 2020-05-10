@@ -33,7 +33,7 @@ pub fn prime_factor(n: u64) -> std::collections::HashMap<u64, u64> {
   res
 }
 
-pub fn primes(n: usize) -> Vec<u64> {
+pub fn primes(n: usize) -> Vec<usize> {
   if n < 2 {
     return Vec::new();
   }
@@ -43,7 +43,7 @@ pub fn primes(n: usize) -> Vec<u64> {
   let mut res = Vec::new();
   for i in 2..=n {
     if is_prime[i] {
-      res.push(i as u64);
+      res.push(i);
       let mut j = 2 * i;
       while j <= n {
         is_prime[j] = false;
@@ -86,8 +86,8 @@ mod tests {
 
   #[test]
   fn test_primes() {
-    assert_eq!(Vec::new() as Vec<u64>, primes(0));
-    assert_eq!(Vec::new() as Vec<u64>, primes(1));
+    assert_eq!(Vec::new() as Vec<usize>, primes(0));
+    assert_eq!(Vec::new() as Vec<usize>, primes(1));
     assert_eq!(vec![2], primes(2));
     assert_eq!(vec![2, 3], primes(3));
     assert_eq!(vec![2, 3, 5], primes(6));
