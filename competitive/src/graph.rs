@@ -5,8 +5,6 @@ pub struct Graph {
 
 type Edge = (usize, usize);
 impl Graph {
-  pub const INF: usize = std::usize::MAX;
-
   pub fn new(edges: &[Edge], v: usize) -> Self {
     let mut graph = vec![Vec::new(); v];
     for &(u, v) in edges {
@@ -33,11 +31,11 @@ impl Graph {
     self.graph[e.1].push(e.0);
   }
 
-  pub fn shortest_path(&self, start: usize) -> Vec<usize> {
+  pub fn shortest_path(&self, start: usize) -> Vec<Option<usize>> {
     let mut visited = std::collections::HashSet::new();
-    let mut cost_list = vec![Self::INF; self.v];
+    let mut cost_list = vec![None; self.v];
     let mut que = std::collections::VecDeque::new();
-    cost_list[start] = 0;
+    cost_list[start] = Some(0);
     visited.insert(start);
     que.push_back(start);
     while let Some(u) = que.pop_front() {
@@ -46,8 +44,8 @@ impl Graph {
           continue;
         }
         visited.insert(v);
-        let new_cost = cost_list[u] + 1;
-        cost_list[v] = new_cost;
+        let new_cost = cost_list[u].unwrap() + 1;
+        cost_list[v] = Some(new_cost);
         que.push_back(v);
       }
     }
@@ -62,7 +60,7 @@ pub struct WeightedGraph {
 
 type WeightedEdge = (usize, usize, i64);
 impl WeightedGraph {
-  pub const INF: i64 = 1 << 60;
+  const INF: i64 = 1 << 60;
 
   pub fn new(edges: &[WeightedEdge], v: usize) -> Self {
     let mut graph = vec![Vec::new(); v];
@@ -90,7 +88,7 @@ impl WeightedGraph {
     self.graph[e.1].push((e.0, e.2));
   }
 
-  pub fn bellman_ford(&self, s: usize) -> Option<Vec<i64>> {
+  pub fn bellman_ford(&self, s: usize) -> Option<Vec<Option<i64>>> {
     let v = self.v;
     let inf = Self::INF;
     let mut cost_list = vec![inf; v];
@@ -107,7 +105,7 @@ impl WeightedGraph {
         }
       }
       if !updated {
-        return Some(cost_list);
+        return Some(self.optionalize(cost_list));
       }
       count += 1;
       if count == v {
@@ -154,7 +152,7 @@ impl WeightedGraph {
     visited
   }
 
-  pub fn shortest_path(&self, start: usize) -> Vec<i64> {
+  pub fn shortest_path(&self, start: usize) -> Vec<Option<i64>> {
     let mut cost_list = vec![Self::INF; self.v];
     let mut heap = std::collections::BinaryHeap::new();
 
@@ -173,10 +171,10 @@ impl WeightedGraph {
         }
       }
     }
-    cost_list
+    self.optionalize(cost_list)
   }
 
-  pub fn warshall_floyd(&self) -> Vec<Vec<i64>> {
+  pub fn warshall_floyd(&self) -> Vec<Vec<Option<i64>>> {
     let inf = Self::INF;
     let v = self.v;
     let mut cost = vec![vec![inf; v]; v];
@@ -196,5 +194,14 @@ impl WeightedGraph {
       }
     }
     cost
+      .into_iter()
+      .map(|v| self.optionalize(v))
+      .collect::<Vec<_>>()
+  }
+
+  fn optionalize(&self, v: Vec<i64>) -> Vec<Option<i64>> {
+    v.into_iter()
+      .map(|x| if x == Self::INF { None } else { Some(x) })
+      .collect::<Vec<_>>()
   }
 }
