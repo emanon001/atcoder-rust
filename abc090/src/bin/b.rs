@@ -10,5 +10,11 @@ use std::collections::*;
 
 fn main() {
   input! {
+    a: usize, b: usize
   };
+
+  let res = (a..=b)
+    .filter(|&x| x.to_string() == x.to_string().chars().rev().collect::<String>())
+    .count();
+  println!("{}", res);
 }
