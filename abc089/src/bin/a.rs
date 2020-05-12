@@ -10,5 +10,9 @@ use std::collections::*;
 
 fn main() {
   input! {
+    n: usize,
   };
+
+  let res = n / 3;
+  println!("{}", res);
 }
