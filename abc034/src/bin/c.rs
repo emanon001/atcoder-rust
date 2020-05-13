@@ -45,7 +45,8 @@ fn main() {
   input! {
     w: usize, h: usize
   };
-  let comb = ModComb::new(200_000, 1_000_000_007);
-  let res = comb.comb(w - 1 + h - 1, w - 1);
+
+  let comb = ModComb::new(h + w, 1_000_000_007);
+  let res = comb.comb(w + h - 2, w - 1);
   println!("{}", res);
 }
