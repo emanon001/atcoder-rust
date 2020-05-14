@@ -10,5 +10,13 @@ use std::collections::*;
 
 fn main() {
   input! {
+    a: isize, b: isize, c: isize, d: isize
   };
+
+  let res = if (a - c).abs() <= d || ((a - b).abs() <= d && (b - c).abs() <= d) {
+    "Yes"
+  } else {
+    "No"
+  };
+  println!("{}", res);
 }
