@@ -31,38 +31,33 @@ fn main() {
     if c >= k {
       break;
     }
+    let mut push = |ai: usize, bi: usize, ci: usize| {
+      let p = av[ai] + bv[bi] + cv[ci];
+      if !used.contains(&(ai, bi, ci)) {
+        heap.push((p, ai, bi, ci));
+        used.insert((ai, bi, ci));
+      }
+    };
     // ai + 1, bi, ci
     if ai + 1 < x {
       let next_ai = ai + 1;
       let next_bi = bi;
       let next_ci = ci;
-      let next_p = av[next_ai] + bv[next_bi] + cv[next_ci];
-      if !used.contains(&(next_ai, next_bi, next_ci)) {
-        heap.push((next_p, next_ai, next_bi, next_ci));
-        used.insert((next_ai, next_bi, next_ci));
-      }
+      push(next_ai, next_bi, next_ci);
     }
     // ai, bi + 1, ci
     if bi + 1 < x {
       let next_ai = ai;
       let next_bi = bi + 1;
       let next_ci = ci;
-      let next_p = av[next_ai] + bv[next_bi] + cv[next_ci];
-      if !used.contains(&(next_ai, next_bi, next_ci)) {
-        heap.push((next_p, next_ai, next_bi, next_ci));
-        used.insert((next_ai, next_bi, next_ci));
-      }
+      push(next_ai, next_bi, next_ci);
     }
     // ai, bi, ci + 1
     if ci + 1 < x {
       let next_ai = ai;
       let next_bi = bi;
       let next_ci = ci + 1;
-      let next_p = av[next_ai] + bv[next_bi] + cv[next_ci];
-      if !used.contains(&(next_ai, next_bi, next_ci)) {
-        heap.push((next_p, next_ai, next_bi, next_ci));
-        used.insert((next_ai, next_bi, next_ci));
-      }
+      push(next_ai, next_bi, next_ci);
     }
   }
 }
