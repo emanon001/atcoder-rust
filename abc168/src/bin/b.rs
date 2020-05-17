@@ -10,5 +10,13 @@ use std::collections::*;
 
 fn main() {
   input! {
+    k: usize,
+    s: String
   };
+
+  if k >= s.len() {
+    println!("{}", s);
+  } else {
+    println!("{}{}", &s[0..k], "...");
+  }
 }
