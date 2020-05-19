@@ -12,14 +12,19 @@ fn main() {
   input! {
     p: usize, q: usize, r: usize
   };
-
   let res = vec![
-    p + q, // a -> b -> c
-    r + q, // a -> c -> b
-    p + r, // b -> a -> c
-    q + r, // b -> c -> a
-    r + p, // c -> a -> b
-    q + p, // c -> b -> a
+    // a, b, c
+    p + q,
+    // a, c, b
+    r + q,
+    // b, a, c
+    p + r,
+    // b, c, a
+    q + r,
+    // c, a, b
+    r + p,
+    // c, b, a
+    q + p,
   ]
   .into_iter()
   .min()
