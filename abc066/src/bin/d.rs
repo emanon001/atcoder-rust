@@ -178,46 +178,39 @@ impl std::ops::SubAssign for ModInt {
 
 pub struct ModComb {
   max: usize,
-  modulo: usize,
-  fac: Vec<usize>,
-  finv: Vec<usize>,
+  fac: Vec<ModInt>,
+  finv: Vec<ModInt>,
 }
 
 impl ModComb {
-  pub fn new(max: usize, modulo: usize) -> Self {
-    let mut fac = vec![0_usize; max + 1];
-    let mut finv = vec![0_usize; max + 1];
-    let mut inv = vec![0_usize; max + 1];
-    fac[0] = 1;
-    fac[1] = 1;
-    finv[0] = 1;
-    finv[1] = 1;
-    inv[1] = 1;
+  pub fn new(max: usize) -> Self {
+    let mut fac = vec![ModInt::from(0); max + 1];
+    let mut finv = vec![ModInt::from(0); max + 1];
+    let mut inv = vec![ModInt::from(0); max + 1];
+    fac[0] = ModInt::from(1);
+    fac[1] = ModInt::from(1);
+    finv[0] = ModInt::from(1);
+    finv[1] = ModInt::from(1);
+    inv[1] = ModInt::from(1);
+    let modulo = ModInt::MOD as usize;
     for i in 2..=max {
-      fac[i] = (fac[i - 1] * i) % modulo;
-      inv[i] = modulo - ((inv[modulo % i] * (modulo / i)) % modulo);
-      finv[i] = (finv[i - 1] * inv[i]) % modulo;
+      fac[i] = fac[i - 1] * ModInt::from(i);
+      inv[i] = ModInt::from(ModInt::from(modulo) - (inv[modulo % i] * ModInt::from(modulo / i)));
+      finv[i] = finv[i - 1] * inv[i]
     }
-    Self {
-      max,
-      modulo,
-      fac,
-      finv,
-    }
+    Self { max, fac, finv }
   }
 
-  pub fn comb(&self, n: usize, k: usize) -> usize {
+  pub fn comb(&self, n: usize, k: usize) -> ModInt {
     if n > self.max {
       panic!();
     }
     if n < k {
-      return 0;
+      return ModInt::from(0);
     }
-    (self.fac[n] * ((self.finv[k] * self.finv[n - k]) % self.modulo)) % self.modulo
+    self.fac[n] * self.finv[k] * self.finv[n - k]
   }
 }
-
-const MOD: usize = 1_000_000_007;
 
 fn main() {
   input! {
@@ -239,10 +232,10 @@ fn main() {
   };
   let (l, r) = f();
 
-  let comb = ModComb::new(n + 1, MOD);
+  let comb = ModComb::new(n + 1);
   for k in 1..=n + 1 {
     let c1 = comb.comb(n + 1, k);
     let c2 = comb.comb(l - 1 + (n + 1 - r), k - 1);
-    println!("{}", ModInt::from(c1) - ModInt::from(c2));
+    println!("{}", c1 - c2);
   }
 }
