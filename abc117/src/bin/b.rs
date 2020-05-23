@@ -10,5 +10,12 @@ use std::collections::*;
 
 fn main() {
   input! {
+    n: usize,
+    lv: [usize; n]
   };
+
+  let sum: usize = lv.iter().sum();
+  let max = lv.into_iter().max().unwrap();
+  let res = if max < sum - max { "Yes" } else { "No" };
+  println!("{}", res);
 }

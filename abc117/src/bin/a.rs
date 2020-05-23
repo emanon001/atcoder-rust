@@ -10,5 +10,9 @@ use std::collections::*;
 
 fn main() {
   input! {
+    t: f64, x: f64
   };
+
+  let res = t / x;
+  println!("{}", res);
 }
