@@ -1,12 +1,18 @@
+#[allow(unused_imports)]
+use itertools::Itertools;
+#[allow(unused_imports)]
+use num::*;
 use proconio::input;
-use proconio::marker::{Chars, Usize1};
-use std::collections::{HashSet, VecDeque};
+#[allow(unused_imports)]
+use proconio::marker::*;
+#[allow(unused_imports)]
+use std::collections::*;
 
 fn main() {
   input! {
     r: usize, c: usize,
-    start: (Usize1, Usize1),
-    goal: (Usize1, Usize1),
+    s: (Usize1, Usize1),
+    g: (Usize1, Usize1),
     grid: [Chars; r]
   };
 
@@ -14,7 +20,7 @@ fn main() {
   let dj = vec![0, 1, 0, -1];
   let mut visited = HashSet::new();
   let mut que = VecDeque::new();
-  que.push_back((start, 0));
+  que.push_back((s, 0));
   while let Some(((i, j), cost)) = que.pop_front() {
     for d in 0..4 {
       let new_i = (i as isize) + di[d];
@@ -33,7 +39,7 @@ fn main() {
       }
       visited.insert(new_pos);
       let new_cost = cost + 1;
-      if new_pos == goal {
+      if new_pos == g {
         println!("{}", new_cost);
         std::process::exit(0);
       }
