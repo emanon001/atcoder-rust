@@ -15,8 +15,10 @@ fn main() {
   };
 
   let size = 60;
-  // 0: same, 1: lower
-  let mut dp = vec![vec![-1_i64; 2]; size + 1];
+  // dp[i][j]
+  // i: 何桁目
+  // j: 0: same, 1: smaller
+  let mut dp = vec![vec![-1; 2]; size + 1];
   dp[0][0] = 0;
   for i in 0..size {
     let d = size - 1 - i;
@@ -34,15 +36,15 @@ fn main() {
       v * 2_i64.pow(d as u32)
     };
     let bit = (k >> d) & 1;
-    // same -> same
-    dp[i + 1][0] = dp[i][0] + value(bit);
-    // same -> lower
-    if bit == 1 {
-      dp[i + 1][1] = dp[i][0] + value(0);
-    }
-    // lower -> lower
-    if dp[i][1] != -1 {
-      dp[i + 1][1] = std::cmp::max(dp[i + 1][1], dp[i][1] + std::cmp::max(value(0), value(1)));
+    for j in 0..2 {
+      if j == 1 && dp[i][j] == -1 {
+        continue;
+      }
+      let max_v = if j == 1 { 1 } else { bit };
+      for b in 0..=max_v {
+        let to_j = if j == 1 || b < max_v { 1 } else { 0 };
+        dp[i + 1][to_j] = std::cmp::max(dp[i + 1][to_j], dp[i][j] + value(b));
+      }
     }
   }
   let res = std::cmp::max(dp[size][0], dp[size][1]);
