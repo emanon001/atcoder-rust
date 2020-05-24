@@ -16,39 +16,21 @@ fn count(a: u64) -> u64 {
     .collect::<Vec<_>>();
   let len = nv.len();
   // dp[i][j][k]
-  // i: digit
+  // i: 何桁目
   // j: 0: aと同じ, 1: a未満
   // k: 0: {4, 9}を含まない、1: {4, 9}を含む
   let mut dp = vec![vec![vec![0; 2]; 2]; len + 1];
   dp[0][0][0] = 1;
   for i in 0..len {
     let n = nv[i];
-    for m in 0..=9 {
-      let contains_49 = m == 4 || m == 9;
-      // same -> same
-      if n == m {
-        if contains_49 {
-          dp[i + 1][0][1] += dp[i][0][0] + dp[i][0][1];
-        } else {
-          dp[i + 1][0][0] += dp[i][0][0];
-          dp[i + 1][0][1] += dp[i][0][1];
-        };
-      }
-      // same -> smaller
-      if m < n {
-        if contains_49 {
-          dp[i + 1][1][1] += dp[i][0][0] + dp[i][0][1];
-        } else {
-          dp[i + 1][1][0] += dp[i][0][0];
-          dp[i + 1][1][1] += dp[i][0][1];
+    for j in 0..2 {
+      for k in 0..2 {
+        let d = if j == 0 { n } else { 9 };
+        for m in 0..=d {
+          let to_j = if j == 1 || m < n { 1 } else { 0 };
+          let to_k = if k == 1 || (m == 4 || m == 9) { 1 } else { 0 };
+          dp[i + 1][to_j][to_k] += dp[i][j][k];
         }
-      }
-      // smaller -> smaller
-      if contains_49 {
-        dp[i + 1][1][1] += dp[i][1][0] + dp[i][1][1];
-      } else {
-        dp[i + 1][1][0] += dp[i][1][0];
-        dp[i + 1][1][1] += dp[i][1][1];
       }
     }
   }
