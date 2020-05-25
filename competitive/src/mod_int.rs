@@ -11,6 +11,10 @@ impl ModInt {
     self.pow(Self::MOD - 2)
   }
 
+  pub fn one() -> Self {
+    Self(1)
+  }
+
   pub fn pow(self, e: u32) -> Self {
     if e == 0 {
       return Self::new(1);
@@ -29,6 +33,10 @@ impl ModInt {
       n += Self::MOD as i64;
     }
     Self(n as u32)
+  }
+
+  pub fn zero() -> Self {
+    Self(0)
   }
 }
 
@@ -171,6 +179,11 @@ mod tests {
   use super::ModInt;
 
   #[test]
+  fn one() {
+    assert_eq!(ModInt::one(), ModInt::from(1));
+  }
+
+  #[test]
   fn pow() {
     assert_eq!(ModInt::from(1), ModInt::from(2).pow(0));
     assert_eq!(ModInt::from(2), ModInt::from(2).pow(1));
@@ -197,6 +210,11 @@ mod tests {
       assert_eq!(ModInt::from(1), ModInt::from(n) * ModInt::from(n).inv());
     }
     t(1_000_000_007);
+  }
+
+  #[test]
+  fn zero() {
+    assert_eq!(ModInt::zero(), ModInt::from(0));
   }
 
   #[test]
