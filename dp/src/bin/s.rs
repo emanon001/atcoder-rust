@@ -185,24 +185,27 @@ fn main() {
   // i: 何桁目
   // j: 0: nと同じ、1: n未満
   // k: mod d
-  let mut dp = vec![vec![vec![ModInt::from(0); d]; 2]; len + 1];
-  dp[0][0][0] = ModInt::from(1);
+  let mut dp = vec![vec![vec![None; d]; 2]; len + 1];
+  dp[0][0][0] = Some(ModInt::from(1));
   for i in 0..len {
     for j in 0..2 {
-      if i == 0 && j == 1 {
-        continue;
-      }
       for k in 0..d {
         let n = digits[i] as usize;
         let max_n = if j == 0 { n } else { 9 };
         for m in 0..=max_n {
           let to_j = if j == 1 || m < n { 1 } else { 0 };
           let to_k = (k + m) % d;
-          let v = dp[i][j][k];
-          dp[i + 1][to_j][to_k] += v;
+          let v = match (dp[i + 1][to_j][to_k], dp[i][j][k]) {
+            (x, None) => x,
+            (None, x) => x,
+            (Some(x), Some(y)) => Some(x + y),
+          };
+          dp[i + 1][to_j][to_k] = v;
         }
       }
     }
   }
-  println!("{}", dp[len][0][0] + dp[len][1][0] - ModInt::from(1));
+  let res = dp[len][0][0].unwrap_or(ModInt::from(0)) + dp[len][1][0].unwrap_or(ModInt::from(0))
+    - ModInt::from(1);
+  println!("{}", res);
 }
