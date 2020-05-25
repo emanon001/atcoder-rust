@@ -15,11 +15,11 @@ fn main() {
   };
 
   let size = 60;
-  // dp[i][j]
+  // dp[i][j] = 最大値
   // i: 何桁目
   // j: 0: same, 1: smaller
-  let mut dp = vec![vec![-1; 2]; size + 1];
-  dp[0][0] = 0;
+  let mut dp = vec![vec![None; 2]; size + 1];
+  dp[0][0] = Some(0);
   for i in 0..size {
     let d = size - 1 - i;
     let mut zero_c = 0;
@@ -37,16 +37,18 @@ fn main() {
     };
     let bit = (k >> d) & 1;
     for j in 0..2 {
-      if j == 1 && dp[i][j] == -1 {
-        continue;
-      }
       let max_v = if j == 1 { 1 } else { bit };
       for b in 0..=max_v {
         let to_j = if j == 1 || b < max_v { 1 } else { 0 };
-        dp[i + 1][to_j] = std::cmp::max(dp[i + 1][to_j], dp[i][j] + value(b));
+        let v = match (dp[i + 1][to_j], dp[i][j]) {
+          (x, None) => x,
+          (None, x) => x.map(|v| v + value(b)),
+          (Some(x), Some(y)) => Some(std::cmp::max(x, y + value(b))),
+        };
+        dp[i + 1][to_j] = v;
       }
     }
   }
   let res = std::cmp::max(dp[size][0], dp[size][1]);
-  println!("{}", res);
+  println!("{}", res.unwrap());
 }
