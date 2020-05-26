@@ -32,18 +32,15 @@ impl Graph {
   }
 
   pub fn shortest_path(&self, start: usize) -> Vec<Option<usize>> {
-    let mut visited = std::collections::HashSet::new();
     let mut cost_list = vec![None; self.v];
     let mut que = std::collections::VecDeque::new();
     cost_list[start] = Some(0);
-    visited.insert(start);
     que.push_back(start);
     while let Some(u) = que.pop_front() {
       for &v in &self.graph[u] {
-        if visited.contains(&v) {
+        if cost_list[v].is_some() {
           continue;
         }
-        visited.insert(v);
         let new_cost = cost_list[u].unwrap() + 1;
         cost_list[v] = Some(new_cost);
         que.push_back(v);
