@@ -114,12 +114,12 @@ impl WeightedGraph {
     }
   }
 
-  pub fn prim(&self, s: usize) -> i64 {
+  pub fn prim(&self) -> i64 {
     let mut used = std::collections::HashSet::new();
     let mut heap = std::collections::BinaryHeap::new();
 
     let mut res = 0_i64;
-    heap.push(std::cmp::Reverse((0_i64, s)));
+    heap.push(std::cmp::Reverse((0_i64, 0)));
     while let Some(std::cmp::Reverse((cost, u))) = heap.pop() {
       if used.contains(&u) {
         continue;
