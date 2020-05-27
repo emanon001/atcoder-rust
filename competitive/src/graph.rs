@@ -202,3 +202,24 @@ impl WeightedGraph {
       .collect::<Vec<_>>()
   }
 }
+
+#[cfg(test)]
+mod tests {
+  mod graph {
+    use super::super::Graph;
+    #[test]
+    fn shortest_path() {
+      let edges = vec![(0, 1), (0, 2), (1, 2), (2, 3), (2, 4), (3, 4), (4, 5)];
+      // 頂点6には到達しない
+      let graph = Graph::new(&edges, 7);
+      let res = graph.shortest_path(0);
+      assert_eq!(Some(0), res[0]);
+      assert_eq!(Some(1), res[1]);
+      assert_eq!(Some(1), res[2]);
+      assert_eq!(Some(2), res[3]);
+      assert_eq!(Some(2), res[4]);
+      assert_eq!(Some(3), res[5]);
+      assert_eq!(None, res[6]);
+    }
+  }
+}
