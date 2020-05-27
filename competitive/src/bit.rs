@@ -46,40 +46,40 @@ mod tests {
   #[test]
   fn test_new() {
     let bit = Bit::new(3);
-    assert_eq!(0, bit.sum(1));
-    assert_eq!(0, bit.sum(2));
-    assert_eq!(0, bit.sum(3));
+    assert_eq!(bit.sum(1), 0);
+    assert_eq!(bit.sum(2), 0);
+    assert_eq!(bit.sum(3), 0);
   }
 
   #[test]
   fn test_add_and_sum() {
     let mut bit = Bit::new(3);
-    assert_eq!(0, bit.sum(1));
-    assert_eq!(0, bit.sum(2));
-    assert_eq!(0, bit.sum(3));
+    assert_eq!(bit.sum(1), 0);
+    assert_eq!(bit.sum(2), 0);
+    assert_eq!(bit.sum(3), 0);
     bit.add(0, 1);
-    assert_eq!(1, bit.sum(1));
-    assert_eq!(1, bit.sum(2));
-    assert_eq!(1, bit.sum(3));
+    assert_eq!(bit.sum(1), 1);
+    assert_eq!(bit.sum(2), 1);
+    assert_eq!(bit.sum(3), 1);
     bit.add(1, 2);
-    assert_eq!(1, bit.sum(1));
-    assert_eq!(3, bit.sum(2));
-    assert_eq!(3, bit.sum(3));
+    assert_eq!(bit.sum(1), 1);
+    assert_eq!(bit.sum(2), 3);
+    assert_eq!(bit.sum(3), 3);
     bit.add(2, 3);
-    assert_eq!(1, bit.sum(1));
-    assert_eq!(3, bit.sum(2));
-    assert_eq!(6, bit.sum(3));
+    assert_eq!(bit.sum(1), 1);
+    assert_eq!(bit.sum(2), 3);
+    assert_eq!(bit.sum(3), 6);
     bit.add(0, -4);
-    assert_eq!(-3, bit.sum(1));
-    assert_eq!(-1, bit.sum(2));
-    assert_eq!(2, bit.sum(3));
+    assert_eq!(bit.sum(1), -3);
+    assert_eq!(bit.sum(2), -1);
+    assert_eq!(bit.sum(3), 2);
   }
 
   #[test]
   fn test_sum_index_zero() {
     let mut bit = Bit::new(1);
     bit.add(0, 1);
-    assert_eq!(0, bit.sum(0));
-    assert_eq!(1, bit.sum(1));
+    assert_eq!(bit.sum(0), 0);
+    assert_eq!(bit.sum(1), 1);
   }
 }

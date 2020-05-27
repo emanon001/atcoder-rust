@@ -89,41 +89,41 @@ mod tests {
   #[test]
   fn new() {
     let st: SegmentTree<usize> = SegmentTree::new(3);
-    assert_eq!(0, st.query(0, 3));
+    assert_eq!(st.query(0, 3), 0);
   }
 
   #[test]
   fn from_slice() {
     let v = vec![1, 3, 2];
     let st = SegmentTree::from_slice(&v);
-    assert_eq!(1, st.query(0, 1));
-    assert_eq!(3, st.query(0, 2));
-    assert_eq!(3, st.query(0, 3));
-    assert_eq!(3, st.query(1, 2));
-    assert_eq!(3, st.query(1, 3));
-    assert_eq!(2, st.query(2, 3));
+    assert_eq!(st.query(0, 1), 1);
+    assert_eq!(st.query(0, 2), 3);
+    assert_eq!(st.query(0, 3), 3);
+    assert_eq!(st.query(1, 2), 3);
+    assert_eq!(st.query(1, 3), 3);
+    assert_eq!(st.query(2, 3), 2);
   }
 
   #[test]
   fn from_slice_size1() {
     let v = vec![1];
     let st = SegmentTree::from_slice(&v);
-    assert_eq!(1, st.query(0, 1));
+    assert_eq!(st.query(0, 1), 1);
   }
 
   #[test]
   fn update_and_query() {
     let mut st: SegmentTree<usize> = SegmentTree::new(3);
-    assert_eq!(0, st.query(0, 3));
+    assert_eq!(st.query(0, 3), 0);
     st.update(0, 1);
     st.update(1, 3);
     st.update(2, 2);
 
-    assert_eq!(1, st.query(0, 1));
-    assert_eq!(3, st.query(0, 2));
-    assert_eq!(3, st.query(0, 3));
-    assert_eq!(3, st.query(1, 2));
-    assert_eq!(3, st.query(1, 3));
-    assert_eq!(2, st.query(2, 3));
+    assert_eq!(st.query(0, 1), 1);
+    assert_eq!(st.query(0, 2), 3);
+    assert_eq!(st.query(0, 3), 3);
+    assert_eq!(st.query(1, 2), 3);
+    assert_eq!(st.query(1, 3), 3);
+    assert_eq!(st.query(2, 3), 2);
   }
 }

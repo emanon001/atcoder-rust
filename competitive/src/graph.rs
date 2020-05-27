@@ -213,13 +213,13 @@ mod tests {
       // 頂点6には到達しない
       let graph = Graph::new(&edges, 7);
       let res = graph.shortest_path(0);
-      assert_eq!(Some(0), res[0]);
-      assert_eq!(Some(1), res[1]);
-      assert_eq!(Some(1), res[2]);
-      assert_eq!(Some(2), res[3]);
-      assert_eq!(Some(2), res[4]);
-      assert_eq!(Some(3), res[5]);
-      assert_eq!(None, res[6]);
+      assert_eq!(res[0], Some(0));
+      assert_eq!(res[1], Some(1));
+      assert_eq!(res[2], Some(1));
+      assert_eq!(res[3], Some(2));
+      assert_eq!(res[4], Some(2));
+      assert_eq!(res[5], Some(3));
+      assert_eq!(res[6], None);
     }
   }
 }

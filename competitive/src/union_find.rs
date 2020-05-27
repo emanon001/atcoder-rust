@@ -76,8 +76,8 @@ mod tests {
   fn new() {
     let mut uf = UnionFind::new(2);
     assert!(uf.find(0) != uf.find(1));
-    assert_eq!(1, uf.size(0));
-    assert_eq!(1, uf.size(1));
+    assert_eq!(uf.size(0), 1);
+    assert_eq!(uf.size(1), 1);
     assert!(!uf.is_same(0, 1));
   }
 
@@ -110,17 +110,17 @@ mod tests {
   #[test]
   fn size() {
     let mut uf = UnionFind::new(3);
-    assert_eq!(1, uf.size(0));
-    assert_eq!(1, uf.size(1));
-    assert_eq!(1, uf.size(2));
+    assert_eq!(uf.size(0), 1);
+    assert_eq!(uf.size(1), 1);
+    assert_eq!(uf.size(2), 1);
     uf.unite(0, 1);
-    assert_eq!(2, uf.size(0));
-    assert_eq!(2, uf.size(1));
-    assert_eq!(1, uf.size(2));
+    assert_eq!(uf.size(0), 2);
+    assert_eq!(uf.size(1), 2);
+    assert_eq!(uf.size(2), 1);
     uf.unite(1, 2);
-    assert_eq!(3, uf.size(0));
-    assert_eq!(3, uf.size(1));
-    assert_eq!(3, uf.size(2));
+    assert_eq!(uf.size(0), 3);
+    assert_eq!(uf.size(1), 3);
+    assert_eq!(uf.size(2), 3);
   }
 
   #[test]

@@ -10,11 +10,11 @@ mod tests {
 
   #[test]
   fn test_rest_square_coordinates() {
-    assert_eq!(((-1, 1), (-1, 0)), rest_square_coordinates((0, 0), (0, 1)));
-    assert_eq!(((3, 10), (-1, 7)), rest_square_coordinates((2, 3), (6, 6)));
+    assert_eq!(rest_square_coordinates((0, 0), (0, 1)), ((-1, 1), (-1, 0)));
+    assert_eq!(rest_square_coordinates((2, 3), (6, 6)), ((3, 10), (-1, 7)));
     assert_eq!(
+      rest_square_coordinates((31, -41), (-59, 26)),
       ((-126, -64), (-36, -131)),
-      rest_square_coordinates((31, -41), (-59, 26))
     );
   }
 }

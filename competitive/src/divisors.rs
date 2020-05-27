@@ -21,10 +21,10 @@ mod tests {
   #[test]
   fn test_devisors() {
     assert!(divisors(0).is_empty());
-    assert_eq!(vec![1], sort(divisors(1)));
-    assert_eq!(vec![1, 2], sort(divisors(2)));
-    assert_eq!(vec![1, 2, 4], sort(divisors(4)));
-    assert_eq!(vec![1, 3, 5, 15], sort(divisors(15)));
+    assert_eq!(sort(divisors(1)), vec![1]);
+    assert_eq!(sort(divisors(2)), vec![1, 2]);
+    assert_eq!(sort(divisors(4)), vec![1, 2, 4]);
+    assert_eq!(sort(divisors(15)), vec![1, 3, 5, 15]);
   }
 
   fn sort(mut v: Vec<u64>) -> Vec<u64> {

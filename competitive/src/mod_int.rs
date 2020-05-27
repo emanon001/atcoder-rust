@@ -185,17 +185,17 @@ mod tests {
 
   #[test]
   fn pow() {
-    assert_eq!(ModInt::from(1), ModInt::from(2).pow(0));
-    assert_eq!(ModInt::from(2), ModInt::from(2).pow(1));
-    assert_eq!(ModInt::from(4), ModInt::from(2).pow(2));
-    assert_eq!(ModInt::from(536_870_912), ModInt::from(2).pow(29));
-    assert_eq!(ModInt::from(73_741_817), ModInt::from(2).pow(30));
+    assert_eq!(ModInt::from(2).pow(0), ModInt::from(1));
+    assert_eq!(ModInt::from(2).pow(1), ModInt::from(2));
+    assert_eq!(ModInt::from(2).pow(2), ModInt::from(4));
+    assert_eq!(ModInt::from(2).pow(29), ModInt::from(536_870_912));
+    assert_eq!(ModInt::from(2).pow(30), ModInt::from(73_741_817));
   }
 
   #[test]
   fn inv() {
     fn t(n: i64) {
-      assert_eq!(ModInt::from(1), ModInt::from(n) * ModInt::from(n).inv());
+      assert_eq!(ModInt::from(n) * ModInt::from(n).inv(), ModInt::from(1));
     }
     t(1_000_000_006);
     t(1_000_000_008);
@@ -207,7 +207,7 @@ mod tests {
   #[should_panic]
   fn inv_panic() {
     fn t(n: i64) {
-      assert_eq!(ModInt::from(1), ModInt::from(n) * ModInt::from(n).inv());
+      assert_eq!(ModInt::from(n) * ModInt::from(n).inv(), ModInt::from(1));
     }
     t(1_000_000_007);
   }
@@ -219,6 +219,7 @@ mod tests {
 
   #[test]
   fn from() {
+    // 型推論のために、(expected, actual) の順番で記述している
     // i32
     assert_eq!(1_000_000_006_i32, ModInt::from(-1_i32).into());
     assert_eq!(0_i32, ModInt::from(0_i32).into());
@@ -244,6 +245,7 @@ mod tests {
 
   #[test]
   fn into() {
+    // 型推論のために、(expected, actual) の順番で記述している
     assert_eq!(1_000_000_006_i32, ModInt::from(1_000_000_006).into());
     assert_eq!(1_000_000_006_i64, ModInt::from(1_000_000_006).into());
     assert_eq!(1_000_000_006_isize, ModInt::from(1_000_000_006).into());
@@ -254,28 +256,28 @@ mod tests {
 
   #[test]
   fn fmt() {
-    assert_eq!("1000000006", format!("{}", ModInt::from(1_000_000_006)));
-    assert_eq!("0", format!("{}", ModInt::from(1_000_000_007)));
-    assert_eq!("1", format!("{}", ModInt::from(1_000_000_008)));
+    assert_eq!(format!("{}", ModInt::from(1_000_000_006)), "1000000006");
+    assert_eq!(format!("{}", ModInt::from(1_000_000_007)), "0");
+    assert_eq!(format!("{}", ModInt::from(1_000_000_008)), "1");
   }
 
   #[test]
   fn add() {
     assert_eq!(
+      ModInt::from(1_000_000_005) + ModInt::from(0),
       ModInt::from(1_000_000_005),
-      ModInt::from(1_000_000_005) + ModInt::from(0)
     );
     assert_eq!(
+      ModInt::from(1_000_000_005) + ModInt::from(1),
       ModInt::from(1_000_000_006),
-      ModInt::from(1_000_000_005) + ModInt::from(1)
     );
     assert_eq!(
+      ModInt::from(1_000_000_005) + ModInt::from(2),
       ModInt::from(0),
-      ModInt::from(1_000_000_005) + ModInt::from(2)
     );
     assert_eq!(
+      ModInt::from(1_000_000_005) + ModInt::from(3),
       ModInt::from(1),
-      ModInt::from(1_000_000_005) + ModInt::from(3)
     );
   }
 
@@ -283,23 +285,23 @@ mod tests {
   fn add_assign() {
     let mut n = ModInt::from(1_000_000_006);
     n += ModInt::from(1);
-    assert_eq!(ModInt::from(0), n);
+    assert_eq!(n, ModInt::from(0));
 
     let mut n = ModInt::from(1_000_000_006);
     n += ModInt::from(2);
-    assert_eq!(ModInt::from(1), n);
+    assert_eq!(n, ModInt::from(1));
   }
 
   #[test]
   fn div() {
     assert_eq!(ModInt::from(1), ModInt::from(1) / ModInt::from(1));
     assert_eq!(
+      ModInt::from(1_000_000_007) / ModInt::from(1),
       ModInt::from(0),
-      ModInt::from(1_000_000_007) / ModInt::from(1)
     );
     assert_eq!(
+      ModInt::from(1_000_000_006) / ModInt::from(1_000_000_006),
       ModInt::from(1),
-      ModInt::from(1_000_000_006) / ModInt::from(1_000_000_006)
     );
   }
 
@@ -307,11 +309,11 @@ mod tests {
   fn div_assign() {
     let mut n = ModInt::from(1_000_000_007);
     n /= ModInt::from(1);
-    assert_eq!(ModInt::from(0), n);
+    assert_eq!(n, ModInt::from(0));
 
     let mut n = ModInt::from(1_000_000_006);
     n /= ModInt::from(1_000_000_006);
-    assert_eq!(ModInt::from(1), n);
+    assert_eq!(n, ModInt::from(1));
   }
 
   #[test]
@@ -319,21 +321,21 @@ mod tests {
     assert_eq!(ModInt::from(0), ModInt::from(1) * ModInt::from(0));
     assert_eq!(ModInt::from(6), ModInt::from(2) * ModInt::from(3));
     assert_eq!(
+      ModInt::from(2) * ModInt::from(500_000_003),
       ModInt::from(1_000_000_006),
-      ModInt::from(2) * ModInt::from(500_000_003)
     );
-    assert_eq!(ModInt::from(1), ModInt::from(2) * ModInt::from(500_000_004));
+    assert_eq!(ModInt::from(2) * ModInt::from(500_000_004), ModInt::from(1));
   }
 
   #[test]
   fn mul_assign() {
     let mut n = ModInt::from(2);
     n *= ModInt::from(500_000_003);
-    assert_eq!(ModInt::from(1_000_000_006), n);
+    assert_eq!(n, ModInt::from(1_000_000_006));
 
     let mut n = ModInt::from(2);
     n *= ModInt::from(500_000_004);
-    assert_eq!(ModInt::from(1), n);
+    assert_eq!(n, ModInt::from(1));
   }
 
   #[test]
@@ -342,12 +344,12 @@ mod tests {
     assert_eq!(ModInt::from(1), ModInt::from(3) - ModInt::from(2));
     assert_eq!(ModInt::from(0), ModInt::from(3) - ModInt::from(3));
     assert_eq!(
+      ModInt::from(1_000_000_007) - ModInt::from(1),
       ModInt::from(1_000_000_006),
-      ModInt::from(1_000_000_007) - ModInt::from(1)
     );
     assert_eq!(
+      ModInt::from(1_000_000_008) - ModInt::from(1),
       ModInt::from(0),
-      ModInt::from(1_000_000_008) - ModInt::from(1)
     );
   }
 
@@ -355,10 +357,10 @@ mod tests {
   fn sub_assign() {
     let mut n = ModInt::from(1_000_000_007);
     n -= ModInt::from(1);
-    assert_eq!(ModInt::from(1_000_000_006), n);
+    assert_eq!(n, ModInt::from(1_000_000_006));
 
     let mut n = ModInt::from(1_000_000_008);
     n -= ModInt::from(1);
-    assert_eq!(ModInt::from(0), n);
+    assert_eq!(n, ModInt::from(0));
   }
 }

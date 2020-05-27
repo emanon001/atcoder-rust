@@ -28,27 +28,27 @@ mod tests {
   fn bsearch_min() {
     let vec = (0..=5).collect::<Vec<i32>>();
     let res = bsearch(vec.len() as i64, -1, |i| vec[i as usize] > 3);
-    assert_eq!(Some(4), res);
+    assert_eq!(res, Some(4));
   }
 
   #[test]
   fn bsearch_max() {
     let vec = (0..=5).collect::<Vec<i32>>();
     let res = bsearch(-1, vec.len() as i64, |i| vec[i as usize] < 3);
-    assert_eq!(Some(2), res);
+    assert_eq!(res, Some(2));
   }
 
   #[test]
   fn bsearch_all_ng() {
     let vec = (0..=5).collect::<Vec<i32>>();
     let res = bsearch(vec.len() as i64, -1, |i| vec[i as usize] > 5);
-    assert_eq!(None, res);
+    assert_eq!(res, None);
   }
 
   #[test]
   fn bsearch_all_ok() {
     let vec = (0..=5).collect::<Vec<i32>>();
     let res = bsearch(vec.len() as i64, -1, |i| vec[i as usize] >= 0);
-    assert_eq!(Some(0), res);
+    assert_eq!(res, Some(0));
   }
 }

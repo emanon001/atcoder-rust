@@ -70,28 +70,31 @@ mod tests {
 
   #[test]
   fn test_prime_factor() {
-    fn map(pairs: Vec<(u64, u64)>) -> std::collections::HashMap<u64, u64> {
+    fn to_map(pairs: Vec<(u64, u64)>) -> std::collections::HashMap<u64, u64> {
       pairs.into_iter().collect()
     }
-    assert_eq!(map(Vec::new()), prime_factor(0));
-    assert_eq!(map(Vec::new()), prime_factor(1));
-    assert_eq!(map(vec![(2, 2), (3, 1)]), prime_factor(12));
-    assert_eq!(map(vec![(2, 2), (3, 2)]), prime_factor(36));
+    assert_eq!(prime_factor(0), to_map(Vec::new()));
+    assert_eq!(prime_factor(1), to_map(Vec::new()));
+    assert_eq!(prime_factor(12), to_map(vec![(2, 2), (3, 1)]));
+    assert_eq!(prime_factor(36), to_map(vec![(2, 2), (3, 2)]));
     assert_eq!(
-      map(vec![(2, 2), (41, 2), (148_721, 1)]),
-      prime_factor(1_000_000_004)
+      prime_factor(1_000_000_004),
+      to_map(vec![(2, 2), (41, 2), (148_721, 1)]),
     );
-    assert_eq!(map(vec![(1_000_000_007, 1)]), prime_factor(1_000_000_007));
+    assert_eq!(
+      prime_factor(1_000_000_007),
+      to_map(vec![(1_000_000_007, 1)])
+    );
   }
 
   #[test]
   fn test_primes() {
-    assert_eq!(Vec::new() as Vec<usize>, primes(0));
-    assert_eq!(Vec::new() as Vec<usize>, primes(1));
-    assert_eq!(vec![2], primes(2));
-    assert_eq!(vec![2, 3], primes(3));
-    assert_eq!(vec![2, 3, 5], primes(6));
-    assert_eq!(99991, *primes(100_000).last().unwrap());
-    assert_eq!(9592, primes(100_000).len());
+    assert_eq!(primes(0), Vec::new() as Vec<usize>);
+    assert_eq!(primes(1), Vec::new() as Vec<usize>);
+    assert_eq!(primes(2), vec![2]);
+    assert_eq!(primes(3), vec![2, 3]);
+    assert_eq!(primes(6), vec![2, 3, 5]);
+    assert_eq!(*primes(100_000).last().unwrap(), 99991);
+    assert_eq!(primes(100_000).len(), 9592);
   }
 }
