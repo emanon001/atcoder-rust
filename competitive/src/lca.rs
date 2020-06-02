@@ -41,8 +41,16 @@ impl Lca {
         let mut vidx = vec![0; vn];
         let mut vs = vec![0; vn * 2 - 1];
         let mut vdepth = vec![0; vn * 2 - 1];
-        let mut k = 0;
-        Self::traverse(root, vn, 0, &mut k, &graph, &mut vidx, &mut vs, &mut vdepth);
+        Self::traverse(
+            root,
+            root,
+            0,
+            &mut 0,
+            &graph,
+            &mut vidx,
+            &mut vs,
+            &mut vdepth,
+        );
         let lca_depth = vdepth
             .iter()
             .copied()
@@ -79,24 +87,24 @@ impl Lca {
 
     fn traverse(
         u: usize,
-        p: usize,
-        d: usize,
-        k: &mut usize,
+        parent: usize,
+        depth: usize,
+        vid: &mut usize,
         graph: &[Vec<usize>],
-        vidx: &mut [usize],
+        vids: &mut [usize],
         vs: &mut [usize],
         vdepth: &mut [usize],
     ) {
-        vidx[u] = *k;
-        vs[*k] = u;
-        vdepth[*k] = d;
-        *k += 1;
+        vids[u] = *vid;
+        vs[*vid] = u;
+        vdepth[*vid] = depth;
+        *vid += 1;
         for &v in &graph[u] {
-            if v != p {
-                Self::traverse(v, u, d + 1, k, graph, vidx, vs, vdepth);
-                vs[*k] = u;
-                vdepth[*k] = d;
-                *k += 1;
+            if v != parent {
+                Self::traverse(v, u, depth + 1, vid, graph, vids, vs, vdepth);
+                vs[*vid] = u;
+                vdepth[*vid] = depth;
+                *vid += 1;
             }
         }
     }
