@@ -10,7 +10,26 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, k: usize,
+        av: [u64; n]
     };
+
+    let cusum = av
+        .into_iter()
+        .scan(0, |acc, x| {
+            *acc += x;
+            Some(*acc)
+        })
+        .collect::<Vec<_>>();
+    let mut res = 0_u64;
+    for r in k - 1..n {
+        if r >= k {
+            res += cusum[r] - cusum[r - k];
+        } else {
+            res += cusum[r];
+        };
+    }
+    println!("{}", res);
 }
 
 fn main() {
