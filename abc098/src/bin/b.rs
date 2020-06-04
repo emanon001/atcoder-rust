@@ -10,7 +10,20 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        s: Chars
     };
+
+    let mut res = 0;
+    for i in 1..n {
+        let a = &s[..i].iter().collect::<HashSet<_>>();
+        let b = &s[i..].iter().collect::<HashSet<_>>();
+        let c = a.intersection(b).count();
+        if c > res {
+            res = c;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
