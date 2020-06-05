@@ -1,2 +1,4 @@
 target/
 **/*.rs.bk
+/past*/
+!/past*-open/
