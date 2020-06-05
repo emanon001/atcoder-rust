@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        w: f64,
+        h: f64,
+        x: f64,
+        y: f64
     };
+
+    let area = w * h / 2.0;
+    let is_multiple = x * 2.0 == w && y * 2.0 == h;
+    println!("{}", area);
+    println!("{}", if is_multiple { 1 } else { 0 });
 }
 
 fn main() {
