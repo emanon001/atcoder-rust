@@ -27,16 +27,16 @@ impl ModInt {
         res
     }
 
+    pub fn zero() -> Self {
+        Self(0)
+    }
+
     fn new(n: i64) -> Self {
         let mut n = n % (Self::MOD as i64);
         if n.is_negative() {
             n += Self::MOD as i64;
         }
         Self(n as u32)
-    }
-
-    pub fn zero() -> Self {
-        Self(0)
     }
 }
 
