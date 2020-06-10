@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars
     };
+
+    let mut table = HashMap::new();
+    for ch in s {
+        *table.entry(ch).or_insert(0) += 1;
+    }
+    let values = table.values().into_iter().collect::<Vec<_>>();
+    let res = if values == vec![&2, &2] { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {

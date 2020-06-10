@@ -10,7 +10,20 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        pv: [usize; n]
     };
+
+    let res = pv
+        .windows(3)
+        .filter(|&v| {
+            let p = v[1];
+            let mut v = v.into_iter().collect::<Vec<_>>();
+            v.sort();
+            p == *v[1]
+        })
+        .count();
+    println!("{}", res);
 }
 
 fn main() {

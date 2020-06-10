@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        mut dv: [usize; n]
     };
+
+    dv.sort();
+    let a = dv[n / 2 - 1];
+    let b = dv[n / 2];
+    let res = b - a;
+    println!("{}", res);
 }
 
 fn main() {
