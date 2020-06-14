@@ -8,23 +8,19 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
-fn shift(
+fn insert_second(
     i: usize,
     j: usize,
-    htype: usize,
     tv: &[Vec<usize>],
-    t_to_htype: &mut HashMap<usize, usize>,
-    seconds: &mut Vec<Option<usize>>,
-    heap: &mut BinaryHeap<(usize, usize)>,
+    seconds: &mut [Option<usize>],
+    set: &mut BTreeSet<(usize, usize)>,
 ) {
-    let is_ok = j < tv[i].len();
-    if is_ok {
+    if j < tv[i].len() {
         let t = tv[i][j];
-        t_to_htype.insert(t, htype);
-        heap.push((t, i));
-    }
-    if htype == 2 {
-        seconds[i] = if is_ok { Some(j) } else { None };
+        set.insert((t, i));
+        seconds[i] = Some(j);
+    } else {
+        seconds[i] = None;
     }
 }
 
@@ -36,77 +32,62 @@ fn solve() {
         av: [usize; m]
     };
 
-    let mut t_to_htype = HashMap::new();
     let mut seconds = vec![None; n];
-    let mut heap1 = BinaryHeap::new();
+    let mut set1 = BTreeSet::new();
     for i in 0..n {
         let t = tv[i][0];
-        heap1.push((t, i));
-        t_to_htype.insert(t, 1);
+        set1.insert((t, i));
     }
-    let mut heap2 = BinaryHeap::new();
+    let mut set2 = BTreeSet::new();
     for i in 0..n {
         if tv[i].len() > 1 {
             let t = tv[i][1];
-            heap2.push((t, i));
-            t_to_htype.insert(t, 2);
+            set2.insert((t, i));
             seconds[i] = Some(1);
         }
     }
     for a in av {
         if a == 1 {
-            let (t, i) = heap1.pop().unwrap();
+            let &(t, i) = set1.iter().last().unwrap();
+            set1.remove(&(t, i));
             println!("{}", t);
             if let Some(j) = seconds[i] {
-                shift(i, j, 1, &tv, &mut t_to_htype, &mut seconds, &mut heap1);
-                shift(i, j + 1, 2, &tv, &mut t_to_htype, &mut seconds, &mut heap2);
+                // set2 -> set1
+                let t = tv[i][j];
+                set2.remove(&(t, i));
+                set1.insert((t, i));
+                // tv -> set2
+                insert_second(i, j + 1, &tv, &mut seconds, &mut set2);
             }
         } else {
-            let (t1, i1) = heap1.pop().unwrap();
+            let &(t1, i1) = set1.iter().last().unwrap();
             let mut res = t1;
-            while let Some((t2, i2)) = heap2.pop() {
-                if t_to_htype.get(&t2).unwrap() == &1 {
-                    continue;
-                }
+            if let Some(&(t2, i2)) = set2.iter().last() {
+                res = std::cmp::max(t1, t2);
                 if t1 > t2 {
                     // use t1
-                    heap2.push((t2, i2));
-                    if let Some(second) = seconds[i1] {
-                        shift(
-                            i1,
-                            second,
-                            1,
-                            &tv,
-                            &mut t_to_htype,
-                            &mut seconds,
-                            &mut heap1,
-                        );
-                        shift(
-                            i1,
-                            second + 1,
-                            2,
-                            &tv,
-                            &mut t_to_htype,
-                            &mut seconds,
-                            &mut heap2,
-                        );
+                    let t = t1;
+                    let i = i1;
+                    set1.remove(&(t, i));
+                    if let Some(j) = seconds[i] {
+                        // set2 -> set1
+                        let t = tv[i][j];
+                        set2.remove(&(t, i));
+                        set1.insert((t, i));
+                        // tv -> set2
+                        insert_second(i, j + 1, &tv, &mut seconds, &mut set2);
                     }
                 } else {
                     // use t2
-                    heap1.push((t1, i1));
-                    let second = seconds[i2].unwrap();
-                    shift(
-                        i2,
-                        second + 1,
-                        2,
-                        &tv,
-                        &mut t_to_htype,
-                        &mut seconds,
-                        &mut heap2,
-                    );
+                    let t = t2;
+                    let i = i2;
+                    set2.remove(&(t, i));
+                    // tv -> set2
+                    let j = seconds[i].unwrap();
+                    insert_second(i, j + 1, &tv, &mut seconds, &mut set2);
                 }
-                res = std::cmp::max(t1, t2);
-                break;
+            } else {
+                set1.remove(&(t1, i1));
             }
             println!("{}", res);
         }
