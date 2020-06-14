@@ -10,7 +10,22 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        x: usize, y: usize
     };
+
+    let min = x * 2;
+    let max = x * 4;
+    if y > max {
+        println!("No");
+        return;
+    }
+    let a = max - y;
+    let res = if y >= min && y <= max && a % 2 == 0 && a / 2 <= x {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", res);
 }
 
 fn main() {

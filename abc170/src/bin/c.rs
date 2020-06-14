@@ -10,7 +10,23 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        x: isize, n: usize,
+        pv: [isize; n]
     };
+
+    let set = pv.into_iter().collect::<HashSet<_>>();
+    let mut min = 101_isize;
+    let mut res = 101_isize;
+    for i in -1..=101 {
+        if !set.contains(&i) {
+            let x = (i - x).abs();
+            if x < min {
+                min = x;
+                res = i;
+            }
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
