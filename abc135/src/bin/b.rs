@@ -9,6 +9,14 @@ use proconio::marker::*;
 use std::collections::*;
 
 fn main() {
-  input! {
-  };
+    input! {
+        n: usize,
+        pv: [usize; n]
+    };
+
+    let mut sorted = pv.clone();
+    sorted.sort();
+    let c = pv.into_iter().zip(sorted).filter(|&(a, b)| a != b).count();
+    let res = if c == 0 || c == 2 { "YES" } else { "NO" };
+    println!("{}", res);
 }
