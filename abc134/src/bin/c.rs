@@ -10,7 +10,20 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [usize; n]
     };
+
+    let mut sorted = av.clone();
+    sorted.sort_by_key(|&a| -(a as isize));
+    for i in 0..n {
+        let res = if av[i] == sorted[0] {
+            sorted[1]
+        } else {
+            sorted[0]
+        };
+        println!("{}", res);
+    }
 }
 
 fn main() {
