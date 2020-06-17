@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: isize,
+        b: isize,
+        c: isize
     };
+
+    let rest = a - b;
+    let res = std::cmp::max(0, c - rest);
+    println!("{}", res);
 }
 
 fn main() {

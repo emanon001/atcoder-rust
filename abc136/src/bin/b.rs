@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize
     };
+
+    let res = (1..=n)
+        .into_iter()
+        .filter(|&x| x.to_string().len() % 2 == 1)
+        .count();
+    println!("{}", res);
 }
 
 fn main() {
