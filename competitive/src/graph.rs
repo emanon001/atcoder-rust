@@ -150,6 +150,16 @@ impl WeightedGraph {
         visited
     }
 
+    pub fn rev(&self) -> WeightedGraph {
+        let mut edges = Vec::new();
+        for u in 0..self.v {
+            for &(v, c) in &self.graph[u] {
+                edges.push((v, u, c));
+            }
+        }
+        Self::new_directed(&edges, self.v)
+    }
+
     pub fn shortest_path(&self, start: usize) -> Vec<Option<i64>> {
         let mut cost_list = vec![Self::INF; self.v];
         let mut heap = std::collections::BinaryHeap::new();
