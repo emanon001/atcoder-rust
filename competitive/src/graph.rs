@@ -137,6 +137,7 @@ impl WeightedGraph {
         let mut visited = std::collections::HashSet::new();
         let mut queue = std::collections::VecDeque::new();
         visited.insert(s);
+        queue.push_back(s);
         while let Some(u) = queue.pop_front() {
             for &(v, _) in &self.graph[u] {
                 if visited.contains(&v) {
