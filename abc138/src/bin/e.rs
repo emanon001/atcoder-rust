@@ -41,6 +41,13 @@ fn main() {
     for (i, ch) in s.into_iter().enumerate() {
         pos_table.entry(ch).or_insert(Vec::new()).push(i as i64);
     }
+    let keys = pos_table.keys().cloned().collect::<Vec<_>>();
+    for k in keys {
+        let v = pos_table.get_mut(&k).unwrap();
+        for i in v.clone() {
+            v.push(i + s_len as i64);
+        }
+    }
     let mut res = 0;
     let mut cur_pos = -1;
     for ch in t {
@@ -58,19 +65,7 @@ fn main() {
         if let Some(i) = i {
             let p = posv[i as usize];
             res += p - cur_pos;
-            cur_pos = p;
-            continue;
-        }
-        res += s_len as i64 - 1 - cur_pos;
-        cur_pos = -1;
-        let i = bsearch(posv.len() as i64, -1, |x| {
-            let p = posv[x as usize];
-            cur_pos < p
-        });
-        if let Some(i) = i {
-            let p = posv[i as usize];
-            res += p - cur_pos;
-            cur_pos = p;
+            cur_pos = p % s_len as i64;
         } else {
             unreachable!();
         }
