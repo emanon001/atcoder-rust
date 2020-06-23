@@ -1,41 +1,60 @@
+#[allow(unused_imports)]
+use itertools::Itertools;
+#[allow(unused_imports)]
+use num::*;
 use proconio::input;
-use proconio::marker::Usize1;
+#[allow(unused_imports)]
+use proconio::marker::*;
+#[allow(unused_imports)]
+use std::collections::*;
 
-fn calc_counters(u: usize, parent: usize, graph: &Vec<Vec<usize>>, counters: &mut Vec<u32>) {
-  let c = counters[u];
-  for &v in &graph[u] {
-    if v == parent {
-      continue;
+pub struct Graph {
+    graph: Vec<Vec<usize>>,
+    v: usize,
+}
+
+type Edge = (usize, usize);
+impl Graph {
+    pub fn new(edges: &[Edge], v: usize) -> Self {
+        let mut graph = vec![Vec::new(); v];
+        for &(u, v) in edges {
+            graph[u].push(v);
+            graph[v].push(u);
+        }
+        Self { graph, v }
     }
-    counters[v] += c;
-    calc_counters(v, u, graph, counters);
-  }
+
+    pub fn shortest_path(&self, start: usize, pv: &[usize]) -> Vec<Option<usize>> {
+        let mut cost_list = vec![None; self.v];
+        let mut que = std::collections::VecDeque::new();
+        cost_list[start] = Some(pv[start]);
+        que.push_back(start);
+        while let Some(u) = que.pop_front() {
+            for &v in &self.graph[u] {
+                if cost_list[v].is_some() {
+                    continue;
+                }
+                let new_cost = cost_list[u].unwrap() + pv[v];
+                cost_list[v] = Some(new_cost);
+                que.push_back(v);
+            }
+        }
+        cost_list
+    }
 }
 
 fn main() {
-  input! {
-    n: usize, q: usize,
-    edges: [(Usize1, Usize1); n - 1],
-    queries: [(Usize1, u32); q],
-  };
+    input! {
+        n: usize, q: usize,
+        edges: [(Usize1, Usize1); n - 1],
+        queries: [(Usize1, usize); q]
+    };
 
-  let mut graph = Vec::new();
-  for _ in 0..n {
-    graph.push(Vec::new());
-  }
-  for (u, v) in edges {
-    graph[u].push(v);
-    graph[v].push(u);
-  }
-  let mut counters = vec![0; n];
-  for (u, x) in queries {
-    counters[u] += x;
-  }
-  calc_counters(0, n, &mut graph, &mut counters);
-  let res = counters
-    .into_iter()
-    .map(|n| n.to_string())
-    .collect::<Vec<String>>()
-    .join(" ");
-  println!("{}", res);
+    let mut pv = vec![0; n];
+    for (p, x) in queries {
+        pv[p] += x;
+    }
+    let graph = Graph::new(&edges, n);
+    let res = graph.shortest_path(0, &pv);
+    println!("{}", res.into_iter().map(|o| o.unwrap()).join(" "));
 }
