@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: usize,
+        b: usize
     };
+
+    let mut res = 0;
+    let mut cur = 1;
+    while cur < b {
+        res += 1;
+        cur += a - 1;
+    }
+    println!("{}", res);
 }
 
 fn main() {

@@ -10,7 +10,23 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        hv: [usize; n]
     };
+
+    let mut res = 0;
+    let mut prev = hv[0];
+    let mut c = 0;
+    for h in hv.into_iter().skip(1).chain(vec![std::usize::MAX]) {
+        if prev >= h {
+            c += 1;
+        } else {
+            res = std::cmp::max(res, c);
+            c = 0;
+        }
+        prev = h;
+    }
+    println!("{}", res);
 }
 
 fn main() {

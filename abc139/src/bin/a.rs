@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars,
+        t: Chars,
     };
+
+    let res = s
+        .into_iter()
+        .zip(t.into_iter())
+        .filter(|(a, b)| a == b)
+        .count();
+    println!("{}", res);
 }
 
 fn main() {

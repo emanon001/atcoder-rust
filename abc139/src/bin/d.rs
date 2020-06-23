@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: u64
     };
+
+    let res = n * (n - 1) / 2;
+    println!("{}", res);
 }
 
 fn main() {
