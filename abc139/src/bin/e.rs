@@ -51,6 +51,10 @@ impl Graph {
     }
 }
 
+fn key(a: usize, b: usize) -> (usize, usize) {
+    (a.min(b), a.max(b))
+}
+
 fn solve() {
     input! {
         n: usize,
@@ -62,7 +66,7 @@ fn solve() {
         .into_iter()
         .combinations(2)
         .enumerate()
-        .map(|(i, ab)| ((ab[0].min(ab[1]), ab[0].max(ab[1])), i))
+        .map(|(i, ab)| (key(ab[0], ab[1]), i))
         .collect::<HashMap<_, _>>();
     let mut indegreev = vec![0; vn];
     let mut edges = Vec::new();
@@ -70,9 +74,9 @@ fn solve() {
         let a = i;
         for mv in matchv[i].windows(2) {
             let b = mv[0];
-            let u = *id_table.get(&(a.min(b), a.max(b))).unwrap();
+            let u = *id_table.get(&key(a, b)).unwrap();
             let c = mv[1];
-            let v = *id_table.get(&(a.min(c), a.max(c))).unwrap();
+            let v = *id_table.get(&key(a, c)).unwrap();
             indegreev[v] += 1;
             edges.push((u, v));
         }
