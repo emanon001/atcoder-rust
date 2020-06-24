@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        bv: [usize; n - 1]
     };
+
+    let mut prev = std::usize::MAX;
+    let mut res = 0;
+    for &b in &bv {
+        res += prev.min(b);
+        prev = b;
+    }
+    res += bv[n - 2];
+    println!("{}", res);
 }
 
 fn main() {
