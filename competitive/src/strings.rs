@@ -1,6 +1,6 @@
 pub fn zalgo(s: &[char]) -> Vec<usize> {
     if s.len() == 0 {
-        panic!("string lenght is 0");
+        return Vec::new();
     }
     let len = s.len();
     let mut res = vec![0; len];
@@ -35,6 +35,7 @@ mod tests {
     fn test_zalgo() {
         assert_eq!(zalgo(&chars("ababa")), vec![5, 0, 3, 0, 1]);
         assert_eq!(zalgo(&chars("x")), vec![1]);
+        assert_eq!(zalgo(&chars("")), vec![]);
     }
 
     fn chars(s: &str) -> Vec<char> {
