@@ -10,7 +10,13 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: String
     };
+
+    let v = vec!["Sunny", "Cloudy", "Rainy"];
+    let i = v.iter().position(|&x| x == s).unwrap();
+    let res = v[(i + 1) % 3];
+    println!("{}", res);
 }
 
 fn main() {
