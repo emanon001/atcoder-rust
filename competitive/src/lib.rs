@@ -8,6 +8,7 @@ pub mod mod_int;
 pub mod prime;
 pub mod segment_tree;
 pub mod square;
+pub mod strings;
 pub mod union_find;
 
 #[cfg(test)]
