@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, k: usize,
+        hv: [usize; n]
     };
+
+    let res = hv.into_iter().filter(|&h| h >= k).count();
+    println!("{}", res);
 }
 
 fn main() {

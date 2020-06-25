@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [usize; n]
     };
+    let mut res = vec![0; n];
+    for i in 0..n {
+        let a = av[i] - 1;
+        res[a] = i + 1;
+    }
+    println!("{}", res.into_iter().join(" "));
 }
 
 fn main() {
