@@ -36,39 +36,24 @@ fn solve() {
         mut lv: [usize; n]
     };
 
-    let abv = lv
-        .iter()
-        .combinations(2)
-        .map(|v| (*v[0], *v[1]))
-        .collect::<Vec<_>>();
     lv.sort();
     let mut res = 0;
-    for (a, b) in abv {
-        let cmin = a.max(b) - a.min(b) + 1;
-        let cmax = a + b - 1;
-        let minj = bsearch(lv.len() as i64, -1, |j| {
-            let j = j as usize;
-            cmin <= lv[j]
-        });
-        let maxj = bsearch(-1, lv.len() as i64, |j| {
-            let j = j as usize;
-            lv[j] <= cmax
-        });
-        match (minj, maxj) {
-            (Some(minj), Some(maxj)) => {
-                let mut c = maxj as usize - minj as usize + 1;
-                if a >= cmin {
-                    c -= 1;
+    for ai in 0..n - 2 {
+        for bi in ai + 1..n - 1 {
+            let maxc = lv[ai] + lv[bi] - 1;
+            let ci = bsearch(bi as i64, lv.len() as i64, |j| {
+                let j = j as usize;
+                lv[j] <= maxc
+            });
+            match ci {
+                Some(ci) => {
+                    res += ci as usize - bi;
                 }
-                if b >= cmin {
-                    c -= 1;
-                }
-                res += c;
+                _ => {}
             }
-            _ => {}
         }
     }
-    println!("{}", res / 3);
+    println!("{}", res);
 }
 
 fn main() {
