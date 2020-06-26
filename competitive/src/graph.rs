@@ -117,17 +117,17 @@ impl WeightedGraph {
 
         let mut res = 0_i64;
         heap.push(std::cmp::Reverse((0_i64, 0)));
-        while let Some(std::cmp::Reverse((cost, u))) = heap.pop() {
+        while let Some(std::cmp::Reverse((weight, u))) = heap.pop() {
             if used.contains(&u) {
                 continue;
             }
             used.insert(u);
-            res += cost;
-            for &(v, c) in &self.graph[u] {
+            res += weight;
+            for &(v, w) in &self.graph[u] {
                 if used.contains(&v) {
                     continue;
                 }
-                heap.push(std::cmp::Reverse((c, v)));
+                heap.push(std::cmp::Reverse((w, v)));
             }
         }
         res
@@ -153,8 +153,8 @@ impl WeightedGraph {
     pub fn rev(&self) -> WeightedGraph {
         let mut edges = Vec::new();
         for u in 0..self.v {
-            for &(v, c) in &self.graph[u] {
-                edges.push((v, u, c));
+            for &(v, w) in &self.graph[u] {
+                edges.push((v, u, w));
             }
         }
         Self::new_directed(&edges, self.v)
@@ -171,8 +171,8 @@ impl WeightedGraph {
             if cost > cost_list[u] {
                 continue;
             }
-            for &(v, c) in &self.graph[u] {
-                let new_cost = cost + c;
+            for &(v, w) in &self.graph[u] {
+                let new_cost = cost + w;
                 if new_cost < cost_list[v] {
                     heap.push(std::cmp::Reverse((new_cost, v)));
                     cost_list[v] = new_cost;
@@ -185,23 +185,25 @@ impl WeightedGraph {
     pub fn warshall_floyd(&self) -> Vec<Vec<Option<i64>>> {
         let inf = Self::INF;
         let v = self.v;
-        let mut cost = vec![vec![inf; v]; v];
+        let mut cost_list = vec![vec![inf; v]; v];
         for u in 0..v {
             for &(v, w) in &self.graph[u] {
-                cost[u][v] = w;
+                cost_list[u][v] = w;
             }
         }
         for i in 0..v {
-            cost[i][i] = 0;
+            cost_list[i][i] = 0;
         }
         for k in 0..v {
             for i in 0..v {
                 for j in 0..v {
-                    cost[i][j] = std::cmp::min(cost[i][j], cost[i][k] + cost[k][j]);
+                    cost_list[i][j] =
+                        std::cmp::min(cost_list[i][j], cost_list[i][k] + cost_list[k][j]);
                 }
             }
         }
-        cost.into_iter()
+        cost_list
+            .into_iter()
             .map(|v| self.optionalize(v))
             .collect::<Vec<_>>()
     }
