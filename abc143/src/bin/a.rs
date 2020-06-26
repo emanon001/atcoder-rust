@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: usize, b: usize
     };
+
+    let res = a - std::cmp::min(a, b * 2);
+    println!("{}", res);
 }
 
 fn main() {

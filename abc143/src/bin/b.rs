@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        dv: [usize; n]
     };
+
+    let res = dv
+        .into_iter()
+        .combinations(2)
+        .map(|v| v[0] * v[1])
+        .sum::<usize>();
+    println!("{}", res);
 }
 
 fn main() {
