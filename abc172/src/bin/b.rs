@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars,
+        t: Chars
     };
+
+    let mut res = 0;
+    for i in 0..s.len() {
+        if s[i] != t[i] {
+            res += 1;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
