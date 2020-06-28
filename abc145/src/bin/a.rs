@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        r: usize
     };
+
+    let res = r * r;
+    println!("{}", res);
 }
 
 fn main() {

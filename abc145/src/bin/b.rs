@@ -10,7 +10,22 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        s: Chars
     };
+
+    if n % 2 == 1 {
+        println!("No");
+        return;
+    }
+    let l = n / 2;
+    for i in 0..l {
+        if s[i] != s[i + l] {
+            println!("No");
+            return;
+        }
+    }
+    println!("Yes");
 }
 
 fn main() {
