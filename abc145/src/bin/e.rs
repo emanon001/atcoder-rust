@@ -1,22 +1,26 @@
+#[allow(unused_imports)]
+use itertools::Itertools;
+#[allow(unused_imports)]
+use num::*;
 use proconio::input;
+#[allow(unused_imports)]
+use proconio::marker::*;
+#[allow(unused_imports)]
+use std::collections::*;
+
+fn solve() {
+    input! {
+    };
+}
 
 fn main() {
-  input! {
-    n: usize, t: usize,
-    mut abv: [(usize, usize); n]
-  };
-
-  abv.sort();
-  let mut dp = vec![vec![0; 6000]; n + 1];
-  for i in 0..n {
-    let (a, b) = abv[i];
-    for j in 0..6000 {
-      dp[i + 1][j] = std::cmp::max(dp[i + 1][j], dp[i][j]);
-      if j < t {
-        dp[i + 1][j + a] = std::cmp::max(dp[i + 1][j + a], dp[i][j] + b);
-      }
-    }
-  }
-  let res = dp[n].iter().max().unwrap();
-  println!("{}", res);
+    std::thread::Builder::new()
+        .name("big stack size".into())
+        .stack_size(256 * 1024 * 1024)
+        .spawn(|| {
+            solve();
+        })
+        .unwrap()
+        .join()
+        .unwrap();
 }
