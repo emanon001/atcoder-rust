@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: String
     };
+
+    let weeks = vec!["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    let res = 7 - weeks.into_iter().position(|x| x == &s).unwrap();
+    println!("{}", res);
 }
 
 fn main() {

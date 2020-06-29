@@ -8,9 +8,25 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+pub fn shift_ascii_uppercase_char(ch: char, n: usize) -> char {
+    assert!(ch.is_ascii_uppercase());
+    let base = 0x41_u8;
+    let m = 26;
+    let offset = (ch as u8 - base + (n % m) as u8) % m as u8;
+    char::from(base + offset)
+}
+
 fn solve() {
     input! {
+        n: usize,
+        s: Chars
     };
+
+    let res = s
+        .into_iter()
+        .map(|ch| shift_ascii_uppercase_char(ch, n))
+        .join("");
+    println!("{}", res);
 }
 
 fn main() {
