@@ -12,7 +12,7 @@ pub fn make_ascii_uppercase_chars() -> Vec<char> {
         .collect::<Vec<_>>()
 }
 
-pub fn shift_ascii_lowercase_char(ch: char, n: isize) -> char {
+pub fn rotate_ascii_lowercase_char(ch: char, n: isize) -> char {
     assert!(ch.is_ascii_lowercase());
     let base = 0x61_u8;
     let m = 26_isize;
@@ -25,7 +25,7 @@ pub fn shift_ascii_lowercase_char(ch: char, n: isize) -> char {
     char::from(base + offset)
 }
 
-pub fn shift_ascii_uppercase_char(ch: char, n: isize) -> char {
+pub fn rotate_ascii_uppercase_char(ch: char, n: isize) -> char {
     assert!(ch.is_ascii_uppercase());
     let base = 0x41_u8;
     let m = 26_u8;
@@ -65,42 +65,42 @@ mod tests {
     }
 
     #[test]
-    fn test_shift_ascii_lowercase_char() {
+    fn test_rotate_ascii_lowercase_char() {
         let ch = 'a';
         // right
-        assert_eq!(shift_ascii_lowercase_char(ch, 0), 'a');
-        assert_eq!(shift_ascii_lowercase_char(ch, 1), 'b');
-        assert_eq!(shift_ascii_lowercase_char(ch, 25), 'z');
-        assert_eq!(shift_ascii_lowercase_char(ch, 26), 'a');
-        assert_eq!(shift_ascii_lowercase_char(ch, 27), 'b');
-        assert_eq!(shift_ascii_lowercase_char(ch, 51), 'z');
-        assert_eq!(shift_ascii_lowercase_char(ch, 52), 'a');
+        assert_eq!(rotate_ascii_lowercase_char(ch, 0), 'a');
+        assert_eq!(rotate_ascii_lowercase_char(ch, 1), 'b');
+        assert_eq!(rotate_ascii_lowercase_char(ch, 25), 'z');
+        assert_eq!(rotate_ascii_lowercase_char(ch, 26), 'a');
+        assert_eq!(rotate_ascii_lowercase_char(ch, 27), 'b');
+        assert_eq!(rotate_ascii_lowercase_char(ch, 51), 'z');
+        assert_eq!(rotate_ascii_lowercase_char(ch, 52), 'a');
         // left
-        assert_eq!(shift_ascii_lowercase_char(ch, -1), 'z');
-        assert_eq!(shift_ascii_lowercase_char(ch, -25), 'b');
-        assert_eq!(shift_ascii_lowercase_char(ch, -26), 'a');
-        assert_eq!(shift_ascii_lowercase_char(ch, -27), 'z');
-        assert_eq!(shift_ascii_lowercase_char(ch, -51), 'b');
-        assert_eq!(shift_ascii_lowercase_char(ch, -52), 'a');
+        assert_eq!(rotate_ascii_lowercase_char(ch, -1), 'z');
+        assert_eq!(rotate_ascii_lowercase_char(ch, -25), 'b');
+        assert_eq!(rotate_ascii_lowercase_char(ch, -26), 'a');
+        assert_eq!(rotate_ascii_lowercase_char(ch, -27), 'z');
+        assert_eq!(rotate_ascii_lowercase_char(ch, -51), 'b');
+        assert_eq!(rotate_ascii_lowercase_char(ch, -52), 'a');
     }
 
     #[test]
-    fn test_shift_ascii_uppercase_char() {
+    fn test_rotate_ascii_uppercase_char() {
         let ch = 'A';
         // right
-        assert_eq!(shift_ascii_uppercase_char(ch, 0), 'A');
-        assert_eq!(shift_ascii_uppercase_char(ch, 1), 'B');
-        assert_eq!(shift_ascii_uppercase_char(ch, 25), 'Z');
-        assert_eq!(shift_ascii_uppercase_char(ch, 26), 'A');
-        assert_eq!(shift_ascii_uppercase_char(ch, 27), 'B');
-        assert_eq!(shift_ascii_uppercase_char(ch, 51), 'Z');
-        assert_eq!(shift_ascii_uppercase_char(ch, 52), 'A');
+        assert_eq!(rotate_ascii_uppercase_char(ch, 0), 'A');
+        assert_eq!(rotate_ascii_uppercase_char(ch, 1), 'B');
+        assert_eq!(rotate_ascii_uppercase_char(ch, 25), 'Z');
+        assert_eq!(rotate_ascii_uppercase_char(ch, 26), 'A');
+        assert_eq!(rotate_ascii_uppercase_char(ch, 27), 'B');
+        assert_eq!(rotate_ascii_uppercase_char(ch, 51), 'Z');
+        assert_eq!(rotate_ascii_uppercase_char(ch, 52), 'A');
         // left
-        assert_eq!(shift_ascii_uppercase_char(ch, -1), 'Z');
-        assert_eq!(shift_ascii_uppercase_char(ch, -25), 'B');
-        assert_eq!(shift_ascii_uppercase_char(ch, -26), 'A');
-        assert_eq!(shift_ascii_uppercase_char(ch, -27), 'Z');
-        assert_eq!(shift_ascii_uppercase_char(ch, -51), 'B');
-        assert_eq!(shift_ascii_uppercase_char(ch, -52), 'A');
+        assert_eq!(rotate_ascii_uppercase_char(ch, -1), 'Z');
+        assert_eq!(rotate_ascii_uppercase_char(ch, -25), 'B');
+        assert_eq!(rotate_ascii_uppercase_char(ch, -26), 'A');
+        assert_eq!(rotate_ascii_uppercase_char(ch, -27), 'Z');
+        assert_eq!(rotate_ascii_uppercase_char(ch, -51), 'B');
+        assert_eq!(rotate_ascii_uppercase_char(ch, -52), 'A');
     }
 }
