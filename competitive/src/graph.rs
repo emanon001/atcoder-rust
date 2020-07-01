@@ -294,5 +294,18 @@ mod tests {
             assert_eq!(graph.reachable_vertexes(2), vec![2].into_iter().collect());
             assert_eq!(graph.reachable_vertexes(3), vec![3].into_iter().collect());
         }
+
+        #[test]
+        fn rev() {
+            let edges = vec![(0, 1, 1), (0, 2, 2), (1, 2, 3)];
+            let graph = WeightedGraph::new_directed(&edges, 4);
+            let rev_graph = graph.rev();
+            assert_eq!(rev_graph.vn, graph.vn);
+            assert_eq!(rev_graph.graph.len(), graph.graph.len());
+            assert_eq!(rev_graph.graph[0], vec![]);
+            assert_eq!(rev_graph.graph[0], vec![]);
+            assert_eq!(rev_graph.graph[1], vec![(0, 1)]);
+            assert_eq!(rev_graph.graph[2], vec![(0, 2), (1, 3)]);
+        }
     }
 }
