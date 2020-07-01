@@ -10,28 +10,28 @@ use std::collections::*;
 
 pub struct WeightedGraph {
     graph: Vec<Vec<(usize, i64)>>,
-    v: usize,
+    vn: usize,
 }
 
 type WeightedEdge = (usize, usize, i64);
 impl WeightedGraph {
     const INF: i64 = 1 << 60;
 
-    pub fn new(edges: &[WeightedEdge], v: usize) -> Self {
-        let mut graph = vec![Vec::new(); v];
+    pub fn new(edges: &[WeightedEdge], vn: usize) -> Self {
+        let mut graph = vec![Vec::new(); vn];
         for &(u, v, w) in edges {
             graph[u].push((v, w));
             graph[v].push((u, w));
         }
-        Self { graph, v }
+        Self { graph, vn }
     }
 
-    pub fn new_directed(edges: &[WeightedEdge], v: usize) -> Self {
-        let mut graph = vec![Vec::new(); v];
+    pub fn new_directed(edges: &[WeightedEdge], vn: usize) -> Self {
+        let mut graph = vec![Vec::new(); vn];
         for &(u, v, w) in edges {
             graph[u].push((v, w));
         }
-        Self { graph, v }
+        Self { graph, vn }
     }
 
     pub fn add_directed_edge(&mut self, e: WeightedEdge) {
@@ -44,29 +44,27 @@ impl WeightedGraph {
     }
 
     pub fn bellman_ford(&self, s: usize) -> Option<Vec<Option<i64>>> {
-        let v = self.v;
+        let vn = self.vn;
         let inf = Self::INF;
-        let mut cost_list = vec![inf; v];
+        let mut cost_list = vec![inf; vn];
         cost_list[s] = 0;
-        let mut count = 0;
-        loop {
-            let mut updated = false;
-            for u in 0..v {
+        for c in 0..vn {
+            for u in 0..vn {
                 for &(v, w) in &self.graph[u] {
-                    if cost_list[u] != inf && cost_list[u] + w < cost_list[v] {
-                        cost_list[v] = cost_list[u] + w;
-                        updated = true;
+                    if cost_list[u] == inf {
+                        continue;
+                    }
+                    let new_cost = cost_list[u] + w;
+                    if new_cost < cost_list[v] {
+                        cost_list[v] = new_cost;
+                        if c == vn - 1 {
+                            return None;
+                        }
                     }
                 }
             }
-            if !updated {
-                return Some(self.optionalize(cost_list));
-            }
-            count += 1;
-            if count == v {
-                return None;
-            }
         }
+        Some(self.optionalize(cost_list))
     }
 
     pub fn prim(&self) -> i64 {
@@ -75,17 +73,17 @@ impl WeightedGraph {
 
         let mut res = 0_i64;
         heap.push(std::cmp::Reverse((0_i64, 0)));
-        while let Some(std::cmp::Reverse((cost, u))) = heap.pop() {
+        while let Some(std::cmp::Reverse((weight, u))) = heap.pop() {
             if used.contains(&u) {
                 continue;
             }
             used.insert(u);
-            res += cost;
-            for &(v, c) in &self.graph[u] {
+            res += weight;
+            for &(v, w) in &self.graph[u] {
                 if used.contains(&v) {
                     continue;
                 }
-                heap.push(std::cmp::Reverse((c, v)));
+                heap.push(std::cmp::Reverse((w, v)));
             }
         }
         res
@@ -110,16 +108,16 @@ impl WeightedGraph {
 
     pub fn rev(&self) -> WeightedGraph {
         let mut edges = Vec::new();
-        for u in 0..self.v {
-            for &(v, c) in &self.graph[u] {
-                edges.push((v, u, c));
+        for u in 0..self.vn {
+            for &(v, w) in &self.graph[u] {
+                edges.push((v, u, w));
             }
         }
-        Self::new_directed(&edges, self.v)
+        Self::new_directed(&edges, self.vn)
     }
 
     pub fn shortest_path(&self, start: usize) -> Vec<Option<i64>> {
-        let mut cost_list = vec![Self::INF; self.v];
+        let mut cost_list = vec![Self::INF; self.vn];
         let mut heap = std::collections::BinaryHeap::new();
 
         cost_list[start] = 0;
@@ -129,8 +127,8 @@ impl WeightedGraph {
             if cost > cost_list[u] {
                 continue;
             }
-            for &(v, c) in &self.graph[u] {
-                let new_cost = cost + c;
+            for &(v, w) in &self.graph[u] {
+                let new_cost = cost + w;
                 if new_cost < cost_list[v] {
                     heap.push(std::cmp::Reverse((new_cost, v)));
                     cost_list[v] = new_cost;
@@ -142,24 +140,26 @@ impl WeightedGraph {
 
     pub fn warshall_floyd(&self) -> Vec<Vec<Option<i64>>> {
         let inf = Self::INF;
-        let v = self.v;
-        let mut cost = vec![vec![inf; v]; v];
-        for u in 0..v {
+        let vn = self.vn;
+        let mut cost_list = vec![vec![inf; vn]; vn];
+        for u in 0..vn {
             for &(v, w) in &self.graph[u] {
-                cost[u][v] = w;
+                cost_list[u][v] = w;
             }
         }
-        for i in 0..v {
-            cost[i][i] = 0;
+        for i in 0..vn {
+            cost_list[i][i] = 0;
         }
-        for k in 0..v {
-            for i in 0..v {
-                for j in 0..v {
-                    cost[i][j] = std::cmp::min(cost[i][j], cost[i][k] + cost[k][j]);
+        for k in 0..vn {
+            for i in 0..vn {
+                for j in 0..vn {
+                    cost_list[i][j] =
+                        std::cmp::min(cost_list[i][j], cost_list[i][k] + cost_list[k][j]);
                 }
             }
         }
-        cost.into_iter()
+        cost_list
+            .into_iter()
             .map(|v| self.optionalize(v))
             .collect::<Vec<_>>()
     }
