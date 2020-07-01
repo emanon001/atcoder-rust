@@ -239,7 +239,7 @@ mod tests {
         #[test]
         fn bellman_ford() {
             let edges = vec![(0, 1, 1), (0, 2, 2), (1, 3, 3), (2, 3, 3)];
-            // 頂点5には到達しない
+            // 頂点4には到達しない
             let graph = WeightedGraph::new(&edges, 5);
             let res = graph.bellman_ford(0);
             assert!(res.is_some());
@@ -306,6 +306,27 @@ mod tests {
             assert_eq!(rev_graph.graph[0], vec![]);
             assert_eq!(rev_graph.graph[1], vec![(0, 1)]);
             assert_eq!(rev_graph.graph[2], vec![(0, 2), (1, 3)]);
+        }
+
+        #[test]
+        fn shortest_path() {
+            let edges = vec![
+                (0, 1, 1),
+                (0, 2, 2),
+                (1, 3, 5),
+                (1, 4, 1),
+                (2, 3, 3),
+                (3, 4, 2),
+            ];
+            // 頂点5には到達しない
+            let graph = WeightedGraph::new(&edges, 6);
+            let res = graph.shortest_path(0);
+            assert_eq!(res[0], Some(0));
+            assert_eq!(res[1], Some(1));
+            assert_eq!(res[2], Some(2));
+            assert_eq!(res[3], Some(4));
+            assert_eq!(res[4], Some(2));
+            assert_eq!(res[5], None);
         }
     }
 }
