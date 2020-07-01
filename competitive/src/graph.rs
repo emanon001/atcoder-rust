@@ -328,5 +328,61 @@ mod tests {
             assert_eq!(res[4], Some(2));
             assert_eq!(res[5], None);
         }
+
+        #[test]
+        fn warshall_floyd() {
+            let edges = vec![
+                (0, 1, 1),
+                (0, 2, 2),
+                (1, 3, 5),
+                (1, 4, 1),
+                (2, 3, 3),
+                (3, 4, 2),
+            ];
+            let graph = WeightedGraph::new(&edges, 6);
+            let res = graph.warshall_floyd();
+            // start: 0
+            assert_eq!(res[0][0], Some(0));
+            assert_eq!(res[0][1], Some(1));
+            assert_eq!(res[0][2], Some(2));
+            assert_eq!(res[0][3], Some(4));
+            assert_eq!(res[0][4], Some(2));
+            assert_eq!(res[0][5], None);
+            // start: 1
+            assert_eq!(res[1][0], Some(1));
+            assert_eq!(res[1][1], Some(0));
+            assert_eq!(res[1][2], Some(3));
+            assert_eq!(res[1][3], Some(3));
+            assert_eq!(res[1][4], Some(1));
+            assert_eq!(res[1][5], None);
+            // start: 2
+            assert_eq!(res[2][0], Some(2));
+            assert_eq!(res[2][1], Some(3));
+            assert_eq!(res[2][2], Some(0));
+            assert_eq!(res[2][3], Some(3));
+            assert_eq!(res[2][4], Some(4));
+            assert_eq!(res[2][5], None);
+            // start: 3
+            assert_eq!(res[3][0], Some(4));
+            assert_eq!(res[3][1], Some(3));
+            assert_eq!(res[3][2], Some(3));
+            assert_eq!(res[3][3], Some(0));
+            assert_eq!(res[3][4], Some(2));
+            assert_eq!(res[3][5], None);
+            // start: 4
+            assert_eq!(res[4][0], Some(2));
+            assert_eq!(res[4][1], Some(1));
+            assert_eq!(res[4][2], Some(4));
+            assert_eq!(res[4][3], Some(2));
+            assert_eq!(res[4][4], Some(0));
+            assert_eq!(res[4][5], None);
+            // start: 5
+            assert_eq!(res[5][0], None);
+            assert_eq!(res[5][1], None);
+            assert_eq!(res[5][2], None);
+            assert_eq!(res[5][3], None);
+            assert_eq!(res[5][4], None);
+            assert_eq!(res[5][5], Some(0));
+        }
     }
 }
