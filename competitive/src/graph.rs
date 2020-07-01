@@ -232,4 +232,43 @@ mod tests {
             assert_eq!(res[6], None);
         }
     }
+
+    mod weighted_graph {
+        use super::super::WeightedGraph;
+        #[test]
+        fn bellman_ford() {
+            let edges = vec![(0, 1, 1), (0, 2, 2), (1, 3, 3), (2, 3, 3)];
+            // 頂点5には到達しない
+            let graph = WeightedGraph::new(&edges, 5);
+            let res = graph.bellman_ford(0);
+            assert!(res.is_some());
+            let res = res.unwrap();
+            assert_eq!(res[0], Some(0));
+            assert_eq!(res[1], Some(1));
+            assert_eq!(res[2], Some(2));
+            assert_eq!(res[3], Some(4));
+            assert_eq!(res[4], None);
+        }
+
+        #[test]
+        fn bellman_ford_has_negative_weight() {
+            let edges = vec![(0, 1, 1), (1, 2, -3), (1, 3, 3), (2, 0, 2), (2, 3, 3)];
+            let graph = WeightedGraph::new_directed(&edges, 4);
+            let res = graph.bellman_ford(0);
+            assert!(res.is_some());
+            let res = res.unwrap();
+            assert_eq!(res[0], Some(0));
+            assert_eq!(res[1], Some(1));
+            assert_eq!(res[2], Some(-2));
+            assert_eq!(res[3], Some(1));
+        }
+
+        #[test]
+        fn bellman_ford_has_negative_loop() {
+            let edges = vec![(0, 1, 1), (1, 2, -4), (1, 3, 3), (2, 0, 2), (2, 3, 3)];
+            let graph = WeightedGraph::new_directed(&edges, 4);
+            let res = graph.bellman_ford(0);
+            assert!(res.is_none());
+        }
+    }
 }
