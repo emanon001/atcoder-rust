@@ -270,5 +270,12 @@ mod tests {
             let res = graph.bellman_ford(0);
             assert!(res.is_none());
         }
+
+        #[test]
+        fn prim() {
+            let edges = vec![(0, 1, 1), (0, 2, 5), (0, 3, 2), (1, 3, 1), (2, 3, 3)];
+            let graph = WeightedGraph::new(&edges, 4);
+            assert_eq!(graph.prim(), 5);
+        }
     }
 }
