@@ -235,6 +235,7 @@ mod tests {
 
     mod weighted_graph {
         use super::super::WeightedGraph;
+
         #[test]
         fn bellman_ford() {
             let edges = vec![(0, 1, 1), (0, 2, 2), (1, 3, 3), (2, 3, 3)];
@@ -276,6 +277,22 @@ mod tests {
             let edges = vec![(0, 1, 1), (0, 2, 5), (0, 3, 2), (1, 3, 1), (2, 3, 3)];
             let graph = WeightedGraph::new(&edges, 4);
             assert_eq!(graph.prim(), 5);
+        }
+
+        #[test]
+        fn reachable_vertexes() {
+            let edges = vec![(0, 1, 1), (1, 2, 1), (1, 3, 1)];
+            let graph = WeightedGraph::new_directed(&edges, 4);
+            assert_eq!(
+                graph.reachable_vertexes(0),
+                vec![0, 1, 2, 3].into_iter().collect()
+            );
+            assert_eq!(
+                graph.reachable_vertexes(1),
+                vec![1, 2, 3].into_iter().collect()
+            );
+            assert_eq!(graph.reachable_vertexes(2), vec![2].into_iter().collect());
+            assert_eq!(graph.reachable_vertexes(3), vec![3].into_iter().collect());
         }
     }
 }
