@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a1: usize, a2: usize, a3: usize
     };
+
+    let res = if a1 + a2 + a3 >= 22 { "bust" } else { "win" };
+    println!("{}", res);
 }
 
 fn main() {
