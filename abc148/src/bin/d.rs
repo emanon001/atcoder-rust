@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [usize; n]
     };
+
+    let mut cur = 0;
+    for a in av {
+        if a == cur + 1 {
+            cur = a;
+        }
+    }
+    let res = if cur == 0 { -1 } else { (n - cur) as isize };
+    println!("{}", res);
 }
 
 fn main() {
