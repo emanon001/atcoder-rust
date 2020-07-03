@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: String,
+        t: String
     };
+
+    let res = format!("{}{}", t, s);
+    println!("{}", res);
 }
 
 fn main() {

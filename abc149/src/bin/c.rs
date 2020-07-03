@@ -8,9 +8,32 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+pub fn is_prime(n: u64) -> bool {
+    if n < 2 {
+        return false;
+    }
+    let mut i = 2;
+    while i * i <= n {
+        if n % i == 0 {
+            return false;
+        }
+        i += 1;
+    }
+    true
+}
+
 fn solve() {
     input! {
+        mut x: u64
     };
+
+    loop {
+        if is_prime(x) {
+            println!("{}", x);
+            return;
+        }
+        x += 1;
+    }
 }
 
 fn main() {
