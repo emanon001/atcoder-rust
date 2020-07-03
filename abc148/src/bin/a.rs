@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: usize,
+        b: usize
     };
+
+    let mut set = vec![1, 2, 3].into_iter().collect::<HashSet<_>>();
+    set.remove(&a);
+    set.remove(&b);
+    let res = set.into_iter().next().unwrap();
+    println!("{}", res);
 }
 
 fn main() {

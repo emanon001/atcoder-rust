@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: usize, b: usize
     };
+
+    let res = a.lcm(&b);
+    println!("{}", res);
 }
 
 fn main() {
