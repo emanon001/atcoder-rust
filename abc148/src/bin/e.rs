@@ -10,7 +10,21 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: u64
     };
+
+    if n % 2 == 1 {
+        println!("0");
+        return;
+    }
+
+    let mut res = 0;
+    let mut m = 5;
+    while m <= n {
+        res += n / m / 2;
+        m *= 5;
+    }
+    println!("{}", res);
 }
 
 fn main() {
