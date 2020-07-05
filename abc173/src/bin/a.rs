@@ -13,7 +13,8 @@ fn solve() {
         n: usize
     };
 
-    let res = n % 1000;
+    let rest = n % 1000;
+    let res = if rest == 0 { 0 } else { 1000 - rest };
     println!("{}", res);
 }
 
