@@ -1,21 +1,26 @@
+#[allow(unused_imports)]
 use itertools::Itertools;
+#[allow(unused_imports)]
+use num::*;
 use proconio::input;
+#[allow(unused_imports)]
+use proconio::marker::*;
+#[allow(unused_imports)]
+use std::collections::*;
 
-struct Foo {
-  a: usize,
+fn solve() {
+    input! {
+    };
 }
 
 fn main() {
-  input! {
-    n: usize,
-    ps: [usize; n],
-    qs: [usize; n]
-  };
-
-  let mut vec = (1..=n).permutations(n).collect::<Vec<Vec<usize>>>();
-  vec.sort();
-  let pi = vec.iter().position(|v| v == &ps).unwrap();
-  let qi = vec.iter().position(|v| v == &qs).unwrap();
-  let res = (pi as isize - qi as isize).abs();
-  println!("{}", res);
+    std::thread::Builder::new()
+        .name("big stack size".into())
+        .stack_size(256 * 1024 * 1024)
+        .spawn(|| {
+            solve();
+        })
+        .unwrap()
+        .join()
+        .unwrap();
 }
