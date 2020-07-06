@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        pv: [usize; n],
+        qv: [usize; n],
     };
+
+    let mut list = (1..=n).permutations(n).collect::<Vec<_>>();
+    list.sort();
+    let i = list.iter().position(|x| x == &pv).unwrap() as isize;
+    let j = list.iter().position(|x| x == &qv).unwrap() as isize;
+    let res = (i - j).abs();
+    println!("{}", res);
 }
 
 fn main() {

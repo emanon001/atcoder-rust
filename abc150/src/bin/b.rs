@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        _: usize,
+        s: String
     };
+
+    let res = s.split("ABC").count() - 1;
+    println!("{}", res);
 }
 
 fn main() {
