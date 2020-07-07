@@ -3,7 +3,7 @@ pub struct Graph {
     vn: usize,
 }
 
-type Edge = (usize, usize);
+pub type Edge = (usize, usize);
 impl Graph {
     pub fn new(edges: &[Edge], vn: usize) -> Self {
         let mut graph = vec![Vec::new(); vn];
@@ -58,7 +58,7 @@ pub struct Grid {
     dirs: Vec<(isize, isize)>,
 }
 
-type VertexTable = std::collections::HashMap<(usize, usize), usize>;
+pub type VertexTable = std::collections::HashMap<(usize, usize), usize>;
 impl Grid {
     // 上下左右 (i, j)
     #[allow(dead_code)]
@@ -149,7 +149,7 @@ pub struct WeightedGraph {
     vn: usize,
 }
 
-type WeightedEdge = (usize, usize, i64);
+pub type WeightedEdge = (usize, usize, i64);
 impl WeightedGraph {
     const INF: i64 = 1 << 60;
 
