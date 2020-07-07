@@ -184,43 +184,6 @@ impl std::ops::SubAssign for ModInt {
     }
 }
 
-pub struct ModComb {
-    max: usize,
-    fac: Vec<ModInt>,
-    finv: Vec<ModInt>,
-}
-
-impl ModComb {
-    pub fn new(max: usize) -> Self {
-        let mut fac = vec![ModInt::zero(); max + 1];
-        let mut finv = vec![ModInt::zero(); max + 1];
-        let mut inv = vec![ModInt::zero(); max + 1];
-        fac[0] = ModInt::one();
-        fac[1] = ModInt::one();
-        finv[0] = ModInt::one();
-        finv[1] = ModInt::one();
-        inv[1] = ModInt::one();
-        let modulo = ModInt::MOD as usize;
-        for i in 2..=max {
-            fac[i] = fac[i - 1] * ModInt::from(i);
-            inv[i] =
-                ModInt::from(ModInt::from(modulo) - (inv[modulo % i] * ModInt::from(modulo / i)));
-            finv[i] = finv[i - 1] * inv[i]
-        }
-        Self { max, fac, finv }
-    }
-
-    pub fn comb(&self, n: usize, k: usize) -> ModInt {
-        if n > self.max {
-            panic!();
-        }
-        if n < k {
-            return ModInt::zero();
-        }
-        self.fac[n] * self.finv[k] * self.finv[n - k]
-    }
-}
-
 fn solve() {
     input! {
         n: usize,
@@ -228,19 +191,16 @@ fn solve() {
     };
 
     cv.sort();
-    let comb = ModComb::new(n);
+    let all_perm_count = ModInt::from(2).pow(n as u32);
     let mut res = ModInt::zero();
     for i in 0..n {
         let c = ModInt::from(cv[i]);
-        for j in i..n {
-            // (1 + (n - i)) * (n - i) / 2
-            let change_count = n - j;
-            res += c
-                * ModInt::from(change_count)
-                * comb.comb(n - i - 1, change_count - 1)
-                * ModInt::from(2).pow((n - i) as u32)
-                * ModInt::from(4).pow(i as u32);
-        }
+        let len = n - i;
+        let len_perm_count = ModInt::from(2).pow((len - 1) as u32);
+        let change_count =
+            len_perm_count + (len_perm_count / ModInt::from(2)) * ModInt::from(len - 1);
+        let sum = c * ModInt::from(2).pow(i as u32) * change_count * all_perm_count;
+        res += sum;
     }
     println!("{}", res);
 }
