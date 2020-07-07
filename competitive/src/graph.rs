@@ -311,6 +311,7 @@ impl WeightedGraph {
 mod tests {
     mod graph {
         use super::super::Graph;
+
         #[test]
         fn shortest_path() {
             let edges = vec![(0, 1), (0, 2), (1, 2), (2, 3), (2, 4), (3, 4), (4, 5)];
@@ -324,6 +325,62 @@ mod tests {
             assert_eq!(res[4], Some(2));
             assert_eq!(res[5], Some(3));
             assert_eq!(res[6], None);
+        }
+    }
+
+    mod grid {
+        use super::super::{Grid, VertexTable};
+
+        #[test]
+        fn to_graph_udlr_dirs() {
+            let grid = vec!["...#.", ".#.#.", ".#..."]
+                .into_iter()
+                .map(|s| s.chars().collect::<Vec<char>>())
+                .collect::<Vec<_>>();
+            let grid = Grid::new(&grid, '#', &Grid::UDLR_DIRS);
+            let (graph, v_table) = grid.to_graph();
+            let s = *v_table.get(&(0, 0)).unwrap();
+            let d = graph.shortest_path(s);
+            assert_eq!(d[pos_to_v(&v_table, (0, 0))], Some(0));
+            assert_eq!(d[pos_to_v(&v_table, (0, 1))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (0, 2))], Some(2));
+            assert_eq!(d[pos_to_v(&v_table, (0, 4))], Some(8));
+            assert_eq!(d[pos_to_v(&v_table, (1, 0))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (1, 2))], Some(3));
+            assert_eq!(d[pos_to_v(&v_table, (1, 4))], Some(7));
+            assert_eq!(d[pos_to_v(&v_table, (2, 0))], Some(2));
+            assert_eq!(d[pos_to_v(&v_table, (2, 2))], Some(4));
+            assert_eq!(d[pos_to_v(&v_table, (2, 3))], Some(5));
+            assert_eq!(d[pos_to_v(&v_table, (2, 4))], Some(6));
+        }
+
+        #[test]
+        fn to_graph_all_dirs() {
+            let grid = vec![".....", ".#.#.", "....."]
+                .into_iter()
+                .map(|s| s.chars().collect::<Vec<char>>())
+                .collect::<Vec<_>>();
+            let grid = Grid::new(&grid, '#', &Grid::ALL_DIRS);
+            let (graph, v_table) = grid.to_graph();
+            let s = *v_table.get(&(1, 2)).unwrap();
+            let d = graph.shortest_path(s);
+            assert_eq!(d[pos_to_v(&v_table, (0, 0))], Some(2));
+            assert_eq!(d[pos_to_v(&v_table, (0, 1))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (0, 2))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (0, 3))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (0, 4))], Some(2));
+            assert_eq!(d[pos_to_v(&v_table, (1, 0))], Some(2));
+            assert_eq!(d[pos_to_v(&v_table, (1, 2))], Some(0));
+            assert_eq!(d[pos_to_v(&v_table, (1, 4))], Some(2));
+            assert_eq!(d[pos_to_v(&v_table, (2, 0))], Some(2));
+            assert_eq!(d[pos_to_v(&v_table, (2, 1))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (2, 2))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (2, 3))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (2, 4))], Some(2));
+        }
+
+        fn pos_to_v(table: &VertexTable, pos: (usize, usize)) -> usize {
+            *table.get(&pos).unwrap()
         }
     }
 
