@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        pv: [usize; n]
     };
+
+    let mut res = 0;
+    let mut min = std::usize::MAX;
+    for p in pv {
+        if p <= min {
+            res += 1;
+        }
+        min = min.min(p);
+    }
+    println!("{}", res);
 }
 
 fn main() {
