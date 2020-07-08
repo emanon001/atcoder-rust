@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, k: usize,
+        mut hv: [u64; n]
     };
+
+    hv.sort();
+    let res = if k >= n {
+        0
+    } else {
+        hv.into_iter().take(n - k).sum::<u64>()
+    };
+    println!("{}", res);
 }
 
 fn main() {
