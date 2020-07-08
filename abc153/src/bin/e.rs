@@ -10,7 +10,25 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        h: usize, n: usize,
+        abv: [(usize, usize); n]
     };
+
+    let inf = 1_usize << 30;
+    let max_damage = 10.pow(4);
+    let mut dp = vec![inf; h + max_damage + 10];
+    dp[0] = 0;
+    for i in 0..n {
+        let (a, b) = abv[i];
+        for j in a..h + max_damage {
+            dp[j] = std::cmp::min(dp[j], dp[j - a] + b);
+        }
+    }
+    let mut res = std::usize::MAX;
+    for i in h..h + max_damage {
+        res = res.min(dp[i]);
+    }
+    println!("{}", res);
 }
 
 fn main() {
