@@ -10,7 +10,13 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        h: usize, n: usize,
+        av: [usize; n]
     };
+
+    let sum = av.into_iter().sum::<usize>();
+    let res = if sum >= h { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {
