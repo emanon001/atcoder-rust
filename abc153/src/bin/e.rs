@@ -15,20 +15,16 @@ fn solve() {
     };
 
     let inf = 1_usize << 30;
-    let max_damage = 10.pow(4);
-    let mut dp = vec![inf; h + max_damage + 10];
+    let mut dp = vec![inf; h + 10];
     dp[0] = 0;
     for i in 0..n {
         let (a, b) = abv[i];
-        for j in a..h + max_damage {
-            dp[j] = std::cmp::min(dp[j], dp[j - a] + b);
+        for j in 0..h {
+            let to_j = std::cmp::min(j + a, h);
+            dp[to_j] = std::cmp::min(dp[to_j], dp[j] + b);
         }
     }
-    let mut res = std::usize::MAX;
-    for i in h..h + max_damage {
-        res = res.min(dp[i]);
-    }
-    println!("{}", res);
+    println!("{}", dp[h]);
 }
 
 fn main() {
