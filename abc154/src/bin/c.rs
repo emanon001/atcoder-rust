@@ -10,7 +10,13 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [usize; n]
     };
+
+    let set = av.into_iter().collect::<HashSet<_>>();
+    let res = if set.len() == n { "YES" } else { "NO" };
+    println!("{}", res);
 }
 
 fn main() {
