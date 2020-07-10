@@ -1,40 +1,35 @@
 pub fn make_ascii_lowercase_chars() -> Vec<char> {
-    (0_u8..26)
-        .into_iter()
-        .map(|offset| char::from(0x61 + offset))
-        .collect::<Vec<_>>()
+    let base = 0x61;
+    make_chars(base..base + 26)
 }
 
 pub fn make_ascii_uppercase_chars() -> Vec<char> {
-    (0_u8..26)
-        .into_iter()
-        .map(|offset| char::from(0x41 + offset))
-        .collect::<Vec<_>>()
+    let base = 0x41;
+    make_chars(base..base + 26)
+}
+
+fn make_chars(range: std::ops::Range<u8>) -> Vec<char> {
+    range.into_iter().map(char::from).collect::<Vec<_>>()
 }
 
 pub fn rotate_ascii_lowercase_char(ch: char, n: isize) -> char {
     assert!(ch.is_ascii_lowercase());
-    let base = 0x61_u8;
-    let m = 26_isize;
+    rotate_char(ch, n, 0x61, 26)
+}
+
+pub fn rotate_ascii_uppercase_char(ch: char, n: isize) -> char {
+    assert!(ch.is_ascii_uppercase());
+    rotate_char(ch, n, 0x41, 26)
+}
+
+fn rotate_char(ch: char, n: isize, base: u8, m: u8) -> char {
+    let m = m as isize;
     let ch_pos = ch as u8 - base;
     let offset = if n >= 0 {
         (ch_pos as isize + n) % m
     } else {
         (m - (ch_pos as isize - n.abs()).abs() % m) % m
     } as u8;
-    char::from(base + offset)
-}
-
-pub fn rotate_ascii_uppercase_char(ch: char, n: isize) -> char {
-    assert!(ch.is_ascii_uppercase());
-    let base = 0x41_u8;
-    let m = 26_u8;
-    let ch_pos = ch as u8 - base;
-    let offset = if n >= 0 {
-        (ch_pos + (n % m as isize) as u8) % m as u8
-    } else {
-        (m as u8 - (ch_pos as i8 - (n.abs() % m as isize) as i8).abs() as u8) % m
-    };
     char::from(base + offset)
 }
 
