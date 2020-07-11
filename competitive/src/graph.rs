@@ -1,11 +1,11 @@
-pub struct Graph {
+pub struct UnweightedGraph {
     graph: Vec<Vec<usize>>,
     vn: usize,
 }
 
-pub type Edge = (usize, usize);
-impl Graph {
-    pub fn new(edges: &[Edge], vn: usize) -> Self {
+pub type UnweightedEdge = (usize, usize);
+impl UnweightedGraph {
+    pub fn new(edges: &[UnweightedEdge], vn: usize) -> Self {
         let mut graph = vec![Vec::new(); vn];
         for &(u, v) in edges {
             graph[u].push(v);
@@ -14,7 +14,7 @@ impl Graph {
         Self { graph, vn }
     }
 
-    pub fn new_directed(edges: &[Edge], vn: usize) -> Self {
+    pub fn new_directed(edges: &[UnweightedEdge], vn: usize) -> Self {
         let mut graph = vec![Vec::new(); vn];
         for &(u, v) in edges {
             graph[u].push(v);
@@ -22,11 +22,11 @@ impl Graph {
         Self { graph, vn }
     }
 
-    pub fn add_directed_edge(&mut self, e: Edge) {
+    pub fn add_directed_edge(&mut self, e: UnweightedEdge) {
         self.graph[e.0].push(e.1);
     }
 
-    pub fn add_edge(&mut self, e: Edge) {
+    pub fn add_edge(&mut self, e: UnweightedEdge) {
         self.graph[e.0].push(e.1);
         self.graph[e.1].push(e.0);
     }
@@ -93,7 +93,7 @@ impl Grid {
         }
     }
 
-    pub fn to_graph(&self) -> (Graph, VertexTable) {
+    pub fn to_graph(&self) -> (UnweightedGraph, VertexTable) {
         let mut edges = Vec::new();
         let mut vertex_table = std::collections::HashMap::new();
         let mut v = 0;
@@ -123,7 +123,7 @@ impl Grid {
                 }
             }
         }
-        let graph = Graph::new_directed(&edges, vertex_table.len());
+        let graph = UnweightedGraph::new_directed(&edges, vertex_table.len());
         (graph, vertex_table)
     }
 
@@ -309,14 +309,14 @@ impl WeightedGraph {
 
 #[cfg(test)]
 mod tests {
-    mod graph {
-        use super::super::Graph;
+    mod unweighted_graph {
+        use super::super::UnweightedGraph;
 
         #[test]
         fn shortest_path() {
             let edges = vec![(0, 1), (0, 2), (1, 2), (2, 3), (2, 4), (3, 4), (4, 5)];
             // 頂点6には到達しない
-            let graph = Graph::new(&edges, 7);
+            let graph = UnweightedGraph::new(&edges, 7);
             let res = graph.shortest_path(0);
             assert_eq!(res[0], Some(0));
             assert_eq!(res[1], Some(1));
