@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: usize, b: usize, c: usize
     };
+
+    let set = vec![a, b, c].into_iter().collect::<HashSet<_>>();
+    let res = if set.len() == 2 { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {
