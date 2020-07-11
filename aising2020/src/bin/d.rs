@@ -74,17 +74,13 @@ fn solve() {
             let res = 1 + f(res);
             println!("{}", res);
         } else {
-            if pc == 1 {
-                println!("0");
-            } else if digits_val_mod_minus[n - i - 1] > sum_mod_minus {
-                let res = (pc - 1) + sum_mod_minus - digits_val_mod_minus[n - i - 1];
-                let res = 1 + f(res);
-                println!("{}", res);
+            let res = if pc == 1 {
+                0
             } else {
-                let res = sum_mod_minus - digits_val_mod_minus[n - i - 1];
-                let res = 1 + f(res);
-                println!("{}", res);
-            }
+                let res = ((pc - 1) + sum_mod_minus - digits_val_mod_minus[n - i - 1]) % (pc - 1);
+                1 + f(res)
+            };
+            println!("{}", res);
         };
     }
 }
