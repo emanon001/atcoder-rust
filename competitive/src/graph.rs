@@ -1,34 +1,29 @@
+#[derive(Clone)]
 pub struct UnweightedGraph {
-    graph: Vec<Vec<usize>>,
+    graph: WeightedGraph,
     vn: usize,
 }
 
 pub type UnweightedEdge = (usize, usize);
 impl UnweightedGraph {
     pub fn new(edges: &[UnweightedEdge], vn: usize) -> Self {
-        let mut graph = vec![Vec::new(); vn];
-        for &(u, v) in edges {
-            graph[u].push(v);
-            graph[v].push(u);
-        }
+        let edges = Self::to_weighted_edges(&edges);
+        let graph = WeightedGraph::new(&edges, vn);
         Self { graph, vn }
     }
 
     pub fn new_directed(edges: &[UnweightedEdge], vn: usize) -> Self {
-        let mut graph = vec![Vec::new(); vn];
-        for &(u, v) in edges {
-            graph[u].push(v);
-        }
+        let edges = Self::to_weighted_edges(&edges);
+        let graph = WeightedGraph::new_directed(&edges, vn);
         Self { graph, vn }
     }
 
     pub fn add_directed_edge(&mut self, e: UnweightedEdge) {
-        self.graph[e.0].push(e.1);
+        self.graph.add_directed_edge((e.0, e.1, 1));
     }
 
     pub fn add_edge(&mut self, e: UnweightedEdge) {
-        self.graph[e.0].push(e.1);
-        self.graph[e.1].push(e.0);
+        self.graph.add_edge((e.0, e.1, 1));
     }
 
     pub fn shortest_path(&self, start: usize) -> Vec<Option<usize>> {
@@ -37,7 +32,7 @@ impl UnweightedGraph {
         cost_list[start] = Some(0);
         que.push_back(start);
         while let Some(u) = que.pop_front() {
-            for &v in &self.graph[u] {
+            for &(v, _) in &self.graph.graph[u] {
                 if cost_list[v].is_some() {
                     continue;
                 }
@@ -47,6 +42,17 @@ impl UnweightedGraph {
             }
         }
         cost_list
+    }
+
+    pub fn to_weighted_graph(&self) -> WeightedGraph {
+        self.graph.clone()
+    }
+
+    fn to_weighted_edges(edges: &[UnweightedEdge]) -> Vec<WeightedEdge> {
+        edges
+            .into_iter()
+            .map(|(u, v)| (*u, *v, 1))
+            .collect::<Vec<_>>()
     }
 }
 
@@ -144,6 +150,7 @@ impl Grid {
     }
 }
 
+#[derive(Clone)]
 pub struct WeightedGraph {
     graph: Vec<Vec<(usize, i64)>>,
     vn: usize,
