@@ -1,7 +1,6 @@
 #[derive(Clone)]
 pub struct UnweightedGraph {
     graph: WeightedGraph,
-    vn: usize,
 }
 
 pub type UnweightedEdge = (usize, usize);
@@ -9,13 +8,13 @@ impl UnweightedGraph {
     pub fn new(edges: &[UnweightedEdge], vn: usize) -> Self {
         let edges = Self::to_weighted_edges(&edges);
         let graph = WeightedGraph::new(&edges, vn);
-        Self { graph, vn }
+        Self { graph }
     }
 
     pub fn new_directed(edges: &[UnweightedEdge], vn: usize) -> Self {
         let edges = Self::to_weighted_edges(&edges);
         let graph = WeightedGraph::new_directed(&edges, vn);
-        Self { graph, vn }
+        Self { graph }
     }
 
     pub fn add_directed_edge(&mut self, e: UnweightedEdge) {
@@ -27,7 +26,7 @@ impl UnweightedGraph {
     }
 
     pub fn shortest_path(&self, start: usize) -> Vec<Option<usize>> {
-        let mut cost_list = vec![None; self.vn];
+        let mut cost_list = vec![None; self.graph.vn];
         let mut que = std::collections::VecDeque::new();
         cost_list[start] = Some(0);
         que.push_back(start);
@@ -543,5 +542,4 @@ mod tests {
             *table.get(&pos).unwrap()
         }
     }
-
 }
