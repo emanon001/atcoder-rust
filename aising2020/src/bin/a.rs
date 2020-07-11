@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        l: usize, r: usize, d: usize
     };
+
+    let mut res = 0;
+    for x in l..=r {
+        if x % d == 0 {
+            res += 1;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {

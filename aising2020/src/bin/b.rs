@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [usize; n]
     };
+
+    let mut res = 0;
+    for i in 0..n {
+        let a = av[i];
+        let i = i + 1;
+        if i % 2 == 1 && a % 2 == 1 {
+            res += 1;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
