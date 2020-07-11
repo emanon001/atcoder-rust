@@ -56,100 +56,6 @@ impl UnweightedGraph {
     }
 }
 
-pub struct Grid {
-    grid: Vec<Vec<char>>,
-    h: usize,
-    w: usize,
-    ng_char: char,
-    dirs: Vec<(isize, isize)>,
-}
-
-pub type VertexTable = std::collections::HashMap<(usize, usize), usize>;
-impl Grid {
-    // 上下左右 (i, j)
-    #[allow(dead_code)]
-    const UDLR_DIRS: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
-
-    // 上下左右 + 斜め (i, j)
-    #[allow(dead_code)]
-    const ALL_DIRS: [(isize, isize); 8] = [
-        // 時計回り
-        (-1, 0),  // 上
-        (-1, 1),  // 右上
-        (0, 1),   // 右
-        (1, 1),   // 右下
-        (1, 0),   // 下
-        (1, -1),  // 左下
-        (0, -1),  // 左
-        (-1, -1), // 左上
-    ];
-
-    pub fn new(grid: &[Vec<char>], ng_char: char, dirs: &[(isize, isize)]) -> Self {
-        assert!(grid.len() > 0);
-        let grid = grid.into_iter().cloned().collect::<Vec<_>>();
-        let h = grid.len();
-        let w = grid[0].len();
-        let dirs = dirs.into_iter().copied().collect::<Vec<_>>();
-        Self {
-            grid,
-            h,
-            w,
-            ng_char,
-            dirs,
-        }
-    }
-
-    pub fn to_graph(&self) -> (UnweightedGraph, VertexTable) {
-        let mut edges = Vec::new();
-        let mut vertex_table = std::collections::HashMap::new();
-        let mut v = 0;
-        for i in 0..self.h {
-            for j in 0..self.w {
-                if self.grid[i][j] == self.ng_char {
-                    continue;
-                }
-                let from = self.gen_vertex_if_needed((i, j), &mut vertex_table, &mut v);
-                for &(di, dj) in &self.dirs {
-                    let new_i = i as isize + di;
-                    let new_j = j as isize + dj;
-                    if new_i < 0
-                        || new_i >= self.h as isize
-                        || new_j < 0
-                        || new_j >= self.w as isize
-                    {
-                        continue;
-                    }
-                    let new_i = new_i as usize;
-                    let new_j = new_j as usize;
-                    if self.grid[new_i][new_j] == self.ng_char {
-                        continue;
-                    }
-                    let to = self.gen_vertex_if_needed((new_i, new_j), &mut vertex_table, &mut v);
-                    edges.push((from, to));
-                }
-            }
-        }
-        let graph = UnweightedGraph::new_directed(&edges, vertex_table.len());
-        (graph, vertex_table)
-    }
-
-    fn gen_vertex_if_needed(
-        &self,
-        pos: (usize, usize),
-        vertex_table: &mut VertexTable,
-        cur_v: &mut usize,
-    ) -> usize {
-        if let Some(&v) = vertex_table.get(&pos) {
-            return v;
-        } else {
-            let v = *cur_v;
-            vertex_table.insert(pos, *cur_v);
-            *cur_v += 1;
-            return v;
-        };
-    }
-}
-
 #[derive(Clone)]
 pub struct WeightedGraph {
     graph: Vec<Vec<(usize, i64)>>,
@@ -314,6 +220,100 @@ impl WeightedGraph {
     }
 }
 
+pub struct Grid {
+    grid: Vec<Vec<char>>,
+    h: usize,
+    w: usize,
+    ng_char: char,
+    dirs: Vec<(isize, isize)>,
+}
+
+pub type VertexTable = std::collections::HashMap<(usize, usize), usize>;
+impl Grid {
+    // 上下左右 (i, j)
+    #[allow(dead_code)]
+    const UDLR_DIRS: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
+
+    // 上下左右 + 斜め (i, j)
+    #[allow(dead_code)]
+    const ALL_DIRS: [(isize, isize); 8] = [
+        // 時計回り
+        (-1, 0),  // 上
+        (-1, 1),  // 右上
+        (0, 1),   // 右
+        (1, 1),   // 右下
+        (1, 0),   // 下
+        (1, -1),  // 左下
+        (0, -1),  // 左
+        (-1, -1), // 左上
+    ];
+
+    pub fn new(grid: &[Vec<char>], ng_char: char, dirs: &[(isize, isize)]) -> Self {
+        assert!(grid.len() > 0);
+        let grid = grid.into_iter().cloned().collect::<Vec<_>>();
+        let h = grid.len();
+        let w = grid[0].len();
+        let dirs = dirs.into_iter().copied().collect::<Vec<_>>();
+        Self {
+            grid,
+            h,
+            w,
+            ng_char,
+            dirs,
+        }
+    }
+
+    pub fn to_graph(&self) -> (UnweightedGraph, VertexTable) {
+        let mut edges = Vec::new();
+        let mut vertex_table = std::collections::HashMap::new();
+        let mut v = 0;
+        for i in 0..self.h {
+            for j in 0..self.w {
+                if self.grid[i][j] == self.ng_char {
+                    continue;
+                }
+                let from = self.gen_vertex_if_needed((i, j), &mut vertex_table, &mut v);
+                for &(di, dj) in &self.dirs {
+                    let new_i = i as isize + di;
+                    let new_j = j as isize + dj;
+                    if new_i < 0
+                        || new_i >= self.h as isize
+                        || new_j < 0
+                        || new_j >= self.w as isize
+                    {
+                        continue;
+                    }
+                    let new_i = new_i as usize;
+                    let new_j = new_j as usize;
+                    if self.grid[new_i][new_j] == self.ng_char {
+                        continue;
+                    }
+                    let to = self.gen_vertex_if_needed((new_i, new_j), &mut vertex_table, &mut v);
+                    edges.push((from, to));
+                }
+            }
+        }
+        let graph = UnweightedGraph::new_directed(&edges, vertex_table.len());
+        (graph, vertex_table)
+    }
+
+    fn gen_vertex_if_needed(
+        &self,
+        pos: (usize, usize),
+        vertex_table: &mut VertexTable,
+        cur_v: &mut usize,
+    ) -> usize {
+        if let Some(&v) = vertex_table.get(&pos) {
+            return v;
+        } else {
+            let v = *cur_v;
+            vertex_table.insert(pos, *cur_v);
+            *cur_v += 1;
+            return v;
+        };
+    }
+}
+
 #[cfg(test)]
 mod tests {
     mod unweighted_graph {
@@ -332,62 +332,6 @@ mod tests {
             assert_eq!(res[4], Some(2));
             assert_eq!(res[5], Some(3));
             assert_eq!(res[6], None);
-        }
-    }
-
-    mod grid {
-        use super::super::{Grid, VertexTable};
-
-        #[test]
-        fn to_graph_udlr_dirs() {
-            let grid = vec!["...#.", ".#.#.", ".#..."]
-                .into_iter()
-                .map(|s| s.chars().collect::<Vec<char>>())
-                .collect::<Vec<_>>();
-            let grid = Grid::new(&grid, '#', &Grid::UDLR_DIRS);
-            let (graph, v_table) = grid.to_graph();
-            let s = *v_table.get(&(0, 0)).unwrap();
-            let d = graph.shortest_path(s);
-            assert_eq!(d[pos_to_v(&v_table, (0, 0))], Some(0));
-            assert_eq!(d[pos_to_v(&v_table, (0, 1))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (0, 2))], Some(2));
-            assert_eq!(d[pos_to_v(&v_table, (0, 4))], Some(8));
-            assert_eq!(d[pos_to_v(&v_table, (1, 0))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (1, 2))], Some(3));
-            assert_eq!(d[pos_to_v(&v_table, (1, 4))], Some(7));
-            assert_eq!(d[pos_to_v(&v_table, (2, 0))], Some(2));
-            assert_eq!(d[pos_to_v(&v_table, (2, 2))], Some(4));
-            assert_eq!(d[pos_to_v(&v_table, (2, 3))], Some(5));
-            assert_eq!(d[pos_to_v(&v_table, (2, 4))], Some(6));
-        }
-
-        #[test]
-        fn to_graph_all_dirs() {
-            let grid = vec![".....", ".#.#.", "....."]
-                .into_iter()
-                .map(|s| s.chars().collect::<Vec<char>>())
-                .collect::<Vec<_>>();
-            let grid = Grid::new(&grid, '#', &Grid::ALL_DIRS);
-            let (graph, v_table) = grid.to_graph();
-            let s = *v_table.get(&(1, 2)).unwrap();
-            let d = graph.shortest_path(s);
-            assert_eq!(d[pos_to_v(&v_table, (0, 0))], Some(2));
-            assert_eq!(d[pos_to_v(&v_table, (0, 1))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (0, 2))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (0, 3))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (0, 4))], Some(2));
-            assert_eq!(d[pos_to_v(&v_table, (1, 0))], Some(2));
-            assert_eq!(d[pos_to_v(&v_table, (1, 2))], Some(0));
-            assert_eq!(d[pos_to_v(&v_table, (1, 4))], Some(2));
-            assert_eq!(d[pos_to_v(&v_table, (2, 0))], Some(2));
-            assert_eq!(d[pos_to_v(&v_table, (2, 1))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (2, 2))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (2, 3))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (2, 4))], Some(2));
-        }
-
-        fn pos_to_v(table: &VertexTable, pos: (usize, usize)) -> usize {
-            *table.get(&pos).unwrap()
         }
     }
 
@@ -543,4 +487,61 @@ mod tests {
             assert_eq!(res[5][5], Some(0));
         }
     }
+
+    mod grid {
+        use super::super::{Grid, VertexTable};
+
+        #[test]
+        fn to_graph_udlr_dirs() {
+            let grid = vec!["...#.", ".#.#.", ".#..."]
+                .into_iter()
+                .map(|s| s.chars().collect::<Vec<char>>())
+                .collect::<Vec<_>>();
+            let grid = Grid::new(&grid, '#', &Grid::UDLR_DIRS);
+            let (graph, v_table) = grid.to_graph();
+            let s = *v_table.get(&(0, 0)).unwrap();
+            let d = graph.shortest_path(s);
+            assert_eq!(d[pos_to_v(&v_table, (0, 0))], Some(0));
+            assert_eq!(d[pos_to_v(&v_table, (0, 1))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (0, 2))], Some(2));
+            assert_eq!(d[pos_to_v(&v_table, (0, 4))], Some(8));
+            assert_eq!(d[pos_to_v(&v_table, (1, 0))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (1, 2))], Some(3));
+            assert_eq!(d[pos_to_v(&v_table, (1, 4))], Some(7));
+            assert_eq!(d[pos_to_v(&v_table, (2, 0))], Some(2));
+            assert_eq!(d[pos_to_v(&v_table, (2, 2))], Some(4));
+            assert_eq!(d[pos_to_v(&v_table, (2, 3))], Some(5));
+            assert_eq!(d[pos_to_v(&v_table, (2, 4))], Some(6));
+        }
+
+        #[test]
+        fn to_graph_all_dirs() {
+            let grid = vec![".....", ".#.#.", "....."]
+                .into_iter()
+                .map(|s| s.chars().collect::<Vec<char>>())
+                .collect::<Vec<_>>();
+            let grid = Grid::new(&grid, '#', &Grid::ALL_DIRS);
+            let (graph, v_table) = grid.to_graph();
+            let s = *v_table.get(&(1, 2)).unwrap();
+            let d = graph.shortest_path(s);
+            assert_eq!(d[pos_to_v(&v_table, (0, 0))], Some(2));
+            assert_eq!(d[pos_to_v(&v_table, (0, 1))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (0, 2))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (0, 3))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (0, 4))], Some(2));
+            assert_eq!(d[pos_to_v(&v_table, (1, 0))], Some(2));
+            assert_eq!(d[pos_to_v(&v_table, (1, 2))], Some(0));
+            assert_eq!(d[pos_to_v(&v_table, (1, 4))], Some(2));
+            assert_eq!(d[pos_to_v(&v_table, (2, 0))], Some(2));
+            assert_eq!(d[pos_to_v(&v_table, (2, 1))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (2, 2))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (2, 3))], Some(1));
+            assert_eq!(d[pos_to_v(&v_table, (2, 4))], Some(2));
+        }
+
+        fn pos_to_v(table: &VertexTable, pos: (usize, usize)) -> usize {
+            *table.get(&pos).unwrap()
+        }
+    }
+
 }
