@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        l: f64
     };
+
+    let x = l / 3_f64;
+    let res = x * x * x;
+    println!("{}", res);
 }
 
 fn main() {
