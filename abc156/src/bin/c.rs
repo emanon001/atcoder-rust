@@ -10,7 +10,21 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        xv: [isize; n]
     };
+
+    let mut res = std::isize::MAX;
+    for p in 1_isize..=100 {
+        let mut sum = 0;
+        for &x in &xv {
+            sum += (x - p).pow(2);
+        }
+        if sum < res {
+            res = sum;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
