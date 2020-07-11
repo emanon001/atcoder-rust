@@ -1,20 +1,26 @@
+#[allow(unused_imports)]
+use itertools::Itertools;
+#[allow(unused_imports)]
+use num::*;
 use proconio::input;
+#[allow(unused_imports)]
+use proconio::marker::*;
+#[allow(unused_imports)]
+use std::collections::*;
+
+fn solve() {
+    input! {
+    };
+}
 
 fn main() {
-  input! {
-    s: String
-  };
-
-  let n = s.len() as usize;
-  let a = &s[0..((n - 1) / 2)];
-  let b = &s[((n + 3) / 2 - 1)..n];
-  let res = if s == s.chars().rev().collect::<String>()
-    && a == a.chars().rev().collect::<String>()
-    && b == b.chars().rev().collect::<String>()
-  {
-    "Yes"
-  } else {
-    "No"
-  };
-  println!("{}", res);
+    std::thread::Builder::new()
+        .name("big stack size".into())
+        .stack_size(256 * 1024 * 1024)
+        .spawn(|| {
+            solve();
+        })
+        .unwrap()
+        .join()
+        .unwrap();
 }
