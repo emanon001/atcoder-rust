@@ -9,6 +9,13 @@ use proconio::marker::*;
 use std::collections::*;
 
 fn main() {
-  input! {
-  };
+    input! {
+        a: u64, b: u64, n: u64
+    };
+
+    if n < b {
+        println!("{}", (a * n / b) - (a * (n / b)));
+    } else {
+        println!("{}", (a * (b - 1) / b) - (a * ((b - 1) / b)));
+    }
 }
