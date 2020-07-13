@@ -1,89 +1,26 @@
 use proconio::input;
 use proconio::marker::Usize1;
 
-pub struct Bit {
-  n: usize,
-  data: Vec<i64>,
-}
-
-// [0, n)
-impl Bit {
-  pub fn new(n: usize) -> Self {
-    Self {
-      n,
-      data: vec![0; n + 1],
-    }
-  }
-
-  // 0-origin
-  pub fn add(&mut self, i: usize, x: i64) {
-    if i >= self.n {
-      panic!();
-    }
-    let mut i = i + 1;
-    while i <= self.n {
-      self.data[i] += x;
-      i += ((i as isize) & -(i as isize)) as usize;
-    }
-  }
-
-  // [0, i)
-  pub fn sum(&self, i: usize) -> i64 {
-    if i > self.n {
-      panic!();
-    }
-    let mut i = i;
-    let mut res = 0;
-    while i > 0 {
-      res += self.data[i];
-      i -= ((i as isize) & -(i as isize)) as usize;
-    }
-    res
-  }
-}
-
-enum Event {
-  // l, r
-  Edge(usize, usize),
-  // i, l, r
-  Query(usize, usize, usize),
-}
-
 fn main() {
-  input! {
-    n: usize, m: usize, q: usize,
-    lrv: [(Usize1, Usize1); m],
-    prv: [(Usize1, Usize1); q]
-  };
+    input! {
+      n: usize, m: usize, q: usize,
+      lrv: [(Usize1, Usize1); m],
+      pqv: [(Usize1, Usize1); q]
+    };
 
-  let mut events = lrv
-    .into_iter()
-    .map(|(l, r)| Event::Edge(l, r))
-    .chain(
-      prv
-        .into_iter()
-        .enumerate()
-        .map(|(i, (l, r))| Event::Query(i, l, r)),
-    )
-    .collect::<Vec<_>>();
-  events.sort_by_key(|e| match e {
-    Event::Edge(_, r) => (*r, 1),
-    Event::Query(_, _, r) => (*r, 2),
-  });
-  let mut bit = Bit::new(n);
-  let mut res = vec![0; q];
-  for e in events {
-    match e {
-      Event::Edge(l, _) => {
-        bit.add(l, 1);
-      }
-      Event::Query(i, l, r) => {
-        let c = bit.sum(r + 1) - bit.sum(l);
-        res[i] = c;
-      }
+    let mut cv = vec![vec![0; n]; n];
+    for (l, r) in lrv {
+        cv[l][r] += 1;
     }
-  }
-  for x in res {
-    println!("{}", x);
-  }
+    let mut cucusum = vec![vec![0; n + 1]; n + 1];
+    for l in 0..n {
+        for r in 0..n {
+            cucusum[l + 1][r + 1] =
+                cucusum[l + 1][r] + cucusum[l][r + 1] - cucusum[l][r] + cv[l][r];
+        }
+    }
+    for (p, q) in pqv {
+        let res = cucusum[q + 1][q + 1] - cucusum[q + 1][p] - cucusum[p][q + 1] + cucusum[p][p];
+        println!("{}", res);
+    }
 }
