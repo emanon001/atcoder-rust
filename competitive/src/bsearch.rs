@@ -1,3 +1,6 @@
+use cargo_snippet::snippet;
+
+#[snippet]
 pub fn bsearch<F>(ok: i64, ng: i64, pred: F) -> Option<i64>
 where
     F: Fn(i64) -> bool,

@@ -1,11 +1,15 @@
 use crate::segment_tree::{Monoid, SegmentTree};
+use cargo_snippet::snippet;
 
+#[snippet("lca")]
+#[snippet(include = "segment_tree")]
 #[derive(Debug, Copy, Clone)]
 pub struct LcaDepth {
     depth: usize,
     idx: usize,
 }
 
+#[snippet("lca")]
 impl Monoid for LcaDepth {
     fn empty() -> Self {
         Self {
@@ -23,6 +27,7 @@ impl Monoid for LcaDepth {
     }
 }
 
+#[snippet("lca")]
 pub struct Lca {
     vs: Vec<usize>,
     vdepth: Vec<usize>,
@@ -31,6 +36,7 @@ pub struct Lca {
     st: SegmentTree<LcaDepth>,
 }
 
+#[snippet("lca")]
 impl Lca {
     pub fn new(edges: &[(usize, usize)], vn: usize, root: usize) -> Self {
         let mut graph = vec![Vec::new(); vn];

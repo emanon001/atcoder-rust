@@ -1,9 +1,13 @@
+use cargo_snippet::snippet;
+
+#[snippet("bit")]
 pub struct Bit {
     n: usize,
     data: Vec<i64>,
 }
 
 // [0, n)
+#[snippet("bit")]
 impl Bit {
     pub fn new(n: usize) -> Self {
         Self {

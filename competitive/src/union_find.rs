@@ -1,3 +1,6 @@
+use cargo_snippet::snippet;
+
+#[snippet("union_find")]
 pub struct UnionFind {
     n: usize,
     root: Vec<usize>,
@@ -5,6 +8,7 @@ pub struct UnionFind {
     size: Vec<usize>,
 }
 
+#[snippet("union_find")]
 impl UnionFind {
     pub fn new(n: usize) -> Self {
         let root = (0..n).collect();

@@ -1,6 +1,10 @@
+use cargo_snippet::snippet;
+
+#[snippet("mod_int")]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct ModInt(u32);
 
+#[snippet("mod_int")]
 impl ModInt {
     pub const MOD: u32 = 1_000_000_007;
 
@@ -40,84 +44,98 @@ impl ModInt {
     }
 }
 
+#[snippet("mod_int")]
 impl From<i32> for ModInt {
     fn from(n: i32) -> Self {
         ModInt::from(n as i64)
     }
 }
 
+#[snippet("mod_int")]
 impl From<i64> for ModInt {
     fn from(n: i64) -> Self {
         Self::new(n)
     }
 }
 
+#[snippet("mod_int")]
 impl From<isize> for ModInt {
     fn from(n: isize) -> Self {
         ModInt::from(n as i64)
     }
 }
 
+#[snippet("mod_int")]
 impl From<u32> for ModInt {
     fn from(n: u32) -> Self {
         ModInt::from(n as u64)
     }
 }
 
+#[snippet("mod_int")]
 impl From<u64> for ModInt {
     fn from(n: u64) -> Self {
         Self::new(n as i64)
     }
 }
 
+#[snippet("mod_int")]
 impl From<usize> for ModInt {
     fn from(n: usize) -> Self {
         ModInt::from(n as u64)
     }
 }
 
+#[snippet("mod_int")]
 impl Into<i32> for ModInt {
     fn into(self) -> i32 {
         self.0 as i32
     }
 }
 
+#[snippet("mod_int")]
 impl Into<i64> for ModInt {
     fn into(self) -> i64 {
         self.0 as i64
     }
 }
 
+#[snippet("mod_int")]
 impl Into<isize> for ModInt {
     fn into(self) -> isize {
         self.0 as isize
     }
 }
 
+#[snippet("mod_int")]
 impl Into<u32> for ModInt {
     fn into(self) -> u32 {
         self.0
     }
 }
 
+#[snippet("mod_int")]
 impl Into<u64> for ModInt {
     fn into(self) -> u64 {
         self.0 as u64
     }
 }
 
+#[snippet("mod_int")]
 impl Into<usize> for ModInt {
     fn into(self) -> usize {
         self.0 as usize
     }
 }
 
+#[snippet("mod_int")]
 impl std::fmt::Display for ModInt {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
+#[snippet("mod_int")]
 impl std::ops::Add for ModInt {
     type Output = Self;
 
@@ -126,12 +144,14 @@ impl std::ops::Add for ModInt {
     }
 }
 
+#[snippet("mod_int")]
 impl std::ops::AddAssign for ModInt {
     fn add_assign(&mut self, rhs: Self) {
         *self = *self + rhs;
     }
 }
 
+#[snippet("mod_int")]
 impl std::ops::Div for ModInt {
     type Output = Self;
 
@@ -140,12 +160,14 @@ impl std::ops::Div for ModInt {
     }
 }
 
+#[snippet("mod_int")]
 impl std::ops::DivAssign for ModInt {
     fn div_assign(&mut self, rhs: Self) {
         *self = *self / rhs;
     }
 }
 
+#[snippet("mod_int")]
 impl std::ops::Mul for ModInt {
     type Output = Self;
 
@@ -154,12 +176,14 @@ impl std::ops::Mul for ModInt {
     }
 }
 
+#[snippet("mod_int")]
 impl std::ops::MulAssign for ModInt {
     fn mul_assign(&mut self, rhs: Self) {
         *self = *self * rhs;
     }
 }
 
+#[snippet("mod_int")]
 impl std::ops::Sub for ModInt {
     type Output = Self;
 
@@ -168,6 +192,7 @@ impl std::ops::Sub for ModInt {
     }
 }
 
+#[snippet("mod_int")]
 impl std::ops::SubAssign for ModInt {
     fn sub_assign(&mut self, rhs: Self) {
         *self = *self - rhs;

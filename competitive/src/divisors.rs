@@ -1,3 +1,6 @@
+use cargo_snippet::snippet;
+
+#[snippet("divisors")]
 pub fn divisors(n: u64) -> Vec<u64> {
     let mut res = Vec::new();
     let mut x = 1;

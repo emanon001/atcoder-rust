@@ -1,3 +1,6 @@
+use cargo_snippet::snippet;
+
+#[snippet]
 pub fn is_prime(n: u64) -> bool {
     if n < 2 {
         return false;
@@ -12,6 +15,7 @@ pub fn is_prime(n: u64) -> bool {
     true
 }
 
+#[snippet]
 pub fn prime_factor(n: u64) -> std::collections::HashMap<u64, u64> {
     if n < 2 {
         return std::collections::HashMap::new();
@@ -33,6 +37,7 @@ pub fn prime_factor(n: u64) -> std::collections::HashMap<u64, u64> {
     res
 }
 
+#[snippet]
 pub fn primes(n: usize) -> Vec<usize> {
     if n < 2 {
         return Vec::new();

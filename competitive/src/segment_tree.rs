@@ -1,8 +1,12 @@
+use cargo_snippet::snippet;
+
+#[snippet("segment_tree")]
 pub trait Monoid {
     fn empty() -> Self;
     fn append(&self, other: &Self) -> Self;
 }
 
+#[snippet("segment_tree")]
 pub struct SegmentTree<T>
 where
     T: Monoid + Clone,
@@ -11,6 +15,7 @@ where
     data: Vec<T>,
 }
 
+#[snippet("segment_tree")]
 impl<T> SegmentTree<T>
 where
     T: Monoid + Clone,

@@ -1,3 +1,6 @@
+use cargo_snippet::snippet;
+
+#[snippet]
 pub fn zalgo(s: &[char]) -> Vec<usize> {
     if s.len() == 0 {
         return Vec::new();

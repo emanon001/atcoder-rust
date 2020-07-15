@@ -1,11 +1,15 @@
 use crate::mod_int::ModInt;
+use cargo_snippet::snippet;
 
+#[snippet("mod_comb")]
+#[snippet(include = "mod_int")]
 pub struct ModComb {
     max: usize,
     fac: Vec<ModInt>,
     finv: Vec<ModInt>,
 }
 
+#[snippet("mod_comb")]
 impl ModComb {
     pub fn new(max: usize) -> Self {
         let mut fac = vec![ModInt::zero(); max + 1];

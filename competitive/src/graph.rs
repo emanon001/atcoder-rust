@@ -1,9 +1,15 @@
+use cargo_snippet::snippet;
+
+#[snippet("graph")]
 #[derive(Clone)]
 pub struct UnweightedGraph {
     graph: WeightedGraph,
 }
 
+#[snippet("graph")]
 pub type UnweightedEdge = (usize, usize);
+
+#[snippet("graph")]
 impl UnweightedGraph {
     pub fn new(edges: &[UnweightedEdge], vn: usize) -> Self {
         let edges = Self::to_weighted_edges(&edges);
@@ -55,13 +61,17 @@ impl UnweightedGraph {
     }
 }
 
+#[snippet("graph")]
 #[derive(Clone)]
 pub struct WeightedGraph {
     graph: Vec<Vec<(usize, i64)>>,
     vn: usize,
 }
 
+#[snippet("graph")]
 pub type WeightedEdge = (usize, usize, i64);
+
+#[snippet("graph")]
 impl WeightedGraph {
     const INF: i64 = 1 << 60;
 
@@ -219,6 +229,8 @@ impl WeightedGraph {
     }
 }
 
+#[snippet("grid")]
+#[snippet(include = "graph")]
 pub struct Grid {
     grid: Vec<Vec<char>>,
     h: usize,
@@ -227,7 +239,10 @@ pub struct Grid {
     dirs: Vec<(isize, isize)>,
 }
 
+#[snippet("grid")]
 pub type VertexTable = std::collections::HashMap<(usize, usize), usize>;
+
+#[snippet("grid")]
 impl Grid {
     // 上下左右 (i, j)
     #[allow(dead_code)]

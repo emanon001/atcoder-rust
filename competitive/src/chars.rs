@@ -1,27 +1,35 @@
+use cargo_snippet::snippet;
+
+#[snippet("ascii_chars")]
 pub fn make_ascii_lowercase_chars() -> Vec<char> {
     let base = 0x61;
     make_chars(base..base + 26)
 }
 
+#[snippet("ascii_chars")]
 pub fn make_ascii_uppercase_chars() -> Vec<char> {
     let base = 0x41;
     make_chars(base..base + 26)
 }
 
+#[snippet("ascii_chars")]
 fn make_chars(range: std::ops::Range<u8>) -> Vec<char> {
     range.into_iter().map(char::from).collect::<Vec<_>>()
 }
 
+#[snippet("ascii_chars")]
 pub fn rotate_ascii_lowercase_char(ch: char, n: isize) -> char {
     assert!(ch.is_ascii_lowercase());
     rotate_char(ch, n, 0x61, 26)
 }
 
+#[snippet("ascii_chars")]
 pub fn rotate_ascii_uppercase_char(ch: char, n: isize) -> char {
     assert!(ch.is_ascii_uppercase());
     rotate_char(ch, n, 0x41, 26)
 }
 
+#[snippet("ascii_chars")]
 fn rotate_char(ch: char, n: isize, base: u8, m: u8) -> char {
     let m = m as isize;
     let ch_pos = ch as u8 - base;
