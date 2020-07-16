@@ -1,0 +1,7 @@
+#!/bin/bash -eu
+
+cd "$(dirname $0)"
+cd ..
+
+mkdir -p "${1}/.vscode"
+cp ./competitive/competitive.code-snippets "${1}/.vscode"
