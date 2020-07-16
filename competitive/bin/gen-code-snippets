@@ -1,0 +1,3 @@
+#!/bin/bash -eu
+
+cargo snippet -t vscode > competitive.code-snippets
