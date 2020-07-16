@@ -4,40 +4,38 @@ use cargo_snippet::snippet;
 #[snippet("mod_comb")]
 #[snippet(include = "mod_int")]
 pub struct ModComb {
-    max: usize,
-    fac: Vec<ModInt>,
-    finv: Vec<ModInt>,
+    n: usize,
+    fact: Vec<ModInt>,
+    ifact: Vec<ModInt>,
 }
 
 #[snippet("mod_comb")]
 impl ModComb {
-    pub fn new(max: usize) -> Self {
-        let mut fac = vec![ModInt::zero(); max + 1];
-        let mut finv = vec![ModInt::zero(); max + 1];
-        let mut inv = vec![ModInt::zero(); max + 1];
-        fac[0] = ModInt::one();
-        fac[1] = ModInt::one();
-        finv[0] = ModInt::one();
-        finv[1] = ModInt::one();
+    pub fn new(n: usize) -> Self {
+        let mut fact = vec![ModInt::zero(); n + 1];
+        let mut ifact = vec![ModInt::zero(); n + 1];
+        let mut inv = vec![ModInt::zero(); n + 1];
+        fact[0] = ModInt::one();
+        fact[1] = ModInt::one();
+        ifact[0] = ModInt::one();
+        ifact[1] = ModInt::one();
         inv[1] = ModInt::one();
         let modulo = ModInt::MOD as usize;
-        for i in 2..=max {
-            fac[i] = fac[i - 1] * ModInt::from(i);
+        for i in 2..=n {
+            fact[i] = fact[i - 1] * ModInt::from(i);
             inv[i] =
                 ModInt::from(ModInt::from(modulo) - (inv[modulo % i] * ModInt::from(modulo / i)));
-            finv[i] = finv[i - 1] * inv[i]
+            ifact[i] = ifact[i - 1] * inv[i]
         }
-        Self { max, fac, finv }
+        Self { n, fact, ifact }
     }
 
     pub fn comb(&self, n: usize, k: usize) -> ModInt {
-        if n > self.max {
-            panic!();
-        }
-        if n < k {
+        assert!(n <= self.n);
+        if k > n {
             return ModInt::zero();
         }
-        self.fac[n] * self.finv[k] * self.finv[n - k]
+        self.fact[n] * self.ifact[k] * self.ifact[n - k]
     }
 }
 
