@@ -12,20 +12,16 @@ pub struct ModComb {
 #[snippet("mod_comb")]
 impl ModComb {
     pub fn new(n: usize) -> Self {
+        assert!(n < ModInt::MOD as usize);
         let mut fact = vec![ModInt::zero(); n + 1];
         let mut ifact = vec![ModInt::zero(); n + 1];
-        let mut inv = vec![ModInt::zero(); n + 1];
         fact[0] = ModInt::one();
-        fact[1] = ModInt::one();
-        ifact[0] = ModInt::one();
-        ifact[1] = ModInt::one();
-        inv[1] = ModInt::one();
-        let modulo = ModInt::MOD as usize;
-        for i in 2..=n {
+        for i in 1..=n {
             fact[i] = fact[i - 1] * ModInt::from(i);
-            inv[i] =
-                ModInt::from(ModInt::from(modulo) - (inv[modulo % i] * ModInt::from(modulo / i)));
-            ifact[i] = ifact[i - 1] * inv[i]
+        }
+        ifact[n] = fact[n].inv();
+        for i in (1..=n).rev() {
+            ifact[i - 1] = ifact[i] * ModInt::from(i);
         }
         Self { n, fact, ifact }
     }
