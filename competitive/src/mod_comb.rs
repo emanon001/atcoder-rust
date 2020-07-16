@@ -33,6 +33,14 @@ impl ModComb {
         }
         self.fact[n] * self.ifact[k] * self.ifact[n - k]
     }
+
+    pub fn p(&self, n: usize, k: usize) -> ModInt {
+        assert!(n <= self.n);
+        if k > n {
+            return ModInt::zero();
+        }
+        self.fact[n] * self.ifact[n - k]
+    }
 }
 
 #[cfg(test)]
@@ -40,15 +48,26 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_comb() {
+    fn c() {
         let comb = ModComb::new(40);
-        assert_eq!(comb.c(0, 0), ModInt::one());
-        assert_eq!(comb.c(1, 0), ModInt::one());
-        assert_eq!(comb.c(1, 1), ModInt::one());
+        assert_eq!(comb.c(0, 0), ModInt::from(1));
+        assert_eq!(comb.c(1, 0), ModInt::from(1));
+        assert_eq!(comb.c(1, 1), ModInt::from(1));
         assert_eq!(comb.c(2, 1), ModInt::from(2));
         assert_eq!(comb.c(39, 10), ModInt::from(635_745_396));
         assert_eq!(comb.c(39, 11), ModInt::from(676_056_037));
         assert_eq!(comb.c(40, 10), ModInt::from(847_660_528));
         assert_eq!(comb.c(40, 11), ModInt::from(311_801_426));
+    }
+
+    #[test]
+    fn p() {
+        let comb = ModComb::new(15);
+        assert_eq!(comb.p(0, 0), ModInt::from(1));
+        assert_eq!(comb.p(1, 0), ModInt::from(1));
+        assert_eq!(comb.p(1, 1), ModInt::from(1));
+        assert_eq!(comb.p(2, 1), ModInt::from(2));
+        assert_eq!(comb.p(15, 8), ModInt::from(259_459_200));
+        assert_eq!(comb.p(15, 9), ModInt::from(816_214_393));
     }
 }
