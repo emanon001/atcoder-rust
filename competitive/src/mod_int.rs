@@ -36,9 +36,10 @@ impl ModInt {
     }
 
     fn new(n: i64) -> Self {
-        let mut n = n % (Self::MOD as i64);
+        let m = Self::MOD as i64;
+        let mut n = n % m;
         if n.is_negative() {
-            n += Self::MOD as i64;
+            n += m;
         }
         Self(n as u32)
     }
