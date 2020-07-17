@@ -10,7 +10,24 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [usize; n]
     };
+
+    let res = av
+        .into_iter()
+        .map(|a| {
+            let mut n = a;
+            let mut c = 0;
+            while n % 2 == 0 {
+                c += 1;
+                n /= 2;
+            }
+            c
+        })
+        .min()
+        .unwrap();
+    println!("{}", res);
 }
 
 fn main() {
