@@ -1,7 +1,18 @@
 #!/bin/bash -eu
 
+cmd_name="$(basename ${0})"
+if [ $# -ne 1 ]; then
+  echo "Usage: ${cmd_name} <contest-id>"
+  exit 0
+fi
+contest_id="${1}"
+if [ -z "${contest_id}" ]; then
+  echo "Usage: ${cmd_name} <contest-id>"
+  exit 0
+fi
+
 cd "$(dirname $0)"
 cd ..
 
-mkdir -p "${1}/.vscode"
-cp ./competitive/competitive.code-snippets "${1}/.vscode"
+mkdir -p "${contest_id}/.vscode"
+cp ./competitive/competitive.code-snippets "${contest_id}/.vscode"

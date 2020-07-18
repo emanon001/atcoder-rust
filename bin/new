@@ -1,9 +1,20 @@
 #!/bin/bash -eu
 
-cd "$(dirname $0)"
+cmd_name="$(basename ${0})"
+if [ $# -ne 1 ]; then
+  echo "Usage: ${cmd_name} <contest-id>"
+  exit 0
+fi
+contest_id="${1}"
+if [ -z "${contest_id}" ]; then
+  echo "Usage: ${cmd_name} <contest-id>"
+  exit 0
+fi
+
+cd "$(dirname ${0})"
 cd ..
 
-cargo atcoder new "${1}"
-./bin/cp-code-snippets "${1}"
-git add "${1}"
-git commit -m "cargo atcoder new ${1}"
+cargo atcoder new "${contest_id}"
+./bin/cp-code-snippets "${contest_id}"
+git add "${contest_id}"
+git commit -m "cargo atcoder new ${contest_id}"
