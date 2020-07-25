@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, k: usize,
+        av: [usize; n]
     };
+
+    for i in k..n {
+        let res = if av[i] > av[i - k] { "Yes" } else { "No" };
+        println!("{}", res);
+    }
 }
 
 fn main() {

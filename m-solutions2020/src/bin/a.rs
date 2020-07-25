@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        x: usize,
     };
+
+    let c = (x - 400) / 200;
+    let res = 8 - c;
+    println!("{}", res);
 }
 
 fn main() {
