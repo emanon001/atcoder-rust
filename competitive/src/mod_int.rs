@@ -16,7 +16,7 @@ impl ModInt {
     }
 
     pub fn one() -> Self {
-        Self(1)
+        Self::new(1)
     }
 
     pub fn pow(self, e: u32) -> Self {
@@ -32,7 +32,7 @@ impl ModInt {
     }
 
     pub fn zero() -> Self {
-        Self(0)
+        Self::new(0)
     }
 
     fn new(n: i64) -> Self {
