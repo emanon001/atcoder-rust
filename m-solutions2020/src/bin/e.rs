@@ -32,39 +32,42 @@ fn solve() {
         xypv: [(isize, isize, isize); n]
     };
 
-    let mut sum = 0;
     let lines = vec![(0, true), (0, false)];
-    for &xyp in &xypv {
-        sum += distance(&lines, xyp);
-    }
-    println!("{}", sum);
-    for i in 1..=n {
-        let mut res = std::isize::MAX;
-        for v in (0..n).combinations(i) {
-            for bits in 0..2 << i {
-                let mut lines = lines.clone();
-                for j in 0..i {
-                    if (bits >> j) & 1 == 1 {
-                        // vertical
-                        let x = xypv[v[j]].0;
-                        lines.push((x, true));
-                    } else {
-                        // horizontal
-                        let y = xypv[v[j]].1;
-                        lines.push((y, false));
-                    }
+    let mut minv = vec![std::isize::MAX; n + 1];
+    for comb in 0..3.pow(n as u32) {
+        let mut lines = lines.clone();
+        let mut comb = comb;
+        let mut add_lines = 0;
+        for i in 0..n {
+            match comb % 3 {
+                0 => {}
+                1 => {
+                    // vertical
+                    let x = xypv[i].0;
+                    lines.push((x, true));
+                    add_lines += 1;
                 }
-                // println!("{:?}", lines);
-                let mut sum = 0;
-                for &xyp in &xypv {
-                    sum += distance(&lines, xyp);
+                2 => {
+                    // horizontal
+                    let y = xypv[i].1;
+                    lines.push((y, false));
+                    add_lines += 1;
                 }
-                if sum < res {
-                    res = sum;
-                }
+                _ => unreachable!(),
             }
+            comb /= 3;
         }
-        println!("{}", res);
+        let mut sum = 0;
+        for &xyp in &xypv {
+            sum += distance(&lines, xyp);
+        }
+        if sum < minv[add_lines] {
+            minv[add_lines] = sum;
+        }
+    }
+
+    for i in 0..=n {
+        println!("{}", minv[i]);
     }
 }
 
