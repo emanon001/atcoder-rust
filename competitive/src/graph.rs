@@ -2,32 +2,32 @@ use cargo_snippet::snippet;
 
 #[snippet("graph")]
 #[derive(Clone)]
-pub struct UnweightedGraph {
+pub struct Graph {
     graph: WeightedGraph,
 }
 
 #[snippet("graph")]
-pub type UnweightedEdge = (usize, usize);
+pub type Edge = (usize, usize);
 
 #[snippet("graph")]
-impl UnweightedGraph {
-    pub fn new(edges: &[UnweightedEdge], vn: usize) -> Self {
+impl Graph {
+    pub fn new(edges: &[Edge], vn: usize) -> Self {
         let edges = Self::to_weighted_edges(&edges);
         let graph = WeightedGraph::new(&edges, vn);
-        Self { graph }
+        Graph { graph }
     }
 
-    pub fn new_directed(edges: &[UnweightedEdge], vn: usize) -> Self {
+    pub fn new_directed(edges: &[Edge], vn: usize) -> Self {
         let edges = Self::to_weighted_edges(&edges);
         let graph = WeightedGraph::new_directed(&edges, vn);
-        Self { graph }
+        Graph { graph }
     }
 
-    pub fn add_directed_edge(&mut self, e: UnweightedEdge) {
+    pub fn add_directed_edge(&mut self, e: Edge) {
         self.graph.add_directed_edge((e.0, e.1, 1));
     }
 
-    pub fn add_edge(&mut self, e: UnweightedEdge) {
+    pub fn add_edge(&mut self, e: Edge) {
         self.graph.add_edge((e.0, e.1, 1));
     }
 
@@ -53,7 +53,7 @@ impl UnweightedGraph {
         self.graph.clone()
     }
 
-    fn to_weighted_edges(edges: &[UnweightedEdge]) -> Vec<WeightedEdge> {
+    fn to_weighted_edges(edges: &[Edge]) -> Vec<WeightedEdge> {
         edges
             .into_iter()
             .map(|(u, v)| (*u, *v, 1))
@@ -277,7 +277,7 @@ impl Grid {
         }
     }
 
-    pub fn to_graph(&self) -> (UnweightedGraph, VertexTable) {
+    pub fn to_graph(&self) -> (Graph, VertexTable) {
         let mut edges = Vec::new();
         let mut vertex_table = std::collections::HashMap::new();
         let mut v = 0;
@@ -307,7 +307,7 @@ impl Grid {
                 }
             }
         }
-        let graph = UnweightedGraph::new_directed(&edges, vertex_table.len());
+        let graph = Graph::new_directed(&edges, vertex_table.len());
         (graph, vertex_table)
     }
 
@@ -330,14 +330,14 @@ impl Grid {
 
 #[cfg(test)]
 mod tests {
-    mod unweighted_graph {
-        use super::super::UnweightedGraph;
+    mod graph {
+        use super::super::Graph;
 
         #[test]
         fn shortest_path() {
             let edges = vec![(0, 1), (0, 2), (1, 2), (2, 3), (2, 4), (3, 4), (4, 5)];
             // 頂点6には到達しない
-            let graph = UnweightedGraph::new(&edges, 7);
+            let graph = Graph::new(&edges, 7);
             let res = graph.shortest_path(0);
             assert_eq!(res[0], Some(0));
             assert_eq!(res[1], Some(1));
