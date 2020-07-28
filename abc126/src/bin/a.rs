@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        _: usize, k: Usize1,
+        mut s: Chars
     };
+    s[k] = s[k].to_ascii_lowercase();
+    let res = s.into_iter().collect::<String>();
+    println!("{}", res);
 }
 
 fn main() {
