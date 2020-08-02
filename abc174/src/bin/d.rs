@@ -10,7 +10,27 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        cv: Chars
     };
+
+    let mut res = 0;
+    let mut l = 0;
+    let mut r = n - 1;
+    while l < r {
+        if cv[l] == 'W' {
+            if cv[r] == 'R' {
+                res += 1;
+                l += 1;
+                r -= 1;
+            } else {
+                r -= 1;
+            }
+        } else {
+            l += 1;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
