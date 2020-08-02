@@ -10,6 +10,7 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        k: usize,
     };
 }
 
