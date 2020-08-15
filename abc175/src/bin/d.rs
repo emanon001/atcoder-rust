@@ -47,11 +47,11 @@ fn solve() {
             0
         };
         let loop_score = loop_sum * loop_count as i64;
-        let rest_step = k - loop_count * step.len();
+        let rest_k = k - loop_count * step.len();
         let score = if loop_count == 0 {
             let mut max = step[0];
             let mut cur = step[0];
-            for k in 1..rest_step {
+            for k in 1..rest_k {
                 cur += step[k % step.len()];
                 if cur > max {
                     max = cur;
@@ -61,7 +61,7 @@ fn solve() {
         } else {
             let mut max = 0;
             let mut cur = 0;
-            for k in 0..rest_step {
+            for k in 0..rest_k {
                 cur += step[k % step.len()];
                 if cur > max {
                     max = cur;
