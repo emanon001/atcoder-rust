@@ -10,7 +10,30 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: isize, r: isize,
+        s: Chars
     };
+    let mut cells = Vec::new();
+    for i in (0..n).rev() {
+        if s[i as usize] == '.' {
+            cells.push(i);
+        }
+    }
+    if cells.is_empty() {
+        println!("0");
+        return;
+    }
+
+    let mut time = std::cmp::max(0, cells[0] - r + 1);
+    let mut l = n;
+    for i in cells {
+        if i >= l {
+            continue;
+        }
+        time += 1;
+        l = std::cmp::max(0, i - r + 1);
+    }
+    println!("{}", time);
 }
 
 fn main() {
