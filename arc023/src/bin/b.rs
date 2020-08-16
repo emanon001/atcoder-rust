@@ -10,7 +10,27 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        r: usize, c: usize, d: usize,
+        grid: [[usize; c]; r]
     };
+
+    let mut res = 0;
+    for i in 0..r {
+        for j in 0..c {
+            let cost = i + j;
+            if cost > d {
+                continue;
+            }
+            if d % 2 != cost % 2 {
+                continue;
+            }
+            let price = grid[i][j];
+            if price > res {
+                res = price;
+            }
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
