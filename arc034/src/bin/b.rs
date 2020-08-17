@@ -14,9 +14,7 @@ fn solve() {
     };
 
     let mut res = BTreeSet::new();
-    let len = n.to_string().len();
-    for v in (0..=9).combinations_with_replacement(len) {
-        let digit_sum = v.iter().sum::<i64>();
+    for digit_sum in 1..=(9 * 19) {
         let m = n - digit_sum;
         if m <= 0 {
             continue;
