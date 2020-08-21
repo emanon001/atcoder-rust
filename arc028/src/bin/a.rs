@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: i64, a: i64, b: i64
     };
+    let mut m = n;
+    let mut is_ant = true;
+    loop {
+        m -= if is_ant { a } else { b };
+        if m <= 0 {
+            break;
+        }
+        is_ant = !is_ant;
+    }
+    let res = if is_ant { "Ant" } else { "Bug" };
+    println!("{}", res);
 }
 
 fn main() {
