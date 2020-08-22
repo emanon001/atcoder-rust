@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, x: usize, t: usize
     };
+
+    let res = (n + x - 1) / x * t;
+    println!("{}", res);
 }
 
 fn main() {

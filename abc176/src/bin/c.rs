@@ -10,7 +10,20 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [u64; n]
     };
+
+    let mut res = 0_u64;
+    let mut prev = 0;
+    for a in av {
+        if a < prev {
+            res += prev - a;
+        } else {
+            prev = a;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {

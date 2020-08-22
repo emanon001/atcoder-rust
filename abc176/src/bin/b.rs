@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: Chars
     };
+
+    let sum = n
+        .into_iter()
+        .map(|ch| ch.to_digit(10).unwrap() as usize)
+        .sum::<usize>();
+    let res = if sum % 9 == 0 { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {
