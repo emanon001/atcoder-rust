@@ -15,13 +15,10 @@ fn solve() {
     };
 
     let mut res = 0_u64;
-    let mut prev = 0;
+    let mut max = 0;
     for a in av {
-        if a < prev {
-            res += prev - a;
-        } else {
-            prev = a;
-        }
+        max = max.max(a);
+        res += max - a;
     }
     println!("{}", res);
 }
