@@ -21,44 +21,17 @@ fn solve() {
         sum_w[j] += 1;
     }
 
-    let mut max = 0;
-    for i in 0..h {
-        if sum_h[i] >= max {
-            max = sum_h[i];
-        }
-    }
-    let mut max_h_set = HashSet::new();
-    for i in 0..h {
-        if sum_h[i] == max {
-            max_h_set.insert(i);
-        }
-    }
-
-    let mut max = 0;
-    for i in 0..w {
-        if sum_w[i] >= max {
-            max = sum_w[i];
-        }
-    }
-    let mut max_w_set = HashSet::new();
-    for i in 0..w {
-        if sum_w[i] == max {
-            max_w_set.insert(i);
-        }
-    }
-
-    let bomb_set = hwv.into_iter().collect::<HashSet<_>>();
-    let mut res = 0;
-    for &h in &max_h_set {
-        for &w in &max_w_set {
-            if !bomb_set.contains(&(h, w)) {
-                res = sum_h[h] + sum_w[w];
-                break;
-            } else {
-                res = sum_h[h] + sum_w[w] - 1;
-            }
-        }
-    }
+    let max_h = *sum_h.iter().max().unwrap();
+    let max_w = *sum_w.iter().max().unwrap();
+    let max_hc = sum_h.iter().filter(|&s| s == &max_h).count();
+    let max_wc = sum_w.iter().filter(|&s| s == &max_w).count();
+    let sum = max_h + max_w;
+    let on_bomb = hwv
+        .into_iter()
+        .filter(|&(h, w)| sum_h[h] + sum_w[w] == sum)
+        .count()
+        == max_hc * max_wc;
+    let res = if on_bomb { sum - 1 } else { sum };
     println!("{}", res);
 }
 
