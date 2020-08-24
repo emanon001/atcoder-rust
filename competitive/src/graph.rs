@@ -295,7 +295,7 @@ impl Grid {
 
     pub fn to_graph<F>(&self, generator: F) -> (WeightedGraph, VertexTable)
     where
-        F: Fn(usize, usize, &Grid) -> Vec<GridDestination>,
+        F: Fn(&Grid, usize, usize) -> Vec<GridDestination>,
     {
         let mut edges = Vec::new();
         let mut vertex_table = std::collections::HashMap::new();
@@ -306,7 +306,7 @@ impl Grid {
                     continue;
                 }
                 let from = Self::gen_vertex_if_needed((i, j), &mut vertex_table, &mut v);
-                for (pos, w) in generator(i, j, &self) {
+                for (pos, w) in generator(&self, i, j) {
                     let to = Self::gen_vertex_if_needed(pos, &mut vertex_table, &mut v);
                     edges.push((from, to, w));
                 }
@@ -381,10 +381,10 @@ pub type GridDestination = (GridPos, i64);
 
 #[snippet("grid")]
 pub fn gen_grid_destinations(
+    grid: &Grid,
     i: usize,
     j: usize,
     directions: &[(isize, isize)],
-    grid: &Grid,
 ) -> Vec<GridDestination> {
     let mut dest = Vec::new();
     for &(di, dj) in directions {
@@ -609,7 +609,7 @@ mod tests {
                 .collect::<Vec<_>>();
             let grid = Grid::new(&grid, '#');
             let (graph, v_table) =
-                grid.to_graph(|i, j, grid| gen_grid_destinations(i, j, &UDLR_DIRS, grid));
+                grid.to_graph(|grid, i, j| gen_grid_destinations(grid, i, j, &UDLR_DIRS));
             let s = *v_table.get(&(0, 0)).unwrap();
             let d = graph.shortest_path(s);
             assert_eq!(d[pos_to_v(&v_table, (0, 0))], Some(0));
@@ -633,7 +633,7 @@ mod tests {
                 .collect::<Vec<_>>();
             let grid = Grid::new(&grid, '#');
             let (graph, v_table) =
-                grid.to_graph(|i, j, grid| gen_grid_destinations(i, j, &ALL_DIRS, grid));
+                grid.to_graph(|grid, i, j| gen_grid_destinations(grid, i, j, &ALL_DIRS));
             let s = *v_table.get(&(1, 2)).unwrap();
             let d = graph.shortest_path(s);
             assert_eq!(d[pos_to_v(&v_table, (0, 0))], Some(2));
