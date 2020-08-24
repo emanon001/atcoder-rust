@@ -1,5 +1,7 @@
 use cargo_snippet::snippet;
 
+// graph
+
 #[snippet("graph")]
 #[derive(Clone)]
 pub struct Graph {
@@ -265,6 +267,8 @@ impl WeightedGraph {
     }
 }
 
+// grid
+
 #[snippet("grid")]
 #[snippet(include = "graph")]
 pub struct Grid {
@@ -322,7 +326,7 @@ impl Grid {
                 if self.grid[i][j] == self.ng_char {
                     continue;
                 }
-                let from = self.gen_vertex_if_needed((i, j), &mut vertex_table, &mut v);
+                let from = Self::gen_vertex_if_needed((i, j), &mut vertex_table, &mut v);
                 for &(di, dj) in &self.dirs {
                     let new_i = i as isize + di;
                     let new_j = j as isize + dj;
@@ -338,7 +342,7 @@ impl Grid {
                     if self.grid[new_i][new_j] == self.ng_char {
                         continue;
                     }
-                    let to = self.gen_vertex_if_needed((new_i, new_j), &mut vertex_table, &mut v);
+                    let to = Self::gen_vertex_if_needed((new_i, new_j), &mut vertex_table, &mut v);
                     edges.push((from, to, 1));
                 }
             }
@@ -348,7 +352,6 @@ impl Grid {
     }
 
     fn gen_vertex_if_needed(
-        &self,
         pos: (usize, usize),
         vertex_table: &mut VertexTable,
         cur_v: &mut usize,
