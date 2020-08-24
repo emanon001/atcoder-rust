@@ -316,6 +316,14 @@ impl Grid {
         (graph, vertex_table)
     }
 
+    pub fn height(&self) -> usize {
+        self.h
+    }
+
+    pub fn width(&self) -> usize {
+        self.w
+    }
+
     pub fn in_grid(&self, i: isize, j: isize) -> bool {
         i >= 0 && i < self.h as isize && j >= 0 && j < self.w as isize
     }
@@ -641,6 +649,56 @@ mod tests {
             assert_eq!(d[pos_to_v(&v_table, (2, 2))], Some(1));
             assert_eq!(d[pos_to_v(&v_table, (2, 3))], Some(1));
             assert_eq!(d[pos_to_v(&v_table, (2, 4))], Some(2));
+        }
+
+        #[test]
+        fn height() {
+            let grid = vec![".....", ".#.#.", "....."]
+                .into_iter()
+                .map(|s| s.chars().collect::<Vec<char>>())
+                .collect::<Vec<_>>();
+            let grid = Grid::new(&grid, '#');
+            assert_eq!(grid.height(), 3);
+        }
+
+        #[test]
+        fn width() {
+            let grid = vec![".....", ".#.#.", "....."]
+                .into_iter()
+                .map(|s| s.chars().collect::<Vec<char>>())
+                .collect::<Vec<_>>();
+            let grid = Grid::new(&grid, '#');
+            assert_eq!(grid.width(), 5);
+        }
+
+        #[test]
+        fn in_grid() {
+            let grid = vec!["...", "..."]
+                .into_iter()
+                .map(|s| s.chars().collect::<Vec<char>>())
+                .collect::<Vec<_>>();
+            let grid = Grid::new(&grid, '#');
+            assert_eq!(grid.in_grid(-1, 0), false);
+            assert_eq!(grid.in_grid(0, -1), false);
+            assert_eq!(grid.in_grid(0, 0), true);
+            assert_eq!(grid.in_grid(0, 1), true);
+            assert_eq!(grid.in_grid(0, 2), true);
+            assert_eq!(grid.in_grid(0, 3), false);
+            assert_eq!(grid.in_grid(1, 0), true);
+            assert_eq!(grid.in_grid(1, 1), true);
+            assert_eq!(grid.in_grid(1, 2), true);
+            assert_eq!(grid.in_grid(1, 3), false);
+            assert_eq!(grid.in_grid(2, 0), false);
+        }
+
+        #[test]
+        fn ng_char() {
+            let grid = vec!["...", "..."]
+                .into_iter()
+                .map(|s| s.chars().collect::<Vec<char>>())
+                .collect::<Vec<_>>();
+            let grid = Grid::new(&grid, '#');
+            assert_eq!(grid.ng_char(), '#');
         }
 
         fn pos_to_v(table: &VertexTable, pos: (usize, usize)) -> usize {
