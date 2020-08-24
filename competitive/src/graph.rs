@@ -276,48 +276,27 @@ pub struct Grid {
     h: usize,
     w: usize,
     ng_char: char,
-    dirs: Vec<(isize, isize)>,
 }
 
 #[snippet("grid")]
-pub type VertexTable = std::collections::HashMap<(usize, usize), usize>;
-
-#[snippet("grid")]
 impl Grid {
-    // 上下左右 (i, j)
-    #[allow(dead_code)]
-    const UDLR_DIRS: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
-
-    // 上下左右 + 斜め (i, j)
-    #[allow(dead_code)]
-    const ALL_DIRS: [(isize, isize); 8] = [
-        // 時計回り
-        (-1, 0),  // 上
-        (-1, 1),  // 右上
-        (0, 1),   // 右
-        (1, 1),   // 右下
-        (1, 0),   // 下
-        (1, -1),  // 左下
-        (0, -1),  // 左
-        (-1, -1), // 左上
-    ];
-
-    pub fn new(grid: &[Vec<char>], ng_char: char, dirs: &[(isize, isize)]) -> Self {
+    pub fn new(grid: &[Vec<char>], ng_char: char) -> Self {
         assert!(grid.len() > 0);
         let grid = grid.into_iter().cloned().collect::<Vec<_>>();
         let h = grid.len();
         let w = grid[0].len();
-        let dirs = dirs.into_iter().copied().collect::<Vec<_>>();
         Self {
             grid,
             h,
             w,
             ng_char,
-            dirs,
         }
     }
 
-    pub fn to_graph(&self) -> (WeightedGraph, VertexTable) {
+    pub fn to_graph<F>(&self, generator: F) -> (WeightedGraph, VertexTable)
+    where
+        F: Fn(usize, usize, &Grid) -> Vec<GridDestination>,
+    {
         let mut edges = Vec::new();
         let mut vertex_table = std::collections::HashMap::new();
         let mut v = 0;
@@ -327,28 +306,26 @@ impl Grid {
                     continue;
                 }
                 let from = Self::gen_vertex_if_needed((i, j), &mut vertex_table, &mut v);
-                for &(di, dj) in &self.dirs {
-                    let new_i = i as isize + di;
-                    let new_j = j as isize + dj;
-                    if new_i < 0
-                        || new_i >= self.h as isize
-                        || new_j < 0
-                        || new_j >= self.w as isize
-                    {
-                        continue;
-                    }
-                    let new_i = new_i as usize;
-                    let new_j = new_j as usize;
-                    if self.grid[new_i][new_j] == self.ng_char {
-                        continue;
-                    }
-                    let to = Self::gen_vertex_if_needed((new_i, new_j), &mut vertex_table, &mut v);
-                    edges.push((from, to, 1));
+                for (pos, w) in generator(i, j, &self) {
+                    let to = Self::gen_vertex_if_needed(pos, &mut vertex_table, &mut v);
+                    edges.push((from, to, w));
                 }
             }
         }
         let graph = WeightedGraph::new_directed(&edges, vertex_table.len());
         (graph, vertex_table)
+    }
+
+    pub fn in_grid(&self, i: isize, j: isize) -> bool {
+        i >= 0 && i < self.h as isize && j >= 0 && j < self.w as isize
+    }
+
+    pub fn cell(&self, i: usize, j: usize) -> char {
+        self.grid[i][j]
+    }
+
+    pub fn ng_char(&self) -> char {
+        self.ng_char
     }
 
     fn gen_vertex_if_needed(
@@ -365,6 +342,57 @@ impl Grid {
             return v;
         };
     }
+}
+
+#[snippet("grid")]
+pub type VertexTable = std::collections::HashMap<(usize, usize), usize>;
+
+/// 上下左右 (i, j)
+#[snippet("grid")]
+pub const UDLR_DIRS: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
+
+/// 上下左右 + 斜め (i, j)
+#[snippet("grid")]
+pub const ALL_DIRS: [(isize, isize); 8] = [
+    // 時計回り
+    (-1, 0),  // 上
+    (-1, 1),  // 右上
+    (0, 1),   // 右
+    (1, 1),   // 右下
+    (1, 0),   // 下
+    (1, -1),  // 左下
+    (0, -1),  // 左
+    (-1, -1), // 左上
+];
+
+#[snippet("grid")]
+pub type GridPos = (usize, usize);
+
+#[snippet("grid")]
+pub type GridDestination = (GridPos, i64);
+
+#[snippet("grid")]
+pub fn gen_grid_destinations(
+    i: usize,
+    j: usize,
+    directions: &[(isize, isize)],
+    grid: &Grid,
+) -> Vec<GridDestination> {
+    let mut dest = Vec::new();
+    for &(di, dj) in directions {
+        let new_i = i as isize + di;
+        let new_j = j as isize + dj;
+        if !grid.in_grid(new_i, new_j) {
+            continue;
+        }
+        let new_i = new_i as usize;
+        let new_j = new_j as usize;
+        if grid.cell(new_i, new_j) == grid.ng_char() {
+            continue;
+        }
+        dest.push(((new_i, new_j), 1));
+    }
+    dest
 }
 
 #[cfg(test)]
@@ -563,7 +591,7 @@ mod tests {
     }
 
     mod grid {
-        use super::super::{Grid, VertexTable};
+        use super::super::{gen_grid_destinations, Grid, VertexTable, ALL_DIRS, UDLR_DIRS};
 
         #[test]
         fn to_graph_udlr_dirs() {
@@ -571,8 +599,9 @@ mod tests {
                 .into_iter()
                 .map(|s| s.chars().collect::<Vec<char>>())
                 .collect::<Vec<_>>();
-            let grid = Grid::new(&grid, '#', &Grid::UDLR_DIRS);
-            let (graph, v_table) = grid.to_graph();
+            let grid = Grid::new(&grid, '#');
+            let (graph, v_table) =
+                grid.to_graph(|i, j, grid| gen_grid_destinations(i, j, &UDLR_DIRS, grid));
             let s = *v_table.get(&(0, 0)).unwrap();
             let d = graph.shortest_path(s);
             assert_eq!(d[pos_to_v(&v_table, (0, 0))], Some(0));
@@ -594,8 +623,9 @@ mod tests {
                 .into_iter()
                 .map(|s| s.chars().collect::<Vec<char>>())
                 .collect::<Vec<_>>();
-            let grid = Grid::new(&grid, '#', &Grid::ALL_DIRS);
-            let (graph, v_table) = grid.to_graph();
+            let grid = Grid::new(&grid, '#');
+            let (graph, v_table) =
+                grid.to_graph(|i, j, grid| gen_grid_destinations(i, j, &ALL_DIRS, grid));
             let s = *v_table.get(&(1, 2)).unwrap();
             let d = graph.shortest_path(s);
             assert_eq!(d[pos_to_v(&v_table, (0, 0))], Some(2));
