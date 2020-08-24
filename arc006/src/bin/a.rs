@@ -10,7 +10,28 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        ev: [usize; 6],
+        b: usize,
+        lv: [usize; 6]
     };
+
+    let eset = ev.into_iter().collect::<HashSet<_>>();
+    let lset = lv.into_iter().collect::<HashSet<_>>();
+    let c = eset.intersection(&lset).count();
+    let res = match c {
+        6 => 1,
+        5 => {
+            let rest = *lset.difference(&eset).next().unwrap();
+            if rest == b {
+                2
+            } else {
+                3
+            }
+        }
+        0..=2 => 0,
+        n => 7 - n + 1,
+    };
+    println!("{}", res);
 }
 
 fn main() {
