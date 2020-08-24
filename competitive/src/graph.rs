@@ -31,22 +31,8 @@ impl Graph {
         self.graph.add_edge((e.0, e.1, 1));
     }
 
-    pub fn shortest_path(&self, start: usize) -> Vec<Option<usize>> {
-        let mut cost_list = vec![None; self.graph.vn];
-        let mut que = std::collections::VecDeque::new();
-        cost_list[start] = Some(0);
-        que.push_back(start);
-        while let Some(u) = que.pop_front() {
-            for &(v, _) in &self.graph.graph[u] {
-                if cost_list[v].is_some() {
-                    continue;
-                }
-                let new_cost = cost_list[u].unwrap() + 1;
-                cost_list[v] = Some(new_cost);
-                que.push_back(v);
-            }
-        }
-        cost_list
+    pub fn shortest_path(&self, start: usize) -> Vec<Option<i64>> {
+        self.graph.shortest_path_1(start)
     }
 
     pub fn to_weighted_graph(&self) -> WeightedGraph {
@@ -194,6 +180,24 @@ impl WeightedGraph {
             }
         }
         self.optionalize(cost_list)
+    }
+
+    pub fn shortest_path_1(&self, start: usize) -> Vec<Option<i64>> {
+        let mut cost_list = vec![None; self.vn];
+        let mut que = std::collections::VecDeque::new();
+        cost_list[start] = Some(0);
+        que.push_back(start);
+        while let Some(u) = que.pop_front() {
+            for &(v, _) in &self.graph[u] {
+                if cost_list[v].is_some() {
+                    continue;
+                }
+                let new_cost = cost_list[u].unwrap() + 1;
+                cost_list[v] = Some(new_cost);
+                que.push_back(v);
+            }
+        }
+        cost_list
     }
 
     pub fn warshall_floyd(&self) -> Vec<Vec<Option<i64>>> {
