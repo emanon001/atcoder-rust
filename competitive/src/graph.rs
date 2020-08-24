@@ -200,6 +200,35 @@ impl WeightedGraph {
         cost_list
     }
 
+    pub fn shortest_path_01(&self, start: usize) -> Vec<Option<i64>> {
+        let mut cost_list = vec![Self::INF; self.vn];
+        let mut que = std::collections::VecDeque::new();
+
+        cost_list[start] = 0;
+        que.push_front((start, 0_i64));
+
+        while let Some((u, cost)) = que.pop_front() {
+            if cost > cost_list[u] {
+                continue;
+            }
+            for &(v, w) in &self.graph[u] {
+                if w != 0 && w != 1 {
+                    panic!("weight is not 01");
+                }
+                let new_cost = cost + w;
+                if new_cost < cost_list[v] {
+                    cost_list[v] = new_cost;
+                    if w == 0 {
+                        que.push_front((v, new_cost));
+                    } else {
+                        que.push_back((v, new_cost));
+                    }
+                }
+            }
+        }
+        self.optionalize(cost_list)
+    }
+
     pub fn warshall_floyd(&self) -> Vec<Vec<Option<i64>>> {
         let inf = Self::INF;
         let vn = self.vn;
@@ -446,6 +475,27 @@ mod tests {
             assert_eq!(res[2], Some(2));
             assert_eq!(res[3], Some(4));
             assert_eq!(res[4], Some(2));
+            assert_eq!(res[5], None);
+        }
+
+        #[test]
+        fn shortest_path_01() {
+            let edges = vec![
+                (0, 1, 1),
+                (0, 2, 0),
+                (1, 3, 0),
+                (1, 4, 1),
+                (2, 3, 0),
+                (3, 4, 1),
+            ];
+            // 頂点5には到達しない
+            let graph = WeightedGraph::new(&edges, 6);
+            let res = graph.shortest_path_01(0);
+            assert_eq!(res[0], Some(0));
+            assert_eq!(res[1], Some(0));
+            assert_eq!(res[2], Some(0));
+            assert_eq!(res[3], Some(0));
+            assert_eq!(res[4], Some(1));
             assert_eq!(res[5], None);
         }
 
