@@ -188,7 +188,10 @@ impl WeightedGraph {
         cost_list[start] = Some(0);
         que.push_back(start);
         while let Some(u) = que.pop_front() {
-            for &(v, _) in &self.graph[u] {
+            for &(v, w) in &self.graph[u] {
+                if w != 1 {
+                    panic!("weight is not 1");
+                }
                 if cost_list[v].is_some() {
                     continue;
                 }
