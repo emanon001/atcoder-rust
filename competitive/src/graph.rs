@@ -313,7 +313,7 @@ impl Grid {
         }
     }
 
-    pub fn to_graph(&self) -> (Graph, VertexTable) {
+    pub fn to_graph(&self) -> (WeightedGraph, VertexTable) {
         let mut edges = Vec::new();
         let mut vertex_table = std::collections::HashMap::new();
         let mut v = 0;
@@ -339,11 +339,11 @@ impl Grid {
                         continue;
                     }
                     let to = self.gen_vertex_if_needed((new_i, new_j), &mut vertex_table, &mut v);
-                    edges.push((from, to));
+                    edges.push((from, to, 1));
                 }
             }
         }
-        let graph = Graph::new_directed(&edges, vertex_table.len());
+        let graph = WeightedGraph::new_directed(&edges, vertex_table.len());
         (graph, vertex_table)
     }
 
