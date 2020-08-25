@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        _: usize,
+        s: Chars
     };
+
+    let mut table = HashMap::new();
+    for ch in s {
+        *table.entry(ch).or_insert(0) += 1;
+    }
+    let res = table.values().map(|&c| c % 2).sum::<usize>();
+    println!("{}", res);
 }
 
 fn main() {
