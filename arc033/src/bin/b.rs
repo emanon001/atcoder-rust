@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, m: usize,
+        av: [usize; n],
+        bv: [usize; m],
     };
+
+    let aset = av.into_iter().collect::<HashSet<_>>();
+    let bset = bv.into_iter().collect::<HashSet<_>>();
+    let x = aset.intersection(&bset).count() as f64;
+    let y = aset.union(&bset).count() as f64;
+    let res = x / y;
+    println!("{}", res);
 }
 
 fn main() {
