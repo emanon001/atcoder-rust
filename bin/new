@@ -17,4 +17,4 @@ cd ..
 cargo atcoder new "${contest_id}"
 ./bin/cp-code-snippets "${contest_id}"
 git add "${contest_id}"
-git commit -m "cargo atcoder new ${contest_id}"
+git commit -m "bin/new ${contest_id}"
