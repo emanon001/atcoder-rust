@@ -115,3 +115,37 @@ impl Lca {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    mod lca {
+        use super::super::Lca;
+
+        #[test]
+        fn depth() {
+            let edges = vec![(0, 1), (0, 2), (1, 3), (3, 4), (1, 5), (2, 6)];
+            let lca = Lca::new(&edges, 7, 0);
+            assert_eq!(lca.depth(0), 0);
+            assert_eq!(lca.depth(1), 1);
+            assert_eq!(lca.depth(2), 1);
+            assert_eq!(lca.depth(3), 2);
+            assert_eq!(lca.depth(4), 3);
+            assert_eq!(lca.depth(5), 2);
+            assert_eq!(lca.depth(6), 2);
+        }
+
+        #[test]
+        fn query() {
+            let edges = vec![(0, 1), (0, 2), (1, 3), (3, 4), (1, 5), (2, 6)];
+            let lca = Lca::new(&edges, 7, 0);
+            assert_eq!(lca.query(0, 0), 0);
+            assert_eq!(lca.query(0, 1), 0);
+            assert_eq!(lca.query(0, 2), 0);
+            assert_eq!(lca.query(1, 2), 0);
+            assert_eq!(lca.query(3, 5), 1);
+            assert_eq!(lca.query(4, 5), 1);
+            assert_eq!(lca.query(4, 2), 0);
+            assert_eq!(lca.query(4, 6), 0);
+        }
+    }
+}
