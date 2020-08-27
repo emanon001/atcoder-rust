@@ -40,7 +40,7 @@ where
         st
     }
 
-    // 0-origin
+    /// 0-origin
     pub fn update(&mut self, i: usize, v: T) {
         let mut i = i + self.size - 1;
         self.data[i] = v;
@@ -50,8 +50,8 @@ where
         }
     }
 
-    // [a, b)
-    // 0-origin
+    /// [a, b)
+    /// 0-origin
     pub fn query(&self, a: usize, b: usize) -> T {
         self.execute_query(a, b, 0, 0, self.size)
     }

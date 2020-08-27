@@ -73,7 +73,7 @@ impl Lca {
         }
     }
 
-    // 0-origin
+    /// 0-origin
     pub fn depth(&self, u: usize) -> usize {
         if u >= self.vn {
             panic!("u >= self.vn");

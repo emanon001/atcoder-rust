@@ -6,7 +6,7 @@ pub struct Bit {
     data: Vec<i64>,
 }
 
-// [0, n)
+/// [0, n)
 #[snippet("bit")]
 impl Bit {
     pub fn new(n: usize) -> Self {
@@ -16,7 +16,7 @@ impl Bit {
         }
     }
 
-    // 0-origin
+    /// 0-origin
     pub fn add(&mut self, i: usize, x: i64) {
         if i >= self.n {
             panic!();
@@ -28,7 +28,7 @@ impl Bit {
         }
     }
 
-    // [0, i)
+    /// [0, i)
     pub fn sum(&self, i: usize) -> i64 {
         if i > self.n {
             panic!();
