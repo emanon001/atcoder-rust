@@ -10,7 +10,13 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        d: usize,
+        t: usize,
+        s: usize
     };
+
+    let res = if s * t >= d { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {
