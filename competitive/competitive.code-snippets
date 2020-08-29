@@ -1249,6 +1249,46 @@
       "}"
     ]
   },
+  "prime_factors": {
+    "prefix": "prime_factors",
+    "body": [
+      "pub struct PrimeFactors {",
+      "    n: usize,",
+      "    min_primes: Vec<usize>,",
+      "}",
+      "impl PrimeFactors {",
+      "    pub fn new(n: usize) -> Self {",
+      "        let mut min_primes = vec![0; n + 1];",
+      "        for i in 2..=n {",
+      "            if min_primes[i] == 0 {",
+      "                let mut j = i;",
+      "                while j <= n {",
+      "                    min_primes[j] = i;",
+      "                    j += i;",
+      "                }",
+      "            }",
+      "        }",
+      "        Self { n, min_primes }",
+      "    }",
+      "    pub fn prime_factor(&self, n: usize) -> std::collections::HashMap<usize, usize> {",
+      "        if n < 2 {",
+      "            return std::collections::HashMap::new();",
+      "        }",
+      "        if n > self.n {",
+      "            panic!(\"n > self.n\");",
+      "        }",
+      "        let mut res = std::collections::HashMap::new();",
+      "        let mut x = n;",
+      "        while x != 1 {",
+      "            let y = self.min_primes[x];",
+      "            *res.entry(y).or_insert(0) += 1;",
+      "            x = x / y;",
+      "        }",
+      "        res",
+      "    }",
+      "}"
+    ]
+  },
   "primes": {
     "prefix": "primes",
     "body": [
