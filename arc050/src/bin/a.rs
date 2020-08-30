@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        c1: char, c2: char
     };
+
+    let res = if c1 == c2.to_ascii_uppercase() {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", res);
 }
 
 fn main() {
