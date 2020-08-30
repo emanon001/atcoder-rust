@@ -242,12 +242,14 @@ fn solve() {
     input! {
         n: usize, m: usize,
         cv: [i64; n],
-        edges: [(Usize1, Usize1, i64); m]
+        mut edges: [(Usize1, Usize1, i64); m]
     };
 
-    let graph = WeightedGraph::new(&edges, n);
-    let cost = graph.prim();
-    let res = cost + cv.into_iter().min().unwrap();
+    for i in 0..n {
+        edges.push((i, n, cv[i]));
+    }
+    let graph = WeightedGraph::new(&edges, n + 1);
+    let res = graph.prim();
     println!("{}", res);
 }
 
