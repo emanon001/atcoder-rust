@@ -163,15 +163,21 @@ fn solve() {
 
     let cols = ModInt::from(xv.len() - 1);
     let rows = ModInt::from(yv.len() - 1);
-    let height = ModInt::from((yv[m - 1] - yv[0]).abs());
-    let mut res = ModInt::zero();
+    let mut width = ModInt::zero();
     for ((i, x1), (_, x2)) in xv.into_iter().enumerate().tuple_windows() {
         let w = ModInt::from((x2 - x1).abs());
         let l = ModInt::from(i + 1);
         let r = cols - ModInt::from(i);
-        println!("h:{} w:{} l:{} r:{}, rows:{}", height, w, l, r, rows);
-        res += w * height * l * r * rows;
+        width += w * l * r;
     }
+    let mut height = ModInt::zero();
+    for ((i, y1), (_, y2)) in yv.into_iter().enumerate().tuple_windows() {
+        let h = ModInt::from((y2 - y1).abs());
+        let t = ModInt::from(i + 1);
+        let b = rows - ModInt::from(i);
+        height += h * t * b;
+    }
+    let res = width * height;
     println!("{}", res);
 }
 
