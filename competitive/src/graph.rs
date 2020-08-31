@@ -300,9 +300,6 @@ impl Grid {
         let mut edges = Vec::new();
         for i in 0..self.h {
             for j in 0..self.w {
-                if self.grid[i][j] == self.ng_char {
-                    continue;
-                }
                 let from = self.vertex(i, j);
                 for (pos, w) in generator(&self, i, j) {
                     let to = self.vertex(pos.0, pos.1);
@@ -370,6 +367,9 @@ pub fn gen_grid_destinations(
     directions: &[(isize, isize)],
 ) -> Vec<GridDestination> {
     let mut dest = Vec::new();
+    if grid.cell(i, j) == grid.ng_char() {
+        return dest;
+    }
     for &(di, dj) in directions {
         let new_i = i as isize + di;
         let new_j = j as isize + dj;
