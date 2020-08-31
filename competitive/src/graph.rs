@@ -293,27 +293,24 @@ impl Grid {
         }
     }
 
-    pub fn to_graph<F>(&self, generator: F) -> (WeightedGraph, VertexTable)
+    pub fn to_graph<F>(&self, generator: F) -> WeightedGraph
     where
         F: Fn(&Grid, usize, usize) -> Vec<GridDestination>,
     {
         let mut edges = Vec::new();
-        let mut vertex_table = std::collections::HashMap::new();
-        let mut v = 0;
         for i in 0..self.h {
             for j in 0..self.w {
                 if self.grid[i][j] == self.ng_char {
                     continue;
                 }
-                let from = Self::gen_vertex_if_needed((i, j), &mut vertex_table, &mut v);
+                let from = self.vertex(i, j);
                 for (pos, w) in generator(&self, i, j) {
-                    let to = Self::gen_vertex_if_needed(pos, &mut vertex_table, &mut v);
+                    let to = self.vertex(pos.0, pos.1);
                     edges.push((from, to, w));
                 }
             }
         }
-        let graph = WeightedGraph::new_directed(&edges, vertex_table.len());
-        (graph, vertex_table)
+        WeightedGraph::new_directed(&edges, self.h * self.w)
     }
 
     pub fn height(&self) -> usize {
@@ -336,24 +333,10 @@ impl Grid {
         self.ng_char
     }
 
-    fn gen_vertex_if_needed(
-        pos: (usize, usize),
-        vertex_table: &mut VertexTable,
-        cur_v: &mut usize,
-    ) -> usize {
-        if let Some(&v) = vertex_table.get(&pos) {
-            return v;
-        } else {
-            let v = *cur_v;
-            vertex_table.insert(pos, *cur_v);
-            *cur_v += 1;
-            return v;
-        };
+    pub fn vertex(&self, i: usize, j: usize) -> usize {
+        i * self.w + j
     }
 }
-
-#[snippet("grid")]
-pub type VertexTable = std::collections::HashMap<(usize, usize), usize>;
 
 /// 上下左右 (i, j)
 #[snippet("grid")]
@@ -599,7 +582,7 @@ mod tests {
     }
 
     mod grid {
-        use super::super::{gen_grid_destinations, Grid, VertexTable, ALL_DIRS, UDLR_DIRS};
+        use super::super::{gen_grid_destinations, Grid, ALL_DIRS, UDLR_DIRS};
 
         #[test]
         fn to_graph_udlr_dirs() {
@@ -608,21 +591,20 @@ mod tests {
                 .map(|s| s.chars().collect::<Vec<char>>())
                 .collect::<Vec<_>>();
             let grid = Grid::new(&grid, '#');
-            let (graph, v_table) =
-                grid.to_graph(|grid, i, j| gen_grid_destinations(grid, i, j, &UDLR_DIRS));
-            let s = *v_table.get(&(0, 0)).unwrap();
+            let graph = grid.to_graph(|grid, i, j| gen_grid_destinations(grid, i, j, &UDLR_DIRS));
+            let s = grid.vertex(0, 0);
             let d = graph.shortest_path(s);
-            assert_eq!(d[pos_to_v(&v_table, (0, 0))], Some(0));
-            assert_eq!(d[pos_to_v(&v_table, (0, 1))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (0, 2))], Some(2));
-            assert_eq!(d[pos_to_v(&v_table, (0, 4))], Some(8));
-            assert_eq!(d[pos_to_v(&v_table, (1, 0))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (1, 2))], Some(3));
-            assert_eq!(d[pos_to_v(&v_table, (1, 4))], Some(7));
-            assert_eq!(d[pos_to_v(&v_table, (2, 0))], Some(2));
-            assert_eq!(d[pos_to_v(&v_table, (2, 2))], Some(4));
-            assert_eq!(d[pos_to_v(&v_table, (2, 3))], Some(5));
-            assert_eq!(d[pos_to_v(&v_table, (2, 4))], Some(6));
+            assert_eq!(d[grid.vertex(0, 0)], Some(0));
+            assert_eq!(d[grid.vertex(0, 1)], Some(1));
+            assert_eq!(d[grid.vertex(0, 2)], Some(2));
+            assert_eq!(d[grid.vertex(0, 4)], Some(8));
+            assert_eq!(d[grid.vertex(1, 0)], Some(1));
+            assert_eq!(d[grid.vertex(1, 2)], Some(3));
+            assert_eq!(d[grid.vertex(1, 4)], Some(7));
+            assert_eq!(d[grid.vertex(2, 0)], Some(2));
+            assert_eq!(d[grid.vertex(2, 2)], Some(4));
+            assert_eq!(d[grid.vertex(2, 3)], Some(5));
+            assert_eq!(d[grid.vertex(2, 4)], Some(6));
         }
 
         #[test]
@@ -632,23 +614,22 @@ mod tests {
                 .map(|s| s.chars().collect::<Vec<char>>())
                 .collect::<Vec<_>>();
             let grid = Grid::new(&grid, '#');
-            let (graph, v_table) =
-                grid.to_graph(|grid, i, j| gen_grid_destinations(grid, i, j, &ALL_DIRS));
-            let s = *v_table.get(&(1, 2)).unwrap();
+            let graph = grid.to_graph(|grid, i, j| gen_grid_destinations(grid, i, j, &ALL_DIRS));
+            let s = grid.vertex(1, 2);
             let d = graph.shortest_path(s);
-            assert_eq!(d[pos_to_v(&v_table, (0, 0))], Some(2));
-            assert_eq!(d[pos_to_v(&v_table, (0, 1))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (0, 2))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (0, 3))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (0, 4))], Some(2));
-            assert_eq!(d[pos_to_v(&v_table, (1, 0))], Some(2));
-            assert_eq!(d[pos_to_v(&v_table, (1, 2))], Some(0));
-            assert_eq!(d[pos_to_v(&v_table, (1, 4))], Some(2));
-            assert_eq!(d[pos_to_v(&v_table, (2, 0))], Some(2));
-            assert_eq!(d[pos_to_v(&v_table, (2, 1))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (2, 2))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (2, 3))], Some(1));
-            assert_eq!(d[pos_to_v(&v_table, (2, 4))], Some(2));
+            assert_eq!(d[grid.vertex(0, 0)], Some(2));
+            assert_eq!(d[grid.vertex(0, 1)], Some(1));
+            assert_eq!(d[grid.vertex(0, 2)], Some(1));
+            assert_eq!(d[grid.vertex(0, 3)], Some(1));
+            assert_eq!(d[grid.vertex(0, 4)], Some(2));
+            assert_eq!(d[grid.vertex(1, 0)], Some(2));
+            assert_eq!(d[grid.vertex(1, 2)], Some(0));
+            assert_eq!(d[grid.vertex(1, 4)], Some(2));
+            assert_eq!(d[grid.vertex(2, 0)], Some(2));
+            assert_eq!(d[grid.vertex(2, 1)], Some(1));
+            assert_eq!(d[grid.vertex(2, 2)], Some(1));
+            assert_eq!(d[grid.vertex(2, 3)], Some(1));
+            assert_eq!(d[grid.vertex(2, 4)], Some(2));
         }
 
         #[test]
@@ -699,10 +680,6 @@ mod tests {
                 .collect::<Vec<_>>();
             let grid = Grid::new(&grid, '#');
             assert_eq!(grid.ng_char(), '#');
-        }
-
-        fn pos_to_v(table: &VertexTable, pos: (usize, usize)) -> usize {
-            *table.get(&pos).unwrap()
         }
     }
 }
