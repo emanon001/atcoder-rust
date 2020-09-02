@@ -10,7 +10,21 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        l: isize, h: isize,
+        n: usize,
+        av: [isize; n]
     };
+
+    for a in av {
+        let res = if a < l {
+            l - a
+        } else if a <= h {
+            0
+        } else {
+            -1
+        };
+        println!("{}", res);
+    }
 }
 
 fn main() {
