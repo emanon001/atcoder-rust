@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: usize, d: usize
     };
+
+    let res = ((a + 1) * d).max(a * (d + 1));
+    println!("{}", res);
 }
 
 fn main() {
