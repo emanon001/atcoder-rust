@@ -8,9 +8,30 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+fn is_chokugo(s: &str) -> bool {
+    if s.is_empty() {
+        return true;
+    }
+    if s.starts_with("ch") {
+        is_chokugo(&s[2..])
+    } else if s.starts_with("o") {
+        is_chokugo(&s[1..])
+    } else if s.starts_with("k") {
+        is_chokugo(&s[1..])
+    } else if s.starts_with("u") {
+        is_chokugo(&s[1..])
+    } else {
+        false
+    }
+}
+
 fn solve() {
     input! {
+        x: String
     };
+
+    let res = if is_chokugo(&x) { "YES" } else { "NO" };
+    println!("{}", res);
 }
 
 fn main() {
