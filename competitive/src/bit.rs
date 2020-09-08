@@ -1,17 +1,12 @@
 use cargo_snippet::snippet;
 
 #[snippet("bit")]
-pub trait BitElement: Clone {
-    fn bit_add_assign(&mut self, other: Self);
+pub trait BitElement: std::ops::AddAssign + Clone {
     fn bit_empty() -> Self;
 }
 
 #[snippet("bit")]
 impl BitElement for i64 {
-    fn bit_add_assign(&mut self, other: Self) {
-        *self += other
-    }
-
     fn bit_empty() -> Self {
         0
     }
@@ -19,10 +14,6 @@ impl BitElement for i64 {
 
 #[snippet("bit")]
 impl BitElement for i128 {
-    fn bit_add_assign(&mut self, other: Self) {
-        *self += other
-    }
-
     fn bit_empty() -> Self {
         0
     }
@@ -30,10 +21,6 @@ impl BitElement for i128 {
 
 #[snippet("bit")]
 impl BitElement for f64 {
-    fn bit_add_assign(&mut self, other: Self) {
-        *self += other
-    }
-
     fn bit_empty() -> Self {
         0.0
     }
@@ -62,7 +49,7 @@ impl<T: BitElement> Bit<T> {
         }
         let mut i = i + 1;
         while i <= self.n {
-            self.data[i].bit_add_assign(x.clone());
+            self.data[i] += x.clone();
             i += ((i as isize) & -(i as isize)) as usize;
         }
     }
@@ -75,7 +62,7 @@ impl<T: BitElement> Bit<T> {
         let mut i = i;
         let mut res = T::bit_empty();
         while i > 0 {
-            res.bit_add_assign(self.data[i].clone());
+            res += self.data[i].clone();
             i -= ((i as isize) & -(i as isize)) as usize;
         }
         res

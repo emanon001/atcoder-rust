@@ -732,10 +732,6 @@
   "lca": {
     "prefix": "lca",
     "body": [
-      "pub trait Monoid {",
-      "    fn mempty() -> Self;",
-      "    fn mappend(&self, other: &Self) -> Self;",
-      "}",
       "pub struct SegmentTree<T>",
       "where",
       "    T: Monoid + Clone,",
@@ -797,6 +793,10 @@
       "        let vr = self.execute_query(a, b, i * 2 + 2, (l + r) / 2, r);",
       "        vl.mappend(&vr)",
       "    }",
+      "}",
+      "pub trait Monoid {",
+      "    fn mempty() -> Self;",
+      "    fn mappend(&self, other: &Self) -> Self;",
       "}",
       "#[derive(Debug, Copy, Clone)]",
       "pub struct LcaDepth {",
@@ -1234,6 +1234,15 @@
       "    fn sub_assign(&mut self, rhs: Self) {",
       "        *self = *self - rhs;",
       "    }",
+      "}"
+    ]
+  },
+  "monoid": {
+    "prefix": "monoid",
+    "body": [
+      "pub trait Monoid {",
+      "    fn mempty() -> Self;",
+      "    fn mappend(&self, other: &Self) -> Self;",
       "}"
     ]
   },
