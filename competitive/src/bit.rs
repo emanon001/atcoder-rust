@@ -1,33 +1,10 @@
 use cargo_snippet::snippet;
 
 #[snippet("bit")]
-pub trait BitElement: std::ops::AddAssign + Clone {
-    fn bit_empty() -> Self;
-}
-
-#[snippet("bit")]
-impl BitElement for i64 {
-    fn bit_empty() -> Self {
-        0
-    }
-}
-
-#[snippet("bit")]
-impl BitElement for i128 {
-    fn bit_empty() -> Self {
-        0
-    }
-}
-
-#[snippet("bit")]
-impl BitElement for f64 {
-    fn bit_empty() -> Self {
-        0.0
-    }
-}
-
-#[snippet("bit")]
-pub struct Bit<T: BitElement> {
+pub struct Bit<T>
+where
+    T: num::traits::NumAssign + Copy,
+{
     n: usize,
     data: Vec<T>,
 }
@@ -35,11 +12,14 @@ pub struct Bit<T: BitElement> {
 /// 0-origin
 /// [0, n)
 #[snippet("bit")]
-impl<T: BitElement> Bit<T> {
+impl<T> Bit<T>
+where
+    T: num::traits::NumAssign + Copy,
+{
     pub fn new(n: usize) -> Self {
         Self {
             n,
-            data: vec![T::bit_empty(); n + 1],
+            data: vec![T::zero(); n + 1],
         }
     }
 
@@ -50,7 +30,7 @@ impl<T: BitElement> Bit<T> {
         }
         let mut i = i + 1;
         while i <= self.n {
-            self.data[i] += x.clone();
+            self.data[i] += x;
             i += ((i as isize) & -(i as isize)) as usize;
         }
     }
@@ -61,24 +41,21 @@ impl<T: BitElement> Bit<T> {
             panic!();
         }
         let mut i = i;
-        let mut res = T::bit_empty();
+        let mut res = T::zero();
         while i > 0 {
-            res += self.data[i].clone();
+            res += self.data[i];
             i -= ((i as isize) & -(i as isize)) as usize;
         }
         res
     }
 
     /// [i, j)
-    pub fn range_sum(&self, i: usize, j: usize) -> T
-    where
-        T: std::ops::Sub<Output = T>,
-    {
+    pub fn range_sum(&self, i: usize, j: usize) -> T {
         if i > self.n || j > self.n {
             panic!();
         }
         if i >= j {
-            return T::bit_empty();
+            return T::zero();
         }
         self.sum(j) - self.sum(i)
     }
