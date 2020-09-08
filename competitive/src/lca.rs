@@ -11,14 +11,14 @@ pub struct LcaDepth {
 
 #[snippet("lca")]
 impl Monoid for LcaDepth {
-    fn empty() -> Self {
+    fn mempty() -> Self {
         Self {
             depth: std::usize::MAX,
             idx: 0,
         }
     }
 
-    fn append(&self, other: &Self) -> Self {
+    fn mappend(&self, other: &Self) -> Self {
         if self.depth <= other.depth {
             *self
         } else {

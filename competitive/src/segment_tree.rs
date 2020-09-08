@@ -2,8 +2,8 @@ use cargo_snippet::snippet;
 
 #[snippet("segment_tree")]
 pub trait Monoid {
-    fn empty() -> Self;
-    fn append(&self, other: &Self) -> Self;
+    fn mempty() -> Self;
+    fn mappend(&self, other: &Self) -> Self;
 }
 
 #[snippet("segment_tree")]
@@ -22,7 +22,7 @@ where
 {
     pub fn new(size: usize) -> Self {
         let size = Self::normalize_data_size(size);
-        let data = vec![T::empty(); size * 2 - 1];
+        let data = vec![T::mempty(); size * 2 - 1];
         Self { size, data }
     }
 
@@ -35,7 +35,7 @@ where
             return st;
         }
         for i in (0..=(st.size - 2)).rev() {
-            st.data[i] = st.data[i * 2 + 1].append(&st.data[i * 2 + 2]);
+            st.data[i] = st.data[i * 2 + 1].mappend(&st.data[i * 2 + 2]);
         }
         st
     }
@@ -46,7 +46,7 @@ where
         self.data[i] = v;
         while i > 0 {
             i = (i - 1) / 2;
-            self.data[i] = self.data[i * 2 + 1].append(&self.data[i * 2 + 2]);
+            self.data[i] = self.data[i * 2 + 1].mappend(&self.data[i * 2 + 2]);
         }
     }
 
@@ -66,14 +66,14 @@ where
 
     fn execute_query(&self, a: usize, b: usize, i: usize, l: usize, r: usize) -> T {
         if r <= a || b <= l {
-            return T::empty();
+            return T::mempty();
         }
         if a <= l && r <= b {
             return self.data[i].clone();
         }
         let vl = self.execute_query(a, b, i * 2 + 1, l, (l + r) / 2);
         let vr = self.execute_query(a, b, i * 2 + 2, (l + r) / 2, r);
-        vl.append(&vr)
+        vl.mappend(&vr)
     }
 }
 
@@ -83,10 +83,10 @@ mod tests {
 
     // max
     impl Monoid for usize {
-        fn empty() -> Self {
+        fn mempty() -> Self {
             0
         }
-        fn append(&self, other: &Self) -> Self {
+        fn mappend(&self, other: &Self) -> Self {
             std::cmp::max(*self, *other)
         }
     }
