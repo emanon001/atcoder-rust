@@ -1,12 +1,8 @@
+use crate::monoid::Monoid;
 use cargo_snippet::snippet;
 
 #[snippet("segment_tree")]
-pub trait Monoid {
-    fn mempty() -> Self;
-    fn mappend(&self, other: &Self) -> Self;
-}
-
-#[snippet("segment_tree")]
+#[snippet(include = "monoid")]
 pub struct SegmentTree<T>
 where
     T: Monoid + Clone,

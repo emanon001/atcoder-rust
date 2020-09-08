@@ -1,7 +1,9 @@
-use crate::segment_tree::{Monoid, SegmentTree};
+use crate::monoid::Monoid;
+use crate::segment_tree::SegmentTree;
 use cargo_snippet::snippet;
 
 #[snippet("lca")]
+#[snippet(include = "monoid")]
 #[snippet(include = "segment_tree")]
 #[derive(Debug, Copy, Clone)]
 pub struct LcaDepth {
