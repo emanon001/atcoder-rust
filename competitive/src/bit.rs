@@ -32,6 +32,7 @@ pub struct Bit<T: BitElement> {
     data: Vec<T>,
 }
 
+/// 0-origin
 /// [0, n)
 #[snippet("bit")]
 impl<T: BitElement> Bit<T> {
@@ -66,6 +67,20 @@ impl<T: BitElement> Bit<T> {
             i -= ((i as isize) & -(i as isize)) as usize;
         }
         res
+    }
+
+    /// [i, j)
+    pub fn range_sum(&self, i: usize, j: usize) -> T
+    where
+        T: std::ops::Sub<Output = T>,
+    {
+        if i > self.n || j > self.n {
+            panic!();
+        }
+        if i >= j {
+            return T::bit_empty();
+        }
+        self.sum(j) - self.sum(i)
     }
 }
 
@@ -111,5 +126,21 @@ mod tests {
         bit.add(0, 1);
         assert_eq!(bit.sum(0), 0);
         assert_eq!(bit.sum(1), 1);
+    }
+
+    #[test]
+    fn test_range_sum() {
+        let mut bit: Bit<i64> = Bit::new(3);
+        bit.add(0, 1);
+        bit.add(1, 2);
+        bit.add(2, 3);
+        bit.add(0, -4);
+        assert_eq!(bit.range_sum(0, 0), 0); // i >= j
+        assert_eq!(bit.range_sum(0, 1), -3);
+        assert_eq!(bit.range_sum(0, 2), -1);
+        assert_eq!(bit.range_sum(0, 3), 2);
+        assert_eq!(bit.range_sum(1, 2), 2);
+        assert_eq!(bit.range_sum(1, 3), 5);
+        assert_eq!(bit.range_sum(2, 3), 3);
     }
 }
