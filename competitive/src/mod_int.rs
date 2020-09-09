@@ -15,10 +15,6 @@ impl ModInt {
         self.pow(Self::MOD - 2)
     }
 
-    pub fn one() -> Self {
-        Self::new(1)
-    }
-
     pub fn pow(self, e: u32) -> Self {
         if e == 0 {
             return Self::new(1);
@@ -29,10 +25,6 @@ impl ModInt {
             res *= self;
         }
         res
-    }
-
-    pub fn zero() -> Self {
-        Self::new(0)
     }
 
     fn new(n: i64) -> Self {
@@ -200,9 +192,32 @@ impl std::ops::SubAssign for ModInt {
     }
 }
 
+#[snippet("mod_int")]
+impl num::Zero for ModInt {
+    fn zero() -> Self {
+        Self::new(0)
+    }
+
+    fn is_zero(&self) -> bool {
+        *self == Self::zero()
+    }
+}
+
+#[snippet("mod_int")]
+impl num::One for ModInt {
+    fn one() -> Self {
+        Self::new(1)
+    }
+
+    fn is_one(&self) -> bool {
+        *self == Self::one()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::ModInt;
+    use num::{One, Zero};
 
     #[test]
     fn one() {

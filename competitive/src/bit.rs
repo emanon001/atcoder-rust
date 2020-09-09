@@ -1,9 +1,10 @@
 use cargo_snippet::snippet;
 
+/// `T` is numeric only
 #[snippet("bit")]
 pub struct Bit<T>
 where
-    T: num::traits::NumAssign + Copy,
+    T: std::ops::AddAssign + std::ops::Sub<Output = T> + num::Zero + Clone,
 {
     n: usize,
     data: Vec<T>,
@@ -14,7 +15,7 @@ where
 #[snippet("bit")]
 impl<T> Bit<T>
 where
-    T: num::traits::NumAssign + Copy,
+    T: std::ops::AddAssign + std::ops::Sub<Output = T> + num::Zero + Clone,
 {
     pub fn new(n: usize) -> Self {
         Self {
@@ -30,7 +31,7 @@ where
         }
         let mut i = i + 1;
         while i <= self.n {
-            self.data[i] += x;
+            self.data[i] += x.clone();
             i += ((i as isize) & -(i as isize)) as usize;
         }
     }
@@ -43,7 +44,7 @@ where
         let mut i = i;
         let mut res = T::zero();
         while i > 0 {
-            res += self.data[i];
+            res += self.data[i].clone();
             i -= ((i as isize) & -(i as isize)) as usize;
         }
         res
@@ -64,6 +65,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use num::{One, Zero};
 
     #[test]
     fn test_new() {
@@ -119,5 +121,19 @@ mod tests {
         assert_eq!(bit.range_sum(1, 2), 2);
         assert_eq!(bit.range_sum(1, 3), 5);
         assert_eq!(bit.range_sum(2, 3), 3);
+    }
+
+    #[test]
+    fn test_mod_int() {
+        use crate::mod_int::ModInt;
+
+        let mut bit: Bit<ModInt> = Bit::new(2);
+        bit.add(0, ModInt::one());
+        bit.add(1, ModInt::from(1_000_000_006));
+        assert_eq!(bit.sum(1), ModInt::one());
+        assert_eq!(bit.sum(2), ModInt::zero());
+        assert_eq!(bit.range_sum(0, 1), ModInt::one());
+        assert_eq!(bit.range_sum(0, 2), ModInt::zero());
+        assert_eq!(bit.range_sum(1, 2), ModInt::from(1_000_000_006));
     }
 }

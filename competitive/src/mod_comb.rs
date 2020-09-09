@@ -1,5 +1,6 @@
 use crate::mod_int::ModInt;
 use cargo_snippet::snippet;
+use num::{One, Zero};
 
 #[snippet("mod_comb")]
 #[snippet(include = "mod_int")]
