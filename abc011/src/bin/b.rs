@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars
     };
+
+    let res = format!(
+        "{}{}",
+        s[0].to_ascii_uppercase(),
+        s.into_iter()
+            .skip(1)
+            .map(|ch| ch.to_ascii_lowercase())
+            .join("")
+    );
+    println!("{}", res);
 }
 
 fn main() {
