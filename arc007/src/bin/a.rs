@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        x: char,
+        s: Chars
     };
+
+    let res = s.into_iter().filter(|ch| ch != &x).join("");
+    println!("{}", res);
 }
 
 fn main() {
