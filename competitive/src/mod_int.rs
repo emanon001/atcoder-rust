@@ -15,13 +15,13 @@ impl ModInt {
         self.pow(Self::MOD - 2)
     }
 
-    pub fn pow(self, e: u32) -> Self {
-        if e == 0 {
+    pub fn pow<T: num::Unsigned + num::PrimInt>(self, e: T) -> Self {
+        if e.is_zero() {
             return Self::new(1);
         }
         let mut res = self.pow(e >> 1);
         res *= res;
-        if e & 1 == 1 {
+        if e & T::one() == T::one() {
             res *= self;
         }
         res
@@ -182,7 +182,7 @@ impl num::One for ModInt {
 #[cfg(test)]
 mod tests {
     use super::ModInt;
-    use num::{One, Zero};
+    use num::*;
 
     #[test]
     fn one() {
@@ -191,11 +191,11 @@ mod tests {
 
     #[test]
     fn pow() {
-        assert_eq!(ModInt::from(2).pow(0), ModInt::from(1));
-        assert_eq!(ModInt::from(2).pow(1), ModInt::from(2));
-        assert_eq!(ModInt::from(2).pow(2), ModInt::from(4));
-        assert_eq!(ModInt::from(2).pow(29), ModInt::from(536_870_912));
-        assert_eq!(ModInt::from(2).pow(30), ModInt::from(73_741_817));
+        assert_eq!(ModInt::from(2).pow(0_usize), ModInt::from(1));
+        assert_eq!(ModInt::from(2).pow(1_u32), ModInt::from(2));
+        assert_eq!(ModInt::from(2).pow(2_u64), ModInt::from(4));
+        assert_eq!(ModInt::from(2).pow(29_u128), ModInt::from(536_870_912));
+        assert_eq!(ModInt::from(2).pow(30_u128), ModInt::from(73_741_817));
     }
 
     #[test]
