@@ -38,88 +38,53 @@ impl ModInt {
 }
 
 #[snippet("mod_int")]
-impl From<i32> for ModInt {
-    fn from(n: i32) -> Self {
-        ModInt::from(n as i64)
-    }
+macro_rules! impl_from {
+    ($T:ty) => {
+        impl From<$T> for ModInt {
+            fn from(n: $T) -> Self {
+                use std::convert::TryFrom;
+                Self::new(i64::try_from(n).unwrap())
+            }
+        }
+    };
 }
 
 #[snippet("mod_int")]
-impl From<i64> for ModInt {
-    fn from(n: i64) -> Self {
-        Self::new(n)
-    }
+impl_from!(i32);
+#[snippet("mod_int")]
+impl_from!(i64);
+#[snippet("mod_int")]
+impl_from!(isize);
+#[snippet("mod_int")]
+impl_from!(u32);
+#[snippet("mod_int")]
+impl_from!(u64);
+#[snippet("mod_int")]
+impl_from!(usize);
+
+#[snippet("mod_int")]
+macro_rules! impl_into {
+    ($T:ty) => {
+        impl Into<$T> for ModInt {
+            fn into(self) -> $T {
+                self.0 as $T
+            }
+        }
+    };
 }
 
 #[snippet("mod_int")]
-impl From<isize> for ModInt {
-    fn from(n: isize) -> Self {
-        ModInt::from(n as i64)
-    }
-}
-
+impl_into!(i32);
 #[snippet("mod_int")]
-impl From<u32> for ModInt {
-    fn from(n: u32) -> Self {
-        ModInt::from(n as u64)
-    }
-}
-
+impl_into!(i64);
 #[snippet("mod_int")]
-impl From<u64> for ModInt {
-    fn from(n: u64) -> Self {
-        Self::new(n as i64)
-    }
-}
-
+impl_into!(isize);
 #[snippet("mod_int")]
-impl From<usize> for ModInt {
-    fn from(n: usize) -> Self {
-        ModInt::from(n as u64)
-    }
-}
-
+impl_into!(u32);
 #[snippet("mod_int")]
-impl Into<i32> for ModInt {
-    fn into(self) -> i32 {
-        self.0 as i32
-    }
-}
-
+impl_into!(u64);
 #[snippet("mod_int")]
-impl Into<i64> for ModInt {
-    fn into(self) -> i64 {
-        self.0 as i64
-    }
-}
-
-#[snippet("mod_int")]
-impl Into<isize> for ModInt {
-    fn into(self) -> isize {
-        self.0 as isize
-    }
-}
-
-#[snippet("mod_int")]
-impl Into<u32> for ModInt {
-    fn into(self) -> u32 {
-        self.0
-    }
-}
-
-#[snippet("mod_int")]
-impl Into<u64> for ModInt {
-    fn into(self) -> u64 {
-        self.0 as u64
-    }
-}
-
-#[snippet("mod_int")]
-impl Into<usize> for ModInt {
-    fn into(self) -> usize {
-        self.0 as usize
-    }
-}
+impl_into!(usize);
 
 #[snippet("mod_int")]
 impl std::fmt::Display for ModInt {
