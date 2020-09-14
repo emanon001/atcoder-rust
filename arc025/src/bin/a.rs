@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        dv: [usize; 7],
+        jv: [usize; 7]
     };
+
+    let mut res = 0;
+    for i in 0..7 {
+        res += dv[i].max(jv[i]);
+    }
+    println!("{}", res);
 }
 
 fn main() {
