@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: isize,
+        b: isize
     };
+
+    let res = (a - b).abs().min(a + 1 + 9 - b).min(9 - a + 1 + b);
+    println!("{}", res);
 }
 
 fn main() {
