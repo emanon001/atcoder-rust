@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        x: char
     };
+
+    let res = match x {
+        'A' => 1,
+        'B' => 2,
+        'C' => 3,
+        'D' => 4,
+        'E' => 5,
+        _ => unreachable!(),
+    };
+    println!("{}", res);
 }
 
 fn main() {
