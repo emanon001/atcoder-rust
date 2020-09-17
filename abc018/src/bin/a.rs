@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: isize, b: isize, c: isize
     };
+
+    let mut v = vec![a, b, c];
+    v.sort_by_key(|x| -x);
+    for x in vec![a, b, c] {
+        println!("{}", v.iter().position(|y| y == &x).unwrap() + 1);
+    }
 }
 
 fn main() {
