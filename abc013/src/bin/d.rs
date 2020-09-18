@@ -8,23 +8,18 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
-fn dfs(i: usize, j: usize, av: &[usize], dp: &mut [Vec<Option<usize>>]) -> usize {
-    if i == av.len() {
-        return j;
-    }
-    if av[i] == j || av[i] + 1 == j {
-        let dir = if av[i] == j { 0 } else { 1 };
-        return if let Some(res) = dp[i][dir] {
-            res
+fn goal(i: usize, j: usize, m: usize, lines: &[BTreeSet<(usize, usize)>]) -> usize {
+    let mut i = i;
+    let mut j = j;
+    while i < m {
+        if let Some((ii, dir)) = lines[j].range((i, 0)..).next() {
+            i = *ii + 1;
+            j = if *dir == 0 { j + 1 } else { j - 1 };
         } else {
-            let new_j = if av[i] == j { j + 1 } else { j - 1 };
-            let res = dfs(i + 1, new_j, av, dp);
-            dp[i][dir] = Some(res);
-            res
-        };
-    } else {
-        return dfs(i + 1, j, av, dp);
+            i = m;
+        }
     }
+    j
 }
 
 fn solve() {
@@ -33,11 +28,17 @@ fn solve() {
         av: [Usize1; m]
     };
 
-    let mut dp = vec![vec![None; 2]; m];
+    let mut lines = vec![BTreeSet::new(); n];
+    for (i, a) in av.into_iter().enumerate() {
+        lines[a].insert((i, 0));
+        if a + 1 < n {
+            lines[a + 1].insert((i, 1));
+        }
+    }
     let mut to = vec![vec![0; n]; 30];
-    for i in 0..n {
-        let j = dfs(0, i, &av, &mut dp);
-        to[0][i] = j;
+    for j in 0..n {
+        let g = goal(0, j, m, &lines);
+        to[0][j] = g;
     }
     for i in 0..29 {
         for j in 0..n {
