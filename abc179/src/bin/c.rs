@@ -15,13 +15,8 @@ fn solve() {
 
     let mut res = 0;
     for a in 1..=n {
-        let max_b = n / a;
-        for b in 1..=max_b {
-            if a * b >= n {
-                break;
-            }
-            res += 1;
-        }
+        let max_b = (n - 1) / a;
+        res += max_b;
     }
     println!("{}", res);
 }
