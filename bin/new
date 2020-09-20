@@ -16,4 +16,5 @@ cd ..
 
 git checkout -b "joined-${contest_id}"
 ./bin/gen-project "${contest_id}"
+git add "${contest_id}"
 git commit -m "bin/${cmd_name} ${contest_id}"

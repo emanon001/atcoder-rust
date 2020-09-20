@@ -17,4 +17,3 @@ cd ..
 cargo atcoder new "${contest_id}"
 cargo atcoder warmup --manifest-path "${contest_id}/Cargo.toml"
 ./bin/cp-code-snippets "${contest_id}"
-git add "${contest_id}"
