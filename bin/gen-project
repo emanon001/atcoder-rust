@@ -14,6 +14,7 @@ fi
 cd "$(dirname ${0})"
 cd ..
 
-git checkout -b "joined-${contest_id}"
-./bin/gen-project "${contest_id}"
-git commit -m "bin/${cmd_name} ${contest_id}"
+cargo atcoder new "${contest_id}"
+cargo atcoder warmup --manifest-path "${contest_id}/Cargo.toml"
+./bin/cp-code-snippets "${contest_id}"
+git add "${contest_id}"
