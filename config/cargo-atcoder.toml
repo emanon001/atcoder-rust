@@ -45,7 +45,9 @@ whiteread = "=0.5.0"
 
 [project]
 # to create `rust-toolchain` file, uncomment this line.
-rustc_version = "1.42.0" # source code template
+rustc_version = "1.42.0"
+
+# source code template
 template = """
 #[allow(unused_imports)]
 use itertools::Itertools;
