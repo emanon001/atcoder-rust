@@ -9,6 +9,10 @@ use proconio::marker::*;
 use std::collections::*;
 
 fn main() {
-  input! {
-  };
+    input! {
+        x: usize, y: usize
+    };
+
+    let res = y / x;
+    println!("{}", res);
 }
