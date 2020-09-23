@@ -10,5 +10,11 @@ use std::collections::*;
 
 fn main() {
     input! {
+        n: usize,
+        mut tv: [usize; n]
     };
+
+    tv.sort();
+    let res = tv[0];
+    println!("{}", res);
 }
