@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        grid: [[char; 4]; 4]
     };
+
+    let mut res = vec![vec!['x'; 4]; 4];
+    for i in 0..4 {
+        for j in 0..4 {
+            let ch = grid[i][j];
+            res[3 - i][3 - j] = ch;
+        }
+    }
+    for i in 0..4 {
+        println!("{}", res[i].iter().join(" "));
+    }
 }
 
 fn main() {
