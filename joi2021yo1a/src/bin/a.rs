@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        mut nv: [usize; 3]
     };
+
+    nv.sort();
+    let res = nv[1];
+    println!("{}", res);
 }
 
 fn main() {
