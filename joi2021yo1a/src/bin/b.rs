@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        _: usize,
+        mut s: Chars
     };
+
+    s.sort_by_key(|&ch| match ch {
+        'J' => 0,
+        'O' => 1,
+        'I' => 2,
+        _ => unreachable!(),
+    });
+    let res = s.into_iter().join("");
+    println!("{}", res);
 }
 
 fn main() {
