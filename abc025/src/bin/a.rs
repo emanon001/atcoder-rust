@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars,
+        n: usize
     };
+
+    let mut words = s.iter().cartesian_product(&s).collect::<Vec<_>>();
+    words.sort();
+    let w = &words[n - 1];
+    let res = format!("{}{}", w.0, w.1);
+    println!("{}", res);
 }
 
 fn main() {
