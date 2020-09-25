@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars
     };
+
+    let res = if s[s.len() - 1] == 'T' { "YES" } else { "NO" };
+    println!("{}", res);
 }
 
 fn main() {
