@@ -10,7 +10,13 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: u64, b: u64, c: u64, d: u64
     };
+
+    let l = a.max(c);
+    let r = b.min(d);
+    let res = if l <= r { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {

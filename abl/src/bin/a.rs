@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        k: usize
     };
+
+    let res = "ACL".repeat(k);
+    println!("{}", res);
 }
 
 fn main() {
