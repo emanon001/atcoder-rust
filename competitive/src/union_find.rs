@@ -70,6 +70,15 @@ impl UnionFind {
         }
         self.find(x) == self.find(y)
     }
+
+    pub fn groups(&mut self) -> Vec<Vec<usize>> {
+        let mut groups = std::collections::HashMap::new();
+        for x in 0..self.n {
+            let k = self.find(x);
+            groups.entry(k).or_insert(Vec::new()).push(x);
+        }
+        groups.values().cloned().collect::<Vec<_>>()
+    }
 }
 
 #[cfg(test)]
@@ -138,5 +147,18 @@ mod tests {
         uf.unite(1, 2);
         assert!(uf.is_same(0, 1));
         assert!(uf.is_same(1, 2));
+    }
+
+    #[test]
+    fn groups() {
+        let mut uf = UnionFind::new(6);
+        uf.unite(0, 1);
+        uf.unite(1, 2);
+        uf.unite(4, 5);
+        let mut left = uf.groups();
+        left.sort();
+        let mut right = vec![vec![0, 1, 2], vec![3], vec![4, 5]];
+        right.sort();
+        assert_eq!(left, right);
     }
 }
