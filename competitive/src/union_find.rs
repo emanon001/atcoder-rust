@@ -23,9 +23,7 @@ impl UnionFind {
     }
 
     pub fn find(&mut self, x: usize) -> usize {
-        if x >= self.n {
-            panic!();
-        }
+        assert!(x < self.n);
         if self.root[x] == x {
             x
         } else {
@@ -36,9 +34,7 @@ impl UnionFind {
     }
 
     pub fn unite(&mut self, x: usize, y: usize) {
-        if x >= self.n || y >= self.n {
-            panic!();
-        }
+        assert!(x < self.n && y < self.n);
         let x_root = self.find(x);
         let y_root = self.find(y);
         if x_root == y_root {
@@ -57,17 +53,13 @@ impl UnionFind {
     }
 
     pub fn size(&mut self, x: usize) -> usize {
-        if x >= self.n {
-            panic!();
-        }
+        assert!(x < self.n);
         let x_root = self.find(x);
         self.size[x_root]
     }
 
     pub fn is_same(&mut self, x: usize, y: usize) -> bool {
-        if x >= self.n || y >= self.n {
-            panic!();
-        }
+        assert!(x < self.n && y < self.n);
         self.find(x) == self.find(y)
     }
 
