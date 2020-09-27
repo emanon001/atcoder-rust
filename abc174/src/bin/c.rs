@@ -12,6 +12,16 @@ fn solve() {
     input! {
         k: usize,
     };
+
+    let mut cur = 0;
+    for i in 0..k {
+        cur = (cur * 10 + 7) % k;
+        if cur == 0 {
+            println!("{}", i + 1);
+            return;
+        }
+    }
+    println!("-1");
 }
 
 fn main() {
