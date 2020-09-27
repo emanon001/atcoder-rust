@@ -10,7 +10,21 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        mut s: Chars
     };
+
+    s.reverse();
+    let mut sum_odd = 0;
+    let mut sum_even = 0;
+    for i in 0..s.len() {
+        let d = s[i].to_digit(10).unwrap();
+        if (i + 1) % 2 == 1 {
+            sum_odd += d;
+        } else {
+            sum_even += d;
+        }
+    }
+    println!("{} {}", sum_even, sum_odd);
 }
 
 fn main() {
