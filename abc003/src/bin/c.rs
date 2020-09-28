@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, k: usize,
+        mut rv: [isize; n]
     };
+
+    rv.sort();
+    let res = rv
+        .into_iter()
+        .skip(n - k)
+        .fold(0_f64, |acc, r| (acc + r as f64) / 2.0);
+    println!("{}", res);
 }
 
 fn main() {
