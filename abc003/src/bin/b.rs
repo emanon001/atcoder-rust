@@ -10,7 +10,20 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars,
+        t: Chars
     };
+
+    let is_ok = s.into_iter().zip(t).all(|(x, y)| {
+        let atcoder = vec!['a', 't', 'c', 'o', 'd', 'e', 'r'];
+        x == y || (x == '@' && atcoder.contains(&y)) || (y == '@' && atcoder.contains(&x))
+    });
+    let res = if is_ok {
+        "You can win"
+    } else {
+        "You will lose"
+    };
+    println!("{}", res);
 }
 
 fn main() {
