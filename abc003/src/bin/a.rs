@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize
     };
+
+    let sum = (1..=n).sum::<usize>();
+    let res = sum as f64 / n as f64 * 10000.0;
+    println!("{}", res);
 }
 
 fn main() {
