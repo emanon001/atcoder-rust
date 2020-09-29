@@ -2,15 +2,23 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
-use proconio::input;
 #[allow(unused_imports)]
 use proconio::marker::*;
+use regex::Regex;
 #[allow(unused_imports)]
 use std::collections::*;
 
+fn read<T: std::str::FromStr>() -> T {
+    let mut s = String::new();
+    std::io::stdin().read_line(&mut s).ok();
+    s.trim().parse().ok().unwrap()
+}
+
 fn solve() {
-    input! {
-    };
+    let s: String = read();
+    let re = Regex::new(r"\s+").unwrap();
+    let res = re.replace_all(&s, ",");
+    println!("{}", res);
 }
 
 fn main() {
