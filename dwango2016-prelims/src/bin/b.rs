@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        kv: [usize; n - 1]
     };
+
+    let mut res = kv
+        .iter()
+        .tuple_windows()
+        .map(|(a, b)| a.min(b))
+        .collect::<VecDeque<_>>();
+    res.push_front(&kv[0]);
+    res.push_back(&kv[kv.len() - 1]);
+    let res = res.into_iter().join(" ");
+    println!("{}", res);
 }
 
 fn main() {
