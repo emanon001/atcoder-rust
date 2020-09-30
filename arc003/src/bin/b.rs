@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        mut sv: [String; n]
     };
+
+    sv.sort_by_key(|s| s.chars().rev().collect::<String>());
+    for s in sv {
+        println!("{}", s);
+    }
 }
 
 fn main() {
