@@ -3,6 +3,7 @@ pub mod bsearch;
 pub mod chars;
 pub mod divisors;
 pub mod graph;
+pub mod io;
 pub mod lca;
 pub mod mod_comb;
 pub mod mod_int;
