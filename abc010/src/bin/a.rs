@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: String
     };
+
+    let res = s + "pp";
+    println!("{}", res);
 }
 
 fn main() {
