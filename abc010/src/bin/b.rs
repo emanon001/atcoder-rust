@@ -10,7 +10,22 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [usize; n]
     };
+
+    let mut res = 0;
+    for a in av {
+        let mut b = a;
+        for x in (1..=a).rev() {
+            if x % 2 == 1 && x % 3 != 2 {
+                b = x;
+                break;
+            }
+        }
+        res += a - b;
+    }
+    println!("{}", res);
 }
 
 fn main() {
