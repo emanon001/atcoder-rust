@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: f64, b: f64, c: f64, d: f64
     };
+
+    let tper = b / a;
+    let aper = d / c;
+    let res = if tper == aper {
+        "DRAW"
+    } else if tper > aper {
+        "TAKAHASHI"
+    } else {
+        "AOKI"
+    };
+    println!("{}", res);
 }
 
 fn main() {
