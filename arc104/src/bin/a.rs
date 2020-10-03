@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: isize, b: isize
     };
+
+    let x = (a + b) / 2;
+    let y = a - x;
+    println!("{} {}", x, y);
 }
 
 fn main() {
