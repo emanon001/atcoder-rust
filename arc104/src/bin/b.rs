@@ -30,11 +30,11 @@ fn solve() {
     }
     let mut res = 0;
     for l in 0..n - 1 {
-        for r in l + 1..n {
-            let a_c = cusum[r + 1][0] - cusum[l][0];
-            let t_c = cusum[r + 1][1] - cusum[l][1];
-            let c_c = cusum[r + 1][2] - cusum[l][2];
-            let g_c = cusum[r + 1][3] - cusum[l][3];
+        for r in l + 2..n + 1 {
+            let a_c = cusum[r][0] - cusum[l][0];
+            let t_c = cusum[r][1] - cusum[l][1];
+            let c_c = cusum[r][2] - cusum[l][2];
+            let g_c = cusum[r][3] - cusum[l][3];
             if a_c == t_c && c_c == g_c {
                 res += 1;
             }
