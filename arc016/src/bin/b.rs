@@ -10,7 +10,30 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        music: [Chars; n]
     };
+
+    let mut res = 0;
+    for i in 0..9 {
+        let mut prev = '_';
+        for j in 0..n {
+            let ch = music[j][i];
+            res += match ch {
+                'x' => 1,
+                'o' => {
+                    if prev != 'o' {
+                        1
+                    } else {
+                        0
+                    }
+                }
+                _ => 0,
+            };
+            prev = ch;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
