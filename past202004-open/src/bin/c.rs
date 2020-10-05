@@ -10,7 +10,23 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        mut grid: [Chars; n]
     };
+
+    for i in (0..n - 1).rev() {
+        for j in 1..n * 2 - 2 {
+            if grid[i][j] != '#' {
+                continue;
+            }
+            if grid[i + 1][j - 1] == 'X' || grid[i + 1][j] == 'X' || grid[i + 1][j + 1] == 'X' {
+                grid[i][j] = 'X';
+            }
+        }
+    }
+    for i in 0..n {
+        println!("{}", grid[i].iter().join(""));
+    }
 }
 
 fn main() {
