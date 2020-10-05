@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars
     };
+
+    let mut counts = HashMap::new();
+    for ch in s {
+        *counts.entry(ch).or_insert(0) += 1;
+    }
+    let res = counts.into_iter().max_by_key(|x| x.1).unwrap().0;
+    println!("{}", res);
 }
 
 fn main() {
