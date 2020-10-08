@@ -20,14 +20,13 @@ fn solve() {
     let mut c = 1;
     while winners.len() >= 2 {
         let mut new_winners = Vec::new();
-        for chunk in winners.chunks(2) {
-            let max = chunk.into_iter().max_by_key(|x| x.1).unwrap();
-            for (i, a) in chunk {
-                if i == &max.0 {
-                    new_winners.push((*i, *a));
-                }
+        for chunk in &winners.iter().chunks(2) {
+            let chunk = chunk.collect::<Vec<_>>();
+            for (i, _) in &chunk {
                 res[*i] = c;
             }
+            let max = *chunk.into_iter().max_by_key(|(_, a)| a).unwrap();
+            new_winners.push(max);
         }
         winners = new_winners;
         c += 1;
