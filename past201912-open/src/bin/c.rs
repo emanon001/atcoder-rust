@@ -9,6 +9,10 @@ use proconio::marker::*;
 use std::collections::*;
 
 fn main() {
-  input! {
-  };
+    input! {
+        mut v: [isize; 6]
+    };
+
+    v.sort_by_key(|x| -x);
+    println!("{}", v[3 - 1]);
 }
