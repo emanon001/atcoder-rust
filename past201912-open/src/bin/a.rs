@@ -9,6 +9,14 @@ use proconio::marker::*;
 use std::collections::*;
 
 fn main() {
-  input! {
-  };
+    input! {
+        s: String
+    };
+
+    let res = if let Ok(x) = s.parse::<usize>() {
+        (x * 2).to_string()
+    } else {
+        "error".into()
+    };
+    println!("{}", res);
 }
