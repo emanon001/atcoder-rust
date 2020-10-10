@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: char,
+        t: char
     };
+
+    let res = if s == 'Y' { t.to_ascii_uppercase() } else { t };
+    println!("{}", res);
 }
 
 fn main() {
