@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: String,
+        t: String
     };
+
+    let res = if s == t {
+        "same"
+    } else if s.to_ascii_lowercase() == t.to_ascii_lowercase() {
+        "case-insensitive"
+    } else {
+        "different"
+    };
+    println!("{}", res);
 }
 
 fn main() {
