@@ -10,7 +10,23 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: u64, r: u64, n: u64
     };
+
+    if r == 1 {
+        println!("{}", a);
+        return;
+    }
+
+    let mut cur = a;
+    for _ in 0..n - 1 {
+        cur *= r;
+        if cur > 10.pow(9) {
+            println!("large");
+            return;
+        }
+    }
+    println!("{}", cur);
 }
 
 fn main() {
