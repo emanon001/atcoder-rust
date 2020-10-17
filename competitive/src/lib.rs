@@ -2,6 +2,7 @@ pub mod bit;
 pub mod bsearch;
 pub mod chars;
 pub mod divisors;
+pub mod dp;
 pub mod graph;
 pub mod io;
 pub mod lca;
