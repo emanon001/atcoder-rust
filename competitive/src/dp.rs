@@ -7,7 +7,7 @@ pub fn bit_dp<C>(
     candidates: &[C],
     fin: usize,
     inf: i64,
-    f: fn(usize, &C) -> (usize, i64),
+    f: fn(usize, &[C], usize) -> (usize, i64),
 ) -> i64 {
     if let Some(res) = dp[state] {
         return res;
@@ -18,8 +18,8 @@ pub fn bit_dp<C>(
         return res;
     }
     let mut res = inf;
-    for c in candidates {
-        let (new_state, c) = f(state, c);
+    for i in 0..candidates.len() {
+        let (new_state, c) = f(state, candidates, i);
         if new_state != state {
             let cost = bit_dp(new_state, dp, candidates, fin, inf, f) + c;
             res = res.min(cost);
@@ -37,7 +37,7 @@ pub fn traveling_salesman<C>(
     start: usize,
     fin: usize,
     inf: i64,
-    f: fn(usize, usize, &C, usize, &C) -> (usize, i64), // (state, u, u_candidate, v, v_candidate)
+    f: fn(usize, &[C], usize, usize) -> (usize, i64),
 ) -> i64 {
     if let Some(res) = dp[state][u] {
         return res;
@@ -48,7 +48,7 @@ pub fn traveling_salesman<C>(
     }
     let mut res = inf;
     for v in 0..candidates.len() {
-        let (new_state, c) = f(state, u, &candidates[u], v, &candidates[v]);
+        let (new_state, c) = f(state, candidates, u, v);
         if new_state != state {
             let cost = traveling_salesman(new_state, v, dp, candidates, start, fin, inf, f) + c;
             res = res.min(cost);
@@ -74,7 +74,8 @@ mod tests {
         let fin = (1 << 3) - 1;
         let inf = 1_i64 << 60;
         let mut dp = vec![None; fin + 1];
-        let cost = bit_dp(0, &mut dp, &candidates, fin, inf, |state, (s, c)| {
+        let cost = bit_dp(0, &mut dp, &candidates, fin, inf, |state, candidates, i| {
+            let (s, c) = &candidates[i];
             let mut new_state = state;
             for (i, ch) in s.iter().enumerate() {
                 new_state |= if *ch == 'Y' { 1 << i } else { 0 };
@@ -99,9 +100,9 @@ mod tests {
             0,
             fin,
             inf,
-            |state, _, uc, v, vc| {
-                let (ux, uy, uz) = uc;
-                let (vx, vy, vz) = vc;
+            |state, candidates, u, v| {
+                let (ux, uy, uz) = candidates[u];
+                let (vx, vy, vz) = candidates[v];
                 let new_state = state | (1 << v);
                 let cost = (vx - ux).abs() + (vy - uy).abs() + 0.max(vz - uz);
                 (new_state, cost)
