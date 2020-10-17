@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        xv: [f64; n]
     };
+
+    let a = xv.iter().map(|x| x.abs()).sum::<f64>();
+    let b = xv.iter().map(|x| x.abs() * x.abs()).sum::<f64>().sqrt();
+    let c = xv.iter().map(|x| x.abs() as u64).max().unwrap();
+    println!("{} {} {}", a, b, c);
 }
 
 fn main() {
