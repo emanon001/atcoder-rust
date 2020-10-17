@@ -19,9 +19,6 @@ fn f(state: usize, dp: &mut [Vec<Option<i64>>], u: usize, xyzv: &[(i64, i64, i64
     let (cx, cy, cz) = xyzv[u];
     let mut res = 1_i64 << 60;
     for v in 0..xyzv.len() {
-        if state & (1 << v) == 1 {
-            continue;
-        }
         let (x, y, z) = xyzv[v];
         let new_state = state | (1 << v);
         if new_state != state {
