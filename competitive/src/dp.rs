@@ -29,9 +29,38 @@ pub fn bit_dp<C>(
     res
 }
 
+pub fn traveling_salesman<C>(
+    state: usize,
+    u: usize,
+    dp: &mut [Vec<Option<i64>>],
+    candidates: &[C],
+    start: usize,
+    fin: usize,
+    inf: i64,
+    f: fn(usize, usize, &C, usize, &C) -> (usize, i64), // (state, u, u_candidate, v, v_candidate)
+) -> i64 {
+    if let Some(res) = dp[state][u] {
+        return res;
+    }
+    if state == fin && u == start {
+        dp[state][u] = Some(0);
+        return 0;
+    }
+    let mut res = inf;
+    for v in 0..candidates.len() {
+        let (new_state, c) = f(state, u, &candidates[u], v, &candidates[v]);
+        if new_state != state {
+            let cost = traveling_salesman(new_state, v, dp, candidates, start, fin, inf, f) + c;
+            res = res.min(cost);
+        }
+    }
+    dp[state][u] = Some(res);
+    res
+}
+
 #[cfg(test)]
 mod tests {
-    use super::bit_dp;
+    use super::{bit_dp, traveling_salesman};
 
     #[test]
     fn test_bit_dp() {
@@ -53,5 +82,31 @@ mod tests {
             (new_state, *c)
         });
         assert_eq!(cost, 30);
+    }
+
+    #[test]
+    fn test_traveling_salesman() {
+        // ref. https://atcoder.jp/contests/abc180/tasks/abc180_e
+        let candidates: Vec<(i64, i64, i64)> = vec![(0, 0, 0), (1, 1, 1), (-1, -1, -1)];
+        let fin = (1 << 3) - 1;
+        let inf = 1_i64 << 60;
+        let mut dp = vec![vec![None; 3]; fin + 1];
+        let cost = traveling_salesman(
+            0,
+            0,
+            &mut dp,
+            &candidates,
+            0,
+            fin,
+            inf,
+            |state, _, uc, v, vc| {
+                let (ux, uy, uz) = uc;
+                let (vx, vy, vz) = vc;
+                let new_state = state | (1 << v);
+                let cost = (vx - ux).abs() + (vy - uy).abs() + 0.max(vz - uz);
+                (new_state, cost)
+            },
+        );
+        assert_eq!(cost, 10);
     }
 }
