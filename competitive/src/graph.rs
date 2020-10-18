@@ -238,7 +238,13 @@ impl WeightedGraph {
         self.optionalize(cost_list)
     }
 
-    pub fn traveling_salesman(
+    pub fn traveling_salesman(&self, start: usize) -> i64 {
+        let mut dp = vec![vec![None; self.vc]; 1 << self.vc];
+        let fin = (1 << self.vc) - 1;
+        self.traveling_salesman_impl(0, start, &mut dp, start, fin)
+    }
+
+    fn traveling_salesman_impl(
         &self,
         state: usize,
         u: usize,
@@ -257,7 +263,7 @@ impl WeightedGraph {
         for &(v, cost) in &self.graph[u] {
             let new_state = state | (1 << v);
             if new_state != state {
-                let cost = self.traveling_salesman(new_state, v, dp, start, fin) + cost;
+                let cost = self.traveling_salesman_impl(new_state, v, dp, start, fin) + cost;
                 res = res.min(cost);
             }
         }
@@ -582,9 +588,7 @@ mod tests {
                     graph.add_directed_edge((u, v, cost));
                 }
             }
-            let fin = (1 << n) - 1;
-            let mut dp = vec![vec![None; n]; fin + 1];
-            let cost = graph.traveling_salesman(0, 0, &mut dp, 0, fin);
+            let cost = graph.traveling_salesman(0);
             assert_eq!(cost, 10);
         }
 
