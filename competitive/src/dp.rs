@@ -19,9 +19,9 @@ pub fn bit_dp<C>(
     }
     let mut res = inf;
     for i in 0..candidates.len() {
-        let (new_state, c) = f(state, candidates, i);
+        let (new_state, cost) = f(state, candidates, i);
         if new_state != state {
-            let cost = bit_dp(new_state, dp, candidates, fin, inf, f) + c;
+            let cost = bit_dp(new_state, dp, candidates, fin, inf, f) + cost;
             res = res.min(cost);
         }
     }
@@ -29,6 +29,7 @@ pub fn bit_dp<C>(
     res
 }
 
+#[snippet]
 pub fn traveling_salesman<C>(
     state: usize,
     u: usize,
@@ -48,9 +49,9 @@ pub fn traveling_salesman<C>(
     }
     let mut res = inf;
     for v in 0..candidates.len() {
-        let (new_state, c) = f(state, candidates, u, v);
+        let (new_state, cost) = f(state, candidates, u, v);
         if new_state != state {
-            let cost = traveling_salesman(new_state, v, dp, candidates, start, fin, inf, f) + c;
+            let cost = traveling_salesman(new_state, v, dp, candidates, start, fin, inf, f) + cost;
             res = res.min(cost);
         }
     }
