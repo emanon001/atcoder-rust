@@ -238,6 +238,33 @@ impl WeightedGraph {
         self.optionalize(cost_list)
     }
 
+    pub fn traveling_salesman(
+        &self,
+        state: usize,
+        u: usize,
+        dp: &mut [Vec<Option<i64>>],
+        start: usize,
+        fin: usize,
+    ) -> i64 {
+        if let Some(res) = dp[state][u] {
+            return res;
+        }
+        if state == fin && u == start {
+            dp[state][u] = Some(0);
+            return 0;
+        }
+        let mut res = Self::INF;
+        for &(v, cost) in &self.graph[u] {
+            let new_state = state | (1 << v);
+            if new_state != state {
+                let cost = self.traveling_salesman(new_state, v, dp, start, fin) + cost;
+                res = res.min(cost);
+            }
+        }
+        dp[state][u] = Some(res);
+        res
+    }
+
     pub fn vertex_count(&self) -> usize {
         self.vc
     }
@@ -536,6 +563,29 @@ mod tests {
             assert_eq!(res[3], Some(0));
             assert_eq!(res[4], Some(1));
             assert_eq!(res[5], None);
+        }
+
+        #[test]
+        fn test_traveling_salesman() {
+            // ref. https://atcoder.jp/contests/abc180/tasks/abc180_e
+            let n = 3;
+            let vertexes: Vec<(i64, i64, i64)> = vec![(0, 0, 0), (1, 1, 1), (-1, -1, -1)];
+            let mut graph = WeightedGraph::new(&[], 3);
+            for u in 0..n {
+                for v in 0..n {
+                    if u == v {
+                        continue;
+                    }
+                    let (ux, uy, uz) = vertexes[u];
+                    let (vx, vy, vz) = vertexes[v];
+                    let cost = (vx - ux).abs() + (vy - uy).abs() + 0.max(vz - uz);
+                    graph.add_directed_edge((u, v, cost));
+                }
+            }
+            let fin = (1 << n) - 1;
+            let mut dp = vec![vec![None; n]; fin + 1];
+            let cost = graph.traveling_salesman(0, 0, &mut dp, 0, fin);
+            assert_eq!(cost, 10);
         }
 
         #[test]
