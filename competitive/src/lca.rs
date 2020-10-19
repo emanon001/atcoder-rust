@@ -40,9 +40,9 @@ pub struct Lca {
 
 #[snippet("lca")]
 impl Lca {
-    pub fn new(edges: &[(usize, usize)], vn: usize, root: usize) -> Self {
+    pub fn new(edges: Vec<(usize, usize)>, vn: usize, root: usize) -> Self {
         let mut graph = vec![Vec::new(); vn];
-        for &(u, v) in edges {
+        for (u, v) in edges {
             graph[u].push(v);
             graph[v].push(u);
         }
@@ -126,7 +126,7 @@ mod tests {
         #[test]
         fn depth() {
             let edges = vec![(0, 1), (0, 2), (1, 3), (3, 4), (1, 5), (2, 6)];
-            let lca = Lca::new(&edges, 7, 0);
+            let lca = Lca::new(edges, 7, 0);
             assert_eq!(lca.depth(0), 0);
             assert_eq!(lca.depth(1), 1);
             assert_eq!(lca.depth(2), 1);
@@ -139,7 +139,7 @@ mod tests {
         #[test]
         fn query() {
             let edges = vec![(0, 1), (0, 2), (1, 3), (3, 4), (1, 5), (2, 6)];
-            let lca = Lca::new(&edges, 7, 0);
+            let lca = Lca::new(edges, 7, 0);
             assert_eq!(lca.query(0, 0), 0);
             assert_eq!(lca.query(0, 1), 0);
             assert_eq!(lca.query(0, 2), 0);
