@@ -5,90 +5,39 @@ use cargo_snippet::snippet;
 #[snippet("graph")]
 #[derive(Clone)]
 pub struct Graph {
-    graph: WeightedGraph,
-}
-
-#[snippet("graph")]
-pub type Edge = (usize, usize);
-
-#[snippet("graph")]
-impl Graph {
-    pub fn new(edges: &[Edge], vc: usize) -> Self {
-        let edges = Self::to_weighted_edges(&edges);
-        let graph = WeightedGraph::new(&edges, vc);
-        Graph { graph }
-    }
-
-    pub fn new_directed(edges: &[Edge], vc: usize) -> Self {
-        let edges = Self::to_weighted_edges(&edges);
-        let graph = WeightedGraph::new_directed(&edges, vc);
-        Graph { graph }
-    }
-
-    pub fn add_directed_edge(&mut self, e: Edge) {
-        self.graph.add_directed_edge((e.0, e.1, 1));
-    }
-
-    pub fn add_edge(&mut self, e: Edge) {
-        self.graph.add_edge((e.0, e.1, 1));
-    }
-
-    pub fn shortest_path(&self, start: usize) -> Vec<Option<i64>> {
-        self.graph.shortest_path_1(start)
-    }
-
-    pub fn to_weighted_graph(&self) -> WeightedGraph {
-        self.graph.clone()
-    }
-
-    pub fn vertex_count(&self) -> usize {
-        self.graph.vertex_count()
-    }
-
-    fn to_weighted_edges(edges: &[Edge]) -> Vec<WeightedEdge> {
-        edges
-            .into_iter()
-            .map(|(u, v)| (*u, *v, 1))
-            .collect::<Vec<_>>()
-    }
-}
-
-#[snippet("graph")]
-#[derive(Clone)]
-pub struct WeightedGraph {
     graph: Vec<Vec<(usize, i64)>>,
     vc: usize,
 }
 
 #[snippet("graph")]
-pub type WeightedEdge = (usize, usize, i64);
+pub type Edge = (usize, usize, i64);
 
 #[snippet("graph")]
-impl WeightedGraph {
+impl Graph {
     const INF: i64 = 1 << 60;
 
-    pub fn new(edges: &[WeightedEdge], vc: usize) -> Self {
+    pub fn new(edges: Vec<Edge>, vc: usize) -> Self {
         let mut graph = vec![Vec::new(); vc];
-        for &(u, v, w) in edges {
+        for (u, v, w) in edges {
             graph[u].push((v, w));
             graph[v].push((u, w));
         }
         Self { graph, vc }
     }
 
-    pub fn new_directed(edges: &[WeightedEdge], vc: usize) -> Self {
+    pub fn new_directed(edges: Vec<Edge>, vc: usize) -> Self {
         let mut graph = vec![Vec::new(); vc];
-        for &(u, v, w) in edges {
+        for (u, v, w) in edges {
             graph[u].push((v, w));
         }
         Self { graph, vc }
     }
 
-    pub fn add_directed_edge(&mut self, e: WeightedEdge) {
+    pub fn add_directed_edge(&mut self, e: Edge) {
         self.graph[e.0].push((e.1, e.2));
     }
 
-    pub fn add_edge(&mut self, e: WeightedEdge) {
+    pub fn add_edge(&mut self, e: Edge) {
         self.graph[e.0].push((e.1, e.2));
         self.graph[e.1].push((e.0, e.2));
     }
@@ -156,14 +105,14 @@ impl WeightedGraph {
         visited
     }
 
-    pub fn rev(&self) -> WeightedGraph {
+    pub fn rev(&self) -> Graph {
         let mut edges = Vec::new();
         for u in 0..self.vc {
             for &(v, w) in &self.graph[u] {
                 edges.push((v, u, w));
             }
         }
-        Self::new_directed(&edges, self.vc)
+        Self::new_directed(edges, self.vc)
     }
 
     pub fn shortest_path(&self, start: usize) -> Vec<Option<i64>> {
@@ -335,7 +284,7 @@ where
         Self { grid, h, w, ng }
     }
 
-    pub fn to_graph<F>(&self, generator: F) -> WeightedGraph
+    pub fn to_graph<F>(&self, generator: F) -> Graph
     where
         F: Fn(&Grid<T>, usize, usize) -> Vec<GridDestination>,
     {
@@ -349,7 +298,7 @@ where
                 }
             }
         }
-        WeightedGraph::new_directed(&edges, self.h * self.w)
+        Graph::new_directed(edges, self.h * self.w)
     }
 
     pub fn height(&self) -> usize {
@@ -434,35 +383,10 @@ mod tests {
         use super::super::Graph;
 
         #[test]
-        fn shortest_path() {
-            let edges = vec![(0, 1), (0, 2), (1, 2), (2, 3), (2, 4), (3, 4), (4, 5)];
-            // 頂点6には到達しない
-            let graph = Graph::new(&edges, 7);
-            let res = graph.shortest_path(0);
-            assert_eq!(res[0], Some(0));
-            assert_eq!(res[1], Some(1));
-            assert_eq!(res[2], Some(1));
-            assert_eq!(res[3], Some(2));
-            assert_eq!(res[4], Some(2));
-            assert_eq!(res[5], Some(3));
-            assert_eq!(res[6], None);
-        }
-
-        #[test]
-        fn vertex_count() {
-            let graph = Graph::new(&[], 5);
-            assert_eq!(graph.vertex_count(), 5);
-        }
-    }
-
-    mod weighted_graph {
-        use super::super::WeightedGraph;
-
-        #[test]
         fn bellman_ford() {
             let edges = vec![(0, 1, 1), (0, 2, 2), (1, 3, 3), (2, 3, 3)];
             // 頂点4には到達しない
-            let graph = WeightedGraph::new(&edges, 5);
+            let graph = Graph::new(edges, 5);
             let res = graph.bellman_ford(0);
             assert!(res.is_some());
             let res = res.unwrap();
@@ -476,7 +400,7 @@ mod tests {
         #[test]
         fn bellman_ford_has_negative_weight() {
             let edges = vec![(0, 1, 1), (1, 2, -3), (1, 3, 3), (2, 0, 2), (2, 3, 3)];
-            let graph = WeightedGraph::new_directed(&edges, 4);
+            let graph = Graph::new_directed(edges, 4);
             let res = graph.bellman_ford(0);
             assert!(res.is_some());
             let res = res.unwrap();
@@ -489,7 +413,7 @@ mod tests {
         #[test]
         fn bellman_ford_has_negative_loop() {
             let edges = vec![(0, 1, 1), (1, 2, -4), (1, 3, 3), (2, 0, 2), (2, 3, 3)];
-            let graph = WeightedGraph::new_directed(&edges, 4);
+            let graph = Graph::new_directed(edges, 4);
             let res = graph.bellman_ford(0);
             assert!(res.is_none());
         }
@@ -497,14 +421,14 @@ mod tests {
         #[test]
         fn prim() {
             let edges = vec![(0, 1, 1), (0, 2, 5), (0, 3, 2), (1, 3, 1), (2, 3, 3)];
-            let graph = WeightedGraph::new(&edges, 4);
+            let graph = Graph::new(edges, 4);
             assert_eq!(graph.prim(), 5);
         }
 
         #[test]
         fn reachable_vertexes() {
             let edges = vec![(0, 1, 1), (1, 2, 1), (1, 3, 1)];
-            let graph = WeightedGraph::new_directed(&edges, 4);
+            let graph = Graph::new_directed(edges, 4);
             assert_eq!(
                 graph.reachable_vertexes(0),
                 vec![0, 1, 2, 3].into_iter().collect()
@@ -520,7 +444,7 @@ mod tests {
         #[test]
         fn rev() {
             let edges = vec![(0, 1, 1), (0, 2, 2), (1, 2, 3)];
-            let graph = WeightedGraph::new_directed(&edges, 4);
+            let graph = Graph::new_directed(edges, 4);
             let rev_graph = graph.rev();
             assert_eq!(rev_graph.vertex_count(), graph.vertex_count());
             assert_eq!(rev_graph.graph.len(), graph.graph.len());
@@ -541,7 +465,7 @@ mod tests {
                 (3, 4, 2),
             ];
             // 頂点5には到達しない
-            let graph = WeightedGraph::new(&edges, 6);
+            let graph = Graph::new(edges, 6);
             let res = graph.shortest_path(0);
             assert_eq!(res[0], Some(0));
             assert_eq!(res[1], Some(1));
@@ -562,7 +486,7 @@ mod tests {
                 (3, 4, 1),
             ];
             // 頂点5には到達しない
-            let graph = WeightedGraph::new(&edges, 6);
+            let graph = Graph::new(edges, 6);
             let res = graph.shortest_path_01(0);
             assert_eq!(res[0], Some(0));
             assert_eq!(res[1], Some(0));
@@ -577,7 +501,7 @@ mod tests {
             // ref. https://atcoder.jp/contests/abc180/tasks/abc180_e
             let n = 3;
             let vertexes: Vec<(i64, i64, i64)> = vec![(0, 0, 0), (1, 1, 1), (-1, -1, -1)];
-            let mut graph = WeightedGraph::new(&[], 3);
+            let mut graph = Graph::new(Vec::new(), 3);
             for u in 0..n {
                 for v in 0..n {
                     if u == v {
@@ -595,7 +519,7 @@ mod tests {
 
         #[test]
         fn vertex_count() {
-            let graph = WeightedGraph::new(&[], 5);
+            let graph = Graph::new(Vec::new(), 5);
             assert_eq!(graph.vertex_count(), 5);
         }
 
@@ -609,7 +533,7 @@ mod tests {
                 (2, 3, 3),
                 (3, 4, 2),
             ];
-            let graph = WeightedGraph::new(&edges, 6);
+            let graph = Graph::new(edges, 6);
             let res = graph.warshall_floyd();
             // start: 0
             assert_eq!(res[0][0], Some(0));
