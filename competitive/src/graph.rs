@@ -383,7 +383,7 @@ mod tests {
         use super::super::Graph;
 
         #[test]
-        fn bellman_ford() {
+        fn test_bellman_ford() {
             let edges = vec![(0, 1, 1), (0, 2, 2), (1, 3, 3), (2, 3, 3)];
             // 頂点4には到達しない
             let graph = Graph::new(edges, 5);
@@ -398,7 +398,7 @@ mod tests {
         }
 
         #[test]
-        fn bellman_ford_has_negative_weight() {
+        fn test_bellman_ford_has_negative_weight() {
             let edges = vec![(0, 1, 1), (1, 2, -3), (1, 3, 3), (2, 0, 2), (2, 3, 3)];
             let graph = Graph::new_directed(edges, 4);
             let res = graph.bellman_ford(0);
@@ -411,7 +411,7 @@ mod tests {
         }
 
         #[test]
-        fn bellman_ford_has_negative_loop() {
+        fn test_bellman_ford_has_negative_loop() {
             let edges = vec![(0, 1, 1), (1, 2, -4), (1, 3, 3), (2, 0, 2), (2, 3, 3)];
             let graph = Graph::new_directed(edges, 4);
             let res = graph.bellman_ford(0);
@@ -419,14 +419,14 @@ mod tests {
         }
 
         #[test]
-        fn prim() {
+        fn test_prim() {
             let edges = vec![(0, 1, 1), (0, 2, 5), (0, 3, 2), (1, 3, 1), (2, 3, 3)];
             let graph = Graph::new(edges, 4);
             assert_eq!(graph.prim(), 5);
         }
 
         #[test]
-        fn reachable_vertexes() {
+        fn test_reachable_vertexes() {
             let edges = vec![(0, 1, 1), (1, 2, 1), (1, 3, 1)];
             let graph = Graph::new_directed(edges, 4);
             assert_eq!(
@@ -442,7 +442,7 @@ mod tests {
         }
 
         #[test]
-        fn rev() {
+        fn test_rev() {
             let edges = vec![(0, 1, 1), (0, 2, 2), (1, 2, 3)];
             let graph = Graph::new_directed(edges, 4);
             let rev_graph = graph.rev();
@@ -455,7 +455,7 @@ mod tests {
         }
 
         #[test]
-        fn shortest_path() {
+        fn test_shortest_path() {
             let edges = vec![
                 (0, 1, 1),
                 (0, 2, 2),
@@ -476,7 +476,7 @@ mod tests {
         }
 
         #[test]
-        fn shortest_path_01() {
+        fn test_shortest_path_01() {
             let edges = vec![
                 (0, 1, 1),
                 (0, 2, 0),
@@ -518,13 +518,13 @@ mod tests {
         }
 
         #[test]
-        fn vertex_count() {
+        fn test_vertex_count() {
             let graph = Graph::new(Vec::new(), 5);
             assert_eq!(graph.vertex_count(), 5);
         }
 
         #[test]
-        fn warshall_floyd() {
+        fn test_warshall_floyd() {
             let edges = vec![
                 (0, 1, 1),
                 (0, 2, 2),
@@ -584,7 +584,7 @@ mod tests {
         use super::super::{gen_grid_destinations, Grid, ALL_DIRS, UDLR_DIRS};
 
         #[test]
-        fn to_graph_udlr_dirs() {
+        fn test_to_graph_udlr_dirs() {
             let grid = vec!["...#.", ".#.#.", ".#..."]
                 .into_iter()
                 .map(|s| s.chars().collect::<Vec<char>>())
@@ -607,7 +607,7 @@ mod tests {
         }
 
         #[test]
-        fn to_graph_all_dirs() {
+        fn test_to_graph_all_dirs() {
             let grid = vec![".....", ".#.#.", "....."]
                 .into_iter()
                 .map(|s| s.chars().collect::<Vec<char>>())
@@ -632,7 +632,7 @@ mod tests {
         }
 
         #[test]
-        fn height() {
+        fn test_height() {
             let grid = vec![".....", ".#.#.", "....."]
                 .into_iter()
                 .map(|s| s.chars().collect::<Vec<char>>())
@@ -642,7 +642,7 @@ mod tests {
         }
 
         #[test]
-        fn width() {
+        fn test_width() {
             let grid = vec![".....", ".#.#.", "....."]
                 .into_iter()
                 .map(|s| s.chars().collect::<Vec<char>>())
@@ -652,7 +652,7 @@ mod tests {
         }
 
         #[test]
-        fn in_grid() {
+        fn test_in_grid() {
             let grid = vec!["...", "..."]
                 .into_iter()
                 .map(|s| s.chars().collect::<Vec<char>>())
@@ -672,7 +672,7 @@ mod tests {
         }
 
         #[test]
-        fn ng_some() {
+        fn test_ng_some() {
             let grid = vec!["...", "..."]
                 .into_iter()
                 .map(|s| s.chars().collect::<Vec<char>>())
@@ -682,7 +682,7 @@ mod tests {
         }
 
         #[test]
-        fn ng_none() {
+        fn test_ng_none() {
             let grid = vec!["...", "..."]
                 .into_iter()
                 .map(|s| s.chars().collect::<Vec<char>>())
