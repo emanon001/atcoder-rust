@@ -124,7 +124,7 @@ mod tests {
         use super::super::Lca;
 
         #[test]
-        fn depth() {
+        fn test_depth() {
             let edges = vec![(0, 1), (0, 2), (1, 3), (3, 4), (1, 5), (2, 6)];
             let lca = Lca::new(edges, 7, 0);
             assert_eq!(lca.depth(0), 0);
@@ -137,7 +137,7 @@ mod tests {
         }
 
         #[test]
-        fn query() {
+        fn test_query() {
             let edges = vec![(0, 1), (0, 2), (1, 3), (3, 4), (1, 5), (2, 6)];
             let lca = Lca::new(edges, 7, 0);
             assert_eq!(lca.query(0, 0), 0);
