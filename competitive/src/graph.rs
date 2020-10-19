@@ -312,31 +312,32 @@ impl WeightedGraph {
 
 #[snippet("grid")]
 #[snippet(include = "graph")]
-pub struct Grid {
-    grid: Vec<Vec<char>>,
+pub struct Grid<T>
+where
+    T: PartialEq + Eq + Copy,
+{
+    grid: Vec<Vec<T>>,
     h: usize,
     w: usize,
-    ng_char: char,
+    ng: Option<T>,
 }
 
 #[snippet("grid")]
-impl Grid {
-    pub fn new(grid: &[Vec<char>], ng_char: char) -> Self {
+impl<T> Grid<T>
+where
+    T: PartialEq + Eq + Copy,
+{
+    pub fn new(grid: Vec<Vec<T>>, ng: impl Into<Option<T>>) -> Self {
         assert!(grid.len() > 0);
-        let grid = grid.into_iter().cloned().collect::<Vec<_>>();
         let h = grid.len();
         let w = grid[0].len();
-        Self {
-            grid,
-            h,
-            w,
-            ng_char,
-        }
+        let ng: Option<T> = ng.into();
+        Self { grid, h, w, ng }
     }
 
     pub fn to_graph<F>(&self, generator: F) -> WeightedGraph
     where
-        F: Fn(&Grid, usize, usize) -> Vec<GridDestination>,
+        F: Fn(&Grid<T>, usize, usize) -> Vec<GridDestination>,
     {
         let mut edges = Vec::new();
         for i in 0..self.h {
@@ -363,12 +364,12 @@ impl Grid {
         i >= 0 && i < self.h as isize && j >= 0 && j < self.w as isize
     }
 
-    pub fn cell(&self, i: usize, j: usize) -> char {
+    pub fn cell(&self, i: usize, j: usize) -> T {
         self.grid[i][j]
     }
 
-    pub fn ng_char(&self) -> char {
-        self.ng_char
+    pub fn ng(&self) -> Option<T> {
+        self.ng
     }
 
     pub fn vertex(&self, i: usize, j: usize) -> usize {
@@ -401,14 +402,14 @@ pub type GridPos = (usize, usize);
 pub type GridDestination = (GridPos, i64);
 
 #[snippet("grid")]
-pub fn gen_grid_destinations(
-    grid: &Grid,
+pub fn gen_grid_destinations<T: PartialEq + Eq + Copy>(
+    grid: &Grid<T>,
     i: usize,
     j: usize,
     directions: &[(isize, isize)],
 ) -> Vec<GridDestination> {
     let mut dest = Vec::new();
-    if grid.cell(i, j) == grid.ng_char() {
+    if grid.ng().is_some() && grid.cell(i, j) == grid.ng().unwrap() {
         return dest;
     }
     for &(di, dj) in directions {
@@ -419,7 +420,7 @@ pub fn gen_grid_destinations(
         }
         let new_i = new_i as usize;
         let new_j = new_j as usize;
-        if grid.cell(new_i, new_j) == grid.ng_char() {
+        if grid.ng().is_some() && grid.cell(new_i, new_j) == grid.ng().unwrap() {
             continue;
         }
         dest.push(((new_i, new_j), 1));
@@ -664,7 +665,7 @@ mod tests {
                 .into_iter()
                 .map(|s| s.chars().collect::<Vec<char>>())
                 .collect::<Vec<_>>();
-            let grid = Grid::new(&grid, '#');
+            let grid = Grid::new(grid, '#');
             let graph = grid.to_graph(|grid, i, j| gen_grid_destinations(grid, i, j, &UDLR_DIRS));
             let s = grid.vertex(0, 0);
             let d = graph.shortest_path(s);
@@ -687,7 +688,7 @@ mod tests {
                 .into_iter()
                 .map(|s| s.chars().collect::<Vec<char>>())
                 .collect::<Vec<_>>();
-            let grid = Grid::new(&grid, '#');
+            let grid = Grid::new(grid, '#');
             let graph = grid.to_graph(|grid, i, j| gen_grid_destinations(grid, i, j, &ALL_DIRS));
             let s = grid.vertex(1, 2);
             let d = graph.shortest_path(s);
@@ -712,7 +713,7 @@ mod tests {
                 .into_iter()
                 .map(|s| s.chars().collect::<Vec<char>>())
                 .collect::<Vec<_>>();
-            let grid = Grid::new(&grid, '#');
+            let grid = Grid::new(grid, '#');
             assert_eq!(grid.height(), 3);
         }
 
@@ -722,7 +723,7 @@ mod tests {
                 .into_iter()
                 .map(|s| s.chars().collect::<Vec<char>>())
                 .collect::<Vec<_>>();
-            let grid = Grid::new(&grid, '#');
+            let grid = Grid::new(grid, '#');
             assert_eq!(grid.width(), 5);
         }
 
@@ -732,7 +733,7 @@ mod tests {
                 .into_iter()
                 .map(|s| s.chars().collect::<Vec<char>>())
                 .collect::<Vec<_>>();
-            let grid = Grid::new(&grid, '#');
+            let grid = Grid::new(grid, '#');
             assert_eq!(grid.in_grid(-1, 0), false);
             assert_eq!(grid.in_grid(0, -1), false);
             assert_eq!(grid.in_grid(0, 0), true);
@@ -747,13 +748,23 @@ mod tests {
         }
 
         #[test]
-        fn ng_char() {
+        fn ng_some() {
             let grid = vec!["...", "..."]
                 .into_iter()
                 .map(|s| s.chars().collect::<Vec<char>>())
                 .collect::<Vec<_>>();
-            let grid = Grid::new(&grid, '#');
-            assert_eq!(grid.ng_char(), '#');
+            let grid = Grid::new(grid, '#');
+            assert_eq!(grid.ng(), Some('#'));
+        }
+
+        #[test]
+        fn ng_none() {
+            let grid = vec!["...", "..."]
+                .into_iter()
+                .map(|s| s.chars().collect::<Vec<char>>())
+                .collect::<Vec<_>>();
+            let grid = Grid::new(grid, None);
+            assert_eq!(grid.ng(), None);
         }
     }
 }
