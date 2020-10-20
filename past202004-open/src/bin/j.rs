@@ -18,7 +18,7 @@ fn parse_ascii_chars(i: usize, chars: &[char]) -> (usize, Vec<char>) {
     (j, s)
 }
 
-fn parse_parent(i: usize, chars: &[char]) -> (usize, Vec<char>) {
+fn parse_parentheses(i: usize, chars: &[char]) -> (usize, Vec<char>) {
     let mut j = i + 1;
     let mut s = Vec::new();
     while j < chars.len() && chars[j] != ')' {
@@ -36,7 +36,7 @@ fn parse_parent(i: usize, chars: &[char]) -> (usize, Vec<char>) {
 // "abc" | (<expr>[, <expr>, ...])
 fn parse_expr(i: usize, chars: &[char]) -> (usize, Vec<char>) {
     if chars[i] == '(' {
-        parse_parent(i, chars)
+        parse_parentheses(i, chars)
     } else {
         parse_ascii_chars(i, chars)
     }
