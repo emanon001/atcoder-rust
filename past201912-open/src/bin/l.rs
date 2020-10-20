@@ -9,109 +9,106 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
-pub struct WeightedGraph {
+#[derive(Clone)]
+pub struct Graph {
     graph: Vec<Vec<(usize, f64)>>,
+    vc: usize,
 }
-
-type WeightedEdge = (usize, usize, f64);
-impl WeightedGraph {
-    pub fn new(edges: &[WeightedEdge], v: usize) -> Self {
-        let mut graph = vec![Vec::new(); v];
-        for &(u, v, w) in edges {
+pub type Edge = (usize, usize, f64);
+impl Graph {
+    pub fn new(edges: Vec<Edge>, vc: usize) -> Self {
+        let mut graph = vec![Vec::new(); vc];
+        for (u, v, w) in edges {
             graph[u].push((v, w));
             graph[v].push((u, w));
         }
-        Self { graph }
+        Self { graph, vc }
     }
-
-    pub fn new_directed(edges: &[WeightedEdge], v: usize) -> Self {
-        let mut graph = vec![Vec::new(); v];
-        for &(u, v, w) in edges {
+    pub fn new_directed(edges: Vec<Edge>, vc: usize) -> Self {
+        let mut graph = vec![Vec::new(); vc];
+        for (u, v, w) in edges {
             graph[u].push((v, w));
         }
-        Self { graph }
+        Self { graph, vc }
     }
-
+    pub fn add_directed_edge(&mut self, e: Edge) {
+        self.graph[e.0].push((e.1, e.2));
+    }
+    pub fn add_edge(&mut self, e: Edge) {
+        self.graph[e.0].push((e.1, e.2));
+        self.graph[e.1].push((e.0, e.2));
+    }
     pub fn prim(&self) -> f64 {
         let mut used = std::collections::HashSet::new();
         let mut heap = std::collections::BinaryHeap::new();
-
         let mut res = 0_f64;
         heap.push(std::cmp::Reverse((OrderedFloat::from(0_f64), 0)));
-        while let Some(std::cmp::Reverse((cost, u))) = heap.pop() {
+        while let Some(std::cmp::Reverse((weight, u))) = heap.pop() {
             if used.contains(&u) {
                 continue;
             }
             used.insert(u);
-            res += cost.into_inner();
-            for &(v, c) in &self.graph[u] {
+            res += weight.into_inner();
+            for &(v, w) in &self.graph[u] {
                 if used.contains(&v) {
                     continue;
                 }
-                heap.push(std::cmp::Reverse((OrderedFloat::from(c), v)));
+                heap.push(std::cmp::Reverse((OrderedFloat::from(w), v)));
             }
         }
         res
     }
+    pub fn vertex_count(&self) -> usize {
+        self.vc
+    }
 }
 
-fn distance(v1: (usize, usize), v2: (usize, usize)) -> f64 {
-    let xd = ((v1.0 as isize) - (v2.0 as isize)).abs() as usize;
-    let yd = ((v1.1 as isize) - (v2.1 as isize)).abs() as usize;
-    ((xd * xd + yd * yd) as f64).sqrt()
+fn weight(a: (f64, f64, usize), b: (f64, f64, usize)) -> f64 {
+    let xd = (a.0 - b.0).abs();
+    let yd = (a.1 - b.1).abs();
+    let d = (xd * xd + yd * yd).sqrt();
+    if a.2 == b.2 {
+        d
+    } else {
+        d * 10.0
+    }
 }
 
 fn main() {
     input! {
         n: usize, m: usize,
-        nv: [(usize, usize, usize); n],
-        mv: [(usize, usize, usize); m]
-    };
-
-    let mut res = std::f64::MAX;
-    let mut edges = Vec::new();
-    for u in 0..n - 1 {
-        let (x1, y1, c1) = nv[u];
-        for v in u + 1..n {
-            let (x2, y2, c2) = nv[v];
-            let d = distance((x1, y1), (x2, y2));
-            let cost = if c1 == c2 { d } else { d * 10.0 };
-            edges.push((u, v, cost));
-        }
+        n_xycv: [(f64, f64, usize); n],
+        m_xycv: [(f64, f64, usize); m],
     }
-    for bit in 0..1 << m {
-        let mut edges = edges.clone();
-        for u in 0..m {
-            if (bit >> u) & 1 == 0 {
-                continue;
+
+    let mut edges = Vec::new();
+    for ((u, a), (v, b)) in n_xycv.iter().enumerate().tuple_combinations() {
+        let w = weight(*a, *b);
+        edges.push((u, v, w));
+    }
+    let graph = Graph::new(edges, n + m);
+    let mut res = std::f64::MAX;
+    for bits in 0..1 << m {
+        let mut graph = graph.clone();
+        let mut vertexes = Vec::new();
+        for i in 0..m {
+            if (bits >> i) & 1 == 1 {
+                vertexes.push(i);
             }
-            let (x1, y1, c1) = mv[u];
+        }
+        for (&u, &v) in vertexes.iter().tuple_combinations() {
+            let w = weight(m_xycv[u], m_xycv[v]);
+            graph.add_edge((u + n, v + n, w));
+        }
+        for u in vertexes {
             for v in 0..n {
-                let (x2, y2, c2) = nv[v];
-                let d = distance((x1, y1), (x2, y2));
-                let cost = if c1 == c2 { d } else { d * 10.0 };
-                edges.push((u + n, v, cost));
+                let w = weight(m_xycv[u], n_xycv[v]);
+                graph.add_edge((u + n, v, w));
             }
         }
-        for u in 0..m {
-            if (bit >> u) & 1 == 0 {
-                continue;
-            }
-            let (x1, y1, c1) = mv[u];
-            for v in 0..m {
-                if (bit >> v) & 1 == 0 {
-                    continue;
-                }
-                let (x2, y2, c2) = mv[v];
-                let d = distance((x1, y1), (x2, y2));
-                let cost = if c1 == c2 { d } else { d * 10.0 };
-                edges.push((u + n, v + n, cost));
-            }
-        }
-        let graph = WeightedGraph::new(&edges, n + m);
-        let d = graph.prim();
-        if d < res {
-            res = d;
+        let cost = graph.prim();
+        if cost < res {
+            res = cost;
         }
     }
     println!("{}", res);
