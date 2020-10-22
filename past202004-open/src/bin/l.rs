@@ -28,19 +28,6 @@ where
         let data = vec![T::mempty(); size * 2 - 1];
         Self { size, data }
     }
-    pub fn from_slice(values: &[T]) -> Self {
-        let mut st = SegmentTree::new(values.len());
-        for (i, v) in values.into_iter().enumerate() {
-            st.data[i + st.size - 1] = v.clone();
-        }
-        if st.size < 2 {
-            return st;
-        }
-        for i in (0..=(st.size - 2)).rev() {
-            st.data[i] = st.data[i * 2 + 1].mappend(&st.data[i * 2 + 2]);
-        }
-        st
-    }
     /// 0-origin
     pub fn update(&mut self, i: usize, v: T) {
         let mut i = i + self.size - 1;
@@ -74,6 +61,33 @@ where
         vl.mappend(&vr)
     }
 }
+impl<T> From<&[T]> for SegmentTree<T>
+where
+    T: Monoid + Clone,
+{
+    fn from(values: &[T]) -> Self {
+        let mut st = SegmentTree::new(values.len());
+        for (i, v) in values.into_iter().enumerate() {
+            st.data[i + st.size - 1] = v.clone();
+        }
+        if st.size < 2 {
+            return st;
+        }
+        for i in (0..=(st.size - 2)).rev() {
+            st.data[i] = st.data[i * 2 + 1].mappend(&st.data[i * 2 + 2]);
+        }
+        st
+    }
+}
+impl<T> From<Vec<T>> for SegmentTree<T>
+where
+    T: Monoid + Clone,
+{
+    fn from(values: Vec<T>) -> Self {
+        let values: &[T] = &values;
+        Self::from(values)
+    }
+}
 
 /// (a, idx)
 impl Monoid for (usize, usize) {
@@ -96,7 +110,7 @@ fn solve() {
         .enumerate()
         .map(|(i, a)| (a, i))
         .collect::<Vec<_>>();
-    let st = SegmentTree::from_slice(&a_with_idx);
+    let st = SegmentTree::from(a_with_idx);
     let mut res = Vec::new();
     let mut rest = k;
     let mut l = 0;
