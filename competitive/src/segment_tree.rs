@@ -22,20 +22,6 @@ where
         Self { size, data }
     }
 
-    pub fn from_slice(values: &[T]) -> Self {
-        let mut st = SegmentTree::new(values.len());
-        for (i, v) in values.into_iter().enumerate() {
-            st.data[i + st.size - 1] = v.clone();
-        }
-        if st.size < 2 {
-            return st;
-        }
-        for i in (0..=(st.size - 2)).rev() {
-            st.data[i] = st.data[i * 2 + 1].mappend(&st.data[i * 2 + 2]);
-        }
-        st
-    }
-
     /// 0-origin
     pub fn update(&mut self, i: usize, v: T) {
         let mut i = i + self.size - 1;
@@ -73,6 +59,37 @@ where
     }
 }
 
+#[snippet("segment_tree")]
+impl<T> From<&[T]> for SegmentTree<T>
+where
+    T: Monoid + Clone,
+{
+    fn from(values: &[T]) -> Self {
+        let mut st = SegmentTree::new(values.len());
+        for (i, v) in values.into_iter().enumerate() {
+            st.data[i + st.size - 1] = v.clone();
+        }
+        if st.size < 2 {
+            return st;
+        }
+        for i in (0..=(st.size - 2)).rev() {
+            st.data[i] = st.data[i * 2 + 1].mappend(&st.data[i * 2 + 2]);
+        }
+        st
+    }
+}
+
+#[snippet("segment_tree")]
+impl<T> From<Vec<T>> for SegmentTree<T>
+where
+    T: Monoid + Clone,
+{
+    fn from(values: Vec<T>) -> Self {
+        let values: &[T] = &values;
+        Self::from(values)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -88,15 +105,15 @@ mod tests {
     }
 
     #[test]
-    fn new() {
+    fn test_new() {
         let st: SegmentTree<usize> = SegmentTree::new(3);
         assert_eq!(st.query(0, 3), 0);
     }
 
     #[test]
-    fn from_slice() {
+    fn test_from() {
         let v = vec![1, 3, 2];
-        let st = SegmentTree::from_slice(&v);
+        let st = SegmentTree::from(v);
         assert_eq!(st.query(0, 1), 1);
         assert_eq!(st.query(0, 2), 3);
         assert_eq!(st.query(0, 3), 3);
@@ -106,14 +123,14 @@ mod tests {
     }
 
     #[test]
-    fn from_slice_size1() {
+    fn tst_from_size1() {
         let v = vec![1];
-        let st = SegmentTree::from_slice(&v);
+        let st = SegmentTree::from(v);
         assert_eq!(st.query(0, 1), 1);
     }
 
     #[test]
-    fn update_and_query() {
+    fn test_update_and_query() {
         let mut st: SegmentTree<usize> = SegmentTree::new(3);
         assert_eq!(st.query(0, 3), 0);
         st.update(0, 1);

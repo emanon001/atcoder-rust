@@ -65,7 +65,7 @@ impl Lca {
             .enumerate()
             .map(|(i, d)| LcaDepth { depth: d, idx: i })
             .collect::<Vec<_>>();
-        let st = SegmentTree::from_slice(&lca_depth);
+        let st = SegmentTree::from(lca_depth);
         Self {
             vs,
             vdepth,
