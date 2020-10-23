@@ -151,6 +151,38 @@
       "}"
     ]
   },
+  "chmax": {
+    "prefix": "chmax",
+    "body": [
+      "#[macro_export]",
+      "macro_rules! chmax {",
+      "    (\\$ max : expr , \\$ v : expr ) => {",
+      "        if \\$max < \\$v {",
+      "            \\$max = \\$v;",
+      "            true",
+      "        } else {",
+      "            false",
+      "        }",
+      "    };",
+      "}"
+    ]
+  },
+  "chmin": {
+    "prefix": "chmin",
+    "body": [
+      "#[macro_export]",
+      "macro_rules! chmin {",
+      "    (\\$ min : expr , \\$ v : expr ) => {",
+      "        if \\$min > \\$v {",
+      "            \\$min = \\$v;",
+      "            true",
+      "        } else {",
+      "            false",
+      "        }",
+      "    };",
+      "}"
+    ]
+  },
   "divisors": {
     "prefix": "divisors",
     "body": [

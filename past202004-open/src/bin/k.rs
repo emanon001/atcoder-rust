@@ -8,6 +8,18 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[macro_export]
+macro_rules! chmin {
+    ($ min : expr , $ v : expr ) => {
+        if $min > $v {
+            $min = $v;
+            true
+        } else {
+            false
+        }
+    };
+}
+
 fn solve() {
     input! {
         n: usize,
@@ -24,23 +36,23 @@ fn solve() {
             match ch {
                 '(' => {
                     // not change
-                    dp[i + 1][j + 1] = dp[i + 1][j + 1].min(dp[i][j]);
+                    chmin!(dp[i + 1][j + 1], dp[i][j]);
                     // change
                     if j > 0 {
-                        dp[i + 1][j - 1] = dp[i + 1][j - 1].min(dp[i][j] + cv[i]);
+                        chmin!(dp[i + 1][j - 1], dp[i][j] + cv[i]);
                     }
                     // delete
-                    dp[i + 1][j] = dp[i + 1][j].min(dp[i][j] + dv[i]);
+                    chmin!(dp[i + 1][j], dp[i][j] + dv[i]);
                 }
                 ')' => {
                     // not change
                     if j > 0 {
-                        dp[i + 1][j - 1] = dp[i + 1][j - 1].min(dp[i][j]);
+                        chmin!(dp[i + 1][j - 1], dp[i][j]);
                     }
                     // change
-                    dp[i + 1][j + 1] = dp[i + 1][j + 1].min(dp[i][j] + cv[i]);
+                    chmin!(dp[i + 1][j + 1], dp[i][j] + cv[i]);
                     // delete
-                    dp[i + 1][j] = dp[i + 1][j].min(dp[i][j] + dv[i]);
+                    chmin!(dp[i + 1][j], dp[i][j] + dv[i]);
                 }
                 _ => unreachable!(),
             };
