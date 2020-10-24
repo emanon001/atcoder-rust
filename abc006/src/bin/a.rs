@@ -9,6 +9,10 @@ use proconio::marker::*;
 use std::collections::*;
 
 fn main() {
-  input! {
-  };
+    input! {
+        n: usize
+    };
+
+    let res = if n % 3 == 0 { "YES" } else { "NO" };
+    println!("{}", res);
 }
