@@ -8,89 +8,72 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
-fn insert_second(
-    i: usize,
-    j: usize,
-    tv: &[Vec<usize>],
-    seconds: &mut [Option<usize>],
-    set: &mut BTreeSet<(usize, usize)>,
-) {
-    if j < tv[i].len() {
-        let t = tv[i][j];
-        set.insert((t, i));
-        seconds[i] = Some(j);
-    } else {
-        seconds[i] = None;
-    }
-}
-
 fn solve() {
     input! {
         n: usize,
-        tv: [[usize]; n],
+        cols: [[usize]; n],
         m: usize,
         av: [usize; m]
     };
 
-    let mut seconds = vec![None; n];
-    let mut set1 = BTreeSet::new();
+    let mut pset1 = BTreeSet::new();
     for i in 0..n {
-        let t = tv[i][0];
-        set1.insert((t, i));
+        pset1.insert((cols[i][0], (i, 0)));
     }
-    let mut set2 = BTreeSet::new();
+    let mut pset2 = pset1.clone();
+    let mut seconds = vec![None; n];
     for i in 0..n {
-        if tv[i].len() > 1 {
-            let t = tv[i][1];
-            set2.insert((t, i));
+        if cols[i].len() >= 2 {
+            pset2.insert((cols[i][1], (i, 1)));
             seconds[i] = Some(1);
         }
     }
     for a in av {
-        if a == 1 {
-            let &(t, i) = set1.iter().last().unwrap();
-            set1.remove(&(t, i));
-            println!("{}", t);
-            if let Some(j) = seconds[i] {
-                // set2 -> set1
-                let t = tv[i][j];
-                set2.remove(&(t, i));
-                set1.insert((t, i));
-                // tv -> set2
-                insert_second(i, j + 1, &tv, &mut seconds, &mut set2);
+        let res = if a == 1 {
+            let p = *pset1.iter().next_back().unwrap();
+            pset1.remove(&p);
+            pset2.remove(&p);
+            let (t, (i, _)) = p;
+            // 1 <- 2
+            if seconds[i].is_some() {
+                let sj = seconds[i].unwrap();
+                let second_p = (cols[i][sj], (i, sj));
+                pset1.insert(second_p);
             }
-        } else {
-            let &(t1, i1) = set1.iter().last().unwrap();
-            let mut res = t1;
-            if let Some(&(t2, i2)) = set2.iter().last() {
-                res = std::cmp::max(t1, t2);
-                if t1 > t2 {
-                    // use t1
-                    let t = t1;
-                    let i = i1;
-                    set1.remove(&(t, i));
-                    if let Some(j) = seconds[i] {
-                        // set2 -> set1
-                        let t = tv[i][j];
-                        set2.remove(&(t, i));
-                        set1.insert((t, i));
-                        // tv -> set2
-                        insert_second(i, j + 1, &tv, &mut seconds, &mut set2);
-                    }
-                } else {
-                    // use t2
-                    let t = t2;
-                    let i = i2;
-                    set2.remove(&(t, i));
-                    // tv -> set2
-                    let j = seconds[i].unwrap();
-                    insert_second(i, j + 1, &tv, &mut seconds, &mut set2);
-                }
+            // 2 <- 3
+            if seconds[i].is_some() && seconds[i].unwrap() + 1 < cols[i].len() {
+                let nj = seconds[i].unwrap() + 1;
+                let next_p = (cols[i][nj], (i, nj));
+                pset2.insert(next_p);
+                seconds[i] = Some(nj);
             } else {
-                set1.remove(&(t1, i1));
+                seconds[i] = None;
             }
-            println!("{}", res);
-        }
+            t
+        } else {
+            // 2
+            let p = *pset2.iter().next_back().unwrap();
+            pset1.remove(&p);
+            pset2.remove(&p);
+            let (t, (i, j)) = p;
+            // 1 <- 2
+            if seconds[i].is_some() && seconds[i].unwrap() != j {
+                let sj = seconds[i].unwrap();
+                let second_p = (cols[i][sj], (i, sj));
+                pset1.insert(second_p);
+            }
+            // 2 <- 3
+            if seconds[i].is_some() && seconds[i].unwrap() + 1 < cols[i].len() {
+                let nj = seconds[i].unwrap() + 1;
+                let next_p = (cols[i][nj], (i, nj));
+                pset2.insert(next_p);
+                seconds[i] = Some(nj);
+            } else {
+                seconds[i] = None;
+            }
+            t
+        };
+        println!("{}", res);
     }
 }
 
