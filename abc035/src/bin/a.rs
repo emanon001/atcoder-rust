@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        w: usize, h: usize
     };
+
+    let res = if w * 3 == h * 4 { "4:3" } else { "16:9" };
+    println!("{}", res);
 }
 
 fn main() {
