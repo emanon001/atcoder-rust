@@ -10,7 +10,28 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, a: i64, b: i64,
+        sdv: [(String, i64); n]
     };
+
+    let mut res = 0_i64;
+    for (s, d) in sdv {
+        let d = if d < a {
+            a
+        } else if a <= d && d <= b {
+            d
+        } else {
+            b
+        };
+        res += if s == "East" { d } else { -d };
+    }
+    if res == 0 {
+        println!("0");
+    } else if res > 0 {
+        println!("East {}", res.abs());
+    } else {
+        println!("West {}", res.abs());
+    }
 }
 
 fn main() {
