@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: u64,
+        b: u64,
+        n: u64,
     };
+
+    let mut cur = n;
+    loop {
+        if cur % a == 0 && cur % b == 0 {
+            println!("{}", cur);
+            return;
+        }
+        cur += 1;
+    }
 }
 
 fn main() {
