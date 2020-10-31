@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: u64, b: u64, c: u64
     };
+
+    let m = 998244353_u64;
+    let a = ((1 + a) * a / 2) % m;
+    let b = ((1 + b) * b / 2) % m;
+    let c = ((1 + c) * c / 2) % m;
+    let res = (((a * b) % m) * c) % m;
+    println!("{}", res);
 }
 
 fn main() {
