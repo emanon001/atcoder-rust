@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize
     };
+
+    let res = if n % 2 == 0 { "White" } else { "Black" };
+    println!("{}", res);
 }
 
 fn main() {
