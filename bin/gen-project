@@ -16,3 +16,5 @@ cd ..
 
 cargo atcoder new "${contest_id}"
 ./bin/cp-code-snippets "${contest_id}"
+cd "${contest_id}"
+cargo atcoder warmup
