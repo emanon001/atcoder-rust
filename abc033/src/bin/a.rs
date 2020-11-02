@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: Chars
     };
+
+    let res = if n.into_iter().collect::<HashSet<_>>().len() == 1 {
+        "SAME"
+    } else {
+        "DIFFERENT"
+    };
+    println!("{}", res);
 }
 
 fn main() {
