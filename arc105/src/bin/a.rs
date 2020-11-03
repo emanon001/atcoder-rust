@@ -10,7 +10,24 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        abcd: [i64; 4]
     };
+
+    for bits in 0..1 << 4 {
+        let mut cur = 0_i64;
+        for i in 0..4 {
+            if (bits >> i) & 1 == 1 {
+                cur += abcd[i];
+            } else {
+                cur -= abcd[i];
+            }
+        }
+        if cur == 0 {
+            println!("Yes");
+            return;
+        }
+    }
+    println!("No");
 }
 
 fn main() {
