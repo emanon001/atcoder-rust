@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: i64, v: i64,
+        b: i64, w: i64,
+        t: i64
     };
+
+    let res = if v * t - w * t >= (a - b).abs() {
+        "YES"
+    } else {
+        "NO"
+    };
+    println!("{}", res);
 }
 
 fn main() {
