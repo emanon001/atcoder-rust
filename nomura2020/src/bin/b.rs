@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars
     };
+
+    let res = s
+        .into_iter()
+        .map(|ch| if ch == '?' { 'D' } else { ch })
+        .join("");
+    println!("{}", res);
 }
 
 fn main() {
