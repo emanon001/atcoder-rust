@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: i64, b: i64
     };
+
+    let res = if a > 1 && b > 1 {
+        b - a
+    } else if a < 1 && b < 1 {
+        b - a
+    } else {
+        (b - a).abs() - 1
+    };
+    println!("{}", res);
 }
 
 fn main() {
