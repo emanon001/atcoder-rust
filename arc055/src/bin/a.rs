@@ -10,7 +10,10 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize
     };
+
+    println!("1{}7", "0".repeat(n - 1));
 }
 
 fn main() {
