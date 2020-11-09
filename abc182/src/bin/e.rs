@@ -17,7 +17,7 @@ fn solve() {
 
     let hikari = abv.into_iter().collect::<HashSet<_>>();
     let blocks = cdv.into_iter().collect::<HashSet<_>>();
-    let mut used = HashSet::new();
+    let mut used = vec![vec![false; w]; h];
     // 横方向
     for i in 0..h {
         let mut l = 0;
@@ -26,7 +26,7 @@ fn solve() {
             if blocks.contains(&(i, j)) {
                 if ok {
                     for jj in l..j {
-                        used.insert((i, jj));
+                        used[i][jj] = true;
                     }
                 }
                 ok = false;
@@ -38,7 +38,7 @@ fn solve() {
                 if ok {
                     if j == w - 1 {
                         for jj in l..=j {
-                            used.insert((i, jj));
+                            used[i][jj] = true;
                         }
                     }
                 }
@@ -53,7 +53,7 @@ fn solve() {
             if blocks.contains(&(i, j)) {
                 if ok {
                     for ii in t..i {
-                        used.insert((ii, j));
+                        used[ii][j] = true;
                     }
                 }
                 ok = false;
@@ -65,14 +65,22 @@ fn solve() {
                 if ok {
                     if i == h - 1 {
                         for ii in t..=i {
-                            used.insert((ii, j));
+                            used[ii][j] = true;
                         }
                     }
                 }
             }
         }
     }
-    println!("{}", used.len());
+    let mut res = 0;
+    for i in 0..h {
+        for j in 0..w {
+            if used[i][j] {
+                res += 1;
+            }
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
