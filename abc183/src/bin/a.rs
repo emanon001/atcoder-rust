@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        x: i64
     };
+
+    let res = x.max(0);
+    println!("{}", res);
 }
 
 fn main() {
