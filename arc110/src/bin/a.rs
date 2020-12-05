@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: u64
     };
+
+    let res = (2..=n).fold(1_u64, |acc, x| acc.lcm(&x)) + 1;
+    println!("{}", res);
 }
 
 fn main() {
