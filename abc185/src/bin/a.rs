@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        v: [usize; 4]
     };
+
+    let res = v.into_iter().min().unwrap();
+    println!("{}", res);
 }
 
 fn main() {
