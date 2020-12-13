@@ -14,6 +14,7 @@ fn solve() {
         mut av: [usize; m]
     };
 
+    av.push(n + 1);
     av.sort();
     let mut list = Vec::new();
     let mut min = std::usize::MAX;
@@ -24,13 +25,6 @@ fn solve() {
         if w == 0 {
             continue;
         }
-        if w < min {
-            min = w;
-        }
-        list.push(w);
-    }
-    if prev < n {
-        let w = n - prev;
         if w < min {
             min = w;
         }
