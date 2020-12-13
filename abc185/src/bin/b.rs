@@ -10,7 +10,27 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: i64, m: usize, t: i64,
+        abv: [(i64, i64); m]
     };
+
+    let mut cur = n;
+    let mut cur_t = 0;
+    for (a, b) in abv {
+        cur -= a - cur_t;
+        if cur <= 0 {
+            println!("No");
+            return;
+        }
+        cur = (cur + (b - a)).min(n);
+        cur_t = b;
+    }
+    cur -= t - cur_t;
+    if cur <= 0 {
+        println!("No");
+    } else {
+        println!("Yes");
+    }
 }
 
 fn main() {
