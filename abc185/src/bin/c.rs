@@ -8,9 +8,21 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+fn f(n: i128) -> i128 {
+    let mut res = 1_i128;
+    for i in 0..11 {
+        res *= n - i;
+    }
+    res
+}
+
 fn solve() {
     input! {
+        l: i128
     };
+
+    let res = f(l - 1) / 39916800;
+    println!("{}", res);
 }
 
 fn main() {
