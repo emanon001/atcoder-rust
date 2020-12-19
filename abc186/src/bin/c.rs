@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize
     };
+
+    let mut res = 0;
+    for x in 1..=n {
+        // 10
+        let a = x.to_string().contains("7");
+        let b = format!("{:o}", x).contains("7");
+        if !a && !b {
+            res += 1;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
