@@ -10,7 +10,24 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        mut av: [i64; n]
     };
+    av.sort();
+    let mut cusum = Vec::new();
+    let mut prev = 0;
+    for i in 0..n {
+        prev += av[i];
+        cusum.push(prev);
+    }
+
+    let mut res = 0_i64;
+    for i in 0..n - 1 {
+        let add = av[i] * (n - i - 1) as i64;
+        let sub = cusum[i + 1];
+        res += (add - sub).abs();
+    }
+    println!("{}", res);
 }
 
 fn main() {
