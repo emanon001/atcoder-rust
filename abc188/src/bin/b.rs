@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [i64; n],
+        bv: [i64; n],
     };
+
+    let mut res = 0;
+    for i in 0..n {
+        res += av[i] * bv[i];
+    }
+    let res = if res == 0 { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {
