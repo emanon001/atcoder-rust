@@ -10,7 +10,26 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, c: i64,
+        abcv: [(usize, usize, i64); n]
     };
+    let mut idexes = BTreeSet::new();
+    let mut plus = HashMap::new();
+    for &(a, b, c) in &abcv {
+        idexes.insert(a);
+        idexes.insert(b + 1);
+        *plus.entry(a).or_insert(0) += c;
+        *plus.entry(b + 1).or_insert(0) -= c;
+    }
+    let mut res = 0;
+    let mut cur_idx = 1;
+    let mut cur_cost = 0;
+    for i in idexes {
+        res += (i - cur_idx) as i64 * cur_cost.min(c);
+        cur_cost += plus[&i];
+        cur_idx = i;
+    }
+    println!("{}", res);
 }
 
 fn main() {
