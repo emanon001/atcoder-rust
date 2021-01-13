@@ -10,7 +10,13 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        x: usize, y: usize
     };
+
+    let max = x.max(y);
+    let min = x.min(y);
+    let res = if min + 3 > max { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {
