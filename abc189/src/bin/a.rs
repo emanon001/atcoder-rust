@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars
     };
+
+    let res = if s[0] == s[1] && s[1] == s[2] {
+        "Won"
+    } else {
+        "Lost"
+    };
+    println!("{}", res);
 }
 
 fn main() {
