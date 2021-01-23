@@ -10,7 +10,20 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, x: i64,
+        vvp: [(i64, i64); n]
     };
+
+    let mut total = 0_i64;
+    for i in 0..n {
+        let (v, p) = vvp[i];
+        total += v * p;
+        if total > x * 100 {
+            println!("{}", i + 1);
+            return;
+        }
+    }
+    println!("-1");
 }
 
 fn main() {
