@@ -10,7 +10,24 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        mut av: [i64; n]
     };
+
+    let mut res = 0;
+    for i in 0..n {
+        let mut min = av[i];
+        for j in i..n {
+            if av[j] < min {
+                min = av[j];
+            }
+            let score = (j - i + 1) as i64 * min;
+            if score > res {
+                res = score;
+            }
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
