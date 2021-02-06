@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, s: i64, d: i64,
+        xyv: [(i64, i64); n]
     };
+
+    for (x, y) in xyv {
+        if x >= s || y <= d {
+            continue;
+        }
+        println!("Yes");
+        return;
+    }
+    println!("No");
 }
 
 fn main() {
