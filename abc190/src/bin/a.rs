@@ -10,7 +10,23 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: i64, b: i64, c: usize
     };
+
+    let res = if c == 0 {
+        if a > b {
+            "Takahashi"
+        } else {
+            "Aoki"
+        }
+    } else {
+        if b > a {
+            "Aoki"
+        } else {
+            "Takahashi"
+        }
+    };
+    println!("{}", res);
 }
 
 fn main() {
