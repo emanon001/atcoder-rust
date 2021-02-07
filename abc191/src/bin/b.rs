@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, x: usize,
+        av: [usize; n]
     };
+
+    let mut res = Vec::new();
+    for a in av {
+        if a != x {
+            res.push(a);
+        }
+    }
+    println!("{}", res.into_iter().join(" "));
 }
 
 fn main() {
