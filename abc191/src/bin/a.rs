@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        v: usize, t: usize, s: usize, d: usize
     };
+
+    let res = if d >= v * t && d <= v * s {
+        "No"
+    } else {
+        "Yes"
+    };
+    println!("{}", res);
 }
 
 fn main() {
