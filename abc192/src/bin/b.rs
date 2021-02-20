@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars
     };
+    for i in 0..s.len() {
+        if i % 2 == 0 && !s[i].is_ascii_lowercase() {
+            println!("No");
+            return;
+        }
+        if i % 2 == 1 && !s[i].is_ascii_uppercase() {
+            println!("No");
+            return;
+        }
+    }
+    println!("Yes");
 }
 
 fn main() {
