@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        k: u64
     };
+
+    let mut res = 0;
+    for a in 1..=k {
+        for b in 1..=k / a {
+            res += k / (a * b);
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
