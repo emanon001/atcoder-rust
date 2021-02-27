@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        apvx: [(i64, i64, i64); n]
     };
+
+    let mut res = 1_i64 << 60;
+    for (a, p, x) in apvx {
+        if x <= a {
+            continue;
+        }
+        res = res.min(p);
+    }
+    let res = if res == 1_i64 << 60 { -1 } else { res };
+    println!("{}", res);
 }
 
 fn main() {
