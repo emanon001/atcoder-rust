@@ -26,18 +26,8 @@ fn solve() {
         all_counts[x] -= 1;
     }
 
-    let mut tcounts = vec![0_i64; 10];
-    for &x in &s {
-        tcounts[x] += 1;
-    }
-
-    let mut acounts = vec![0_i64; 10];
-    for &x in &t {
-        acounts[x] += 1;
-    }
-
     let mut all_count = 0;
-    let mut win = 0;
+    let mut win_count = 0;
     for a in 1..=9 {
         if all_counts[a] == 0 {
             continue;
@@ -67,12 +57,12 @@ fn solve() {
                 ascore += (x as i64) * 10.pow(counts[x] as u32);
             }
             if tscore > ascore {
-                win += (all_counts[a] + 1) as i64 * all_counts[b] as i64;
+                win_count += (all_counts[a] + 1) as i64 * all_counts[b] as i64;
             }
         }
         all_counts[a] += 1;
     }
-    let res = win as f64 / all_count as f64;
+    let res = win_count as f64 / all_count as f64;
     println!("{}", res);
 }
 
