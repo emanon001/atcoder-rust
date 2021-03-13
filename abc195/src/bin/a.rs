@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        m: usize, h: usize
     };
+
+    let res = if h % m == 0 { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {
