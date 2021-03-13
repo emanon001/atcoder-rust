@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        xyv: [(i64, i64, i64); n]
     };
+
+    let w = 10000_i64;
+    for i in 0..n {
+        let x = i as i64 % w;
+        let y = i as i64 / w;
+        println!("{} {} {} {}", x, y, x + 1, y + 1);
+    }
 }
 
 fn main() {
