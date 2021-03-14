@@ -10,18 +10,6 @@ use std::collections::*;
 use std::time::{Instant, Duration};
 use rand::prelude::*;
 
-#[macro_export]
-macro_rules! chmax {
-    ($ max : expr , $ v : expr ) => {
-        if $max < $v {
-            $max = $v;
-            true
-        } else {
-            false
-        }
-    };
-}
-
 #[derive(Copy, Clone)]
 struct Ad {
     id: usize,
