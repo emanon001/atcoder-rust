@@ -8,6 +8,7 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 use std::time::{Instant, Duration};
+use rand::prelude::*;
 
 #[macro_export]
 macro_rules! chmax {
@@ -103,34 +104,37 @@ fn solve() {
     let mut max_score = score(&ads);
     let h = 10000_usize;
     let w = 10000_usize;
+
+    let mut rng = rand::thread_rng();
     loop {
         let duration = Instant::now() - now;
         if duration >= Duration::from_millis(4800) {
             break;
         }
-        for i in 0..n {
-            let bk_ad = ads[i];
-            let mut new_ad = ads[i];
-            // 左
-            if new_ad.a > 0 {
-                new_ad.a -= 1;
-                max_score = update(&mut ads, new_ad, bk_ad, max_score);
-            }
-            // 右
-            if new_ad.c < w - 1 {
-                new_ad.c += 1;
-                max_score = update(&mut ads, new_ad, bk_ad, max_score);
-            }
-            // 上
-            if new_ad.b > 0 {
-                new_ad.b -= 1;
-                max_score = update(&mut ads, new_ad, bk_ad, max_score);
-            }
-            // 下
-            if new_ad.d < h - 1 {
-                new_ad.d += 1;
-                max_score = update(&mut ads, new_ad, bk_ad, max_score);
-            }
+
+        let i = rng.gen::<usize>() % n;
+        let dir = rng.gen::<usize>() % 4;
+        let bk_ad = ads[i];
+        let mut new_ad = ads[i];
+        // 左
+        if new_ad.a > 0 && dir == 0 {
+            new_ad.a -= 1;
+            max_score = update(&mut ads, new_ad, bk_ad, max_score);
+        }
+        // 右
+        if new_ad.c < w - 1 && dir == 1 {
+            new_ad.c += 1;
+            max_score = update(&mut ads, new_ad, bk_ad, max_score);
+        }
+        // 上
+        if new_ad.b > 0 && dir == 2 {
+            new_ad.b -= 1;
+            max_score = update(&mut ads, new_ad, bk_ad, max_score);
+        }
+        // 下
+        if new_ad.d < h - 1 && dir == 3 {
+            new_ad.d += 1;
+            max_score = update(&mut ads, new_ad, bk_ad, max_score);
         }
     }
 
