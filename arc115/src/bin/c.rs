@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize
     };
+
+    let mut res = vec![1; n];
+    for i in 1..=n {
+        let x = res[i - 1];
+        let mut j= i * 2;
+        while j <= n {
+            res[j - 1] = if res[j - 1] == x { x + 1 } else { res[j - 1] };
+            j += i;
+        }
+    }
+    println!("{}", res.into_iter().join(" "));
 }
 
 fn main() {
