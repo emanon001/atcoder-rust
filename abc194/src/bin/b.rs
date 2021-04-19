@@ -10,7 +10,22 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        abv: [(i64, i64); n]
     };
+
+    let mut res = i64::max_value();
+    for i in 0..n {
+        for j in 0..n {
+            let time = if i == j {
+                abv[i].0 + abv[j].1
+            } else {
+                (abv[i].0).max(abv[j].1)
+            };
+            res = res.min(time);
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
