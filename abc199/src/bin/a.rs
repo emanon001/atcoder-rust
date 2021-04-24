@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: i64, b: i64, c: i64
     };
+
+    let res = if a * a + b * b < c * c {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", res);
 }
 
 fn main() {
