@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [usize; n],
+        bv: [usize; n],
     };
+
+    let mut res = 0;
+    for x in 1..=1000 {
+        let is_ok = (0..n).all(|i| x >= av[i] && x <= bv[i]);
+        if is_ok {
+            res += 1;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
