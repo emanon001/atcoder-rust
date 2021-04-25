@@ -14,11 +14,11 @@ fn dfs(
     path: &mut Vec<(usize, usize, char)>,
     used: &mut [bool],
     score: &mut i32,
+    check_count: &mut u32,
     res: &mut (i32, Vec<(usize, usize, char)>),
     tgrid: &[Vec<usize>],
     pgrid: &[Vec<i32>],
     now: Instant,
-    check_count: &mut u32,
 ) {
     if check_count == &100 {
         let duration = Instant::now() - now;
@@ -59,7 +59,7 @@ fn dfs(
         *score += pgrid[new_pos.0][new_pos.1];
         path.push((new_i, new_j, *d));
         used[tgrid[new_i][new_j]] = true;
-        dfs(new_pos, path, used, score, res, tgrid, pgrid, now, check_count);
+        dfs(new_pos, path, used, score, check_count, res, tgrid, pgrid, now);
         *score -= pgrid[new_pos.0][new_pos.1];
         path.pop();
         used[tgrid[new_i][new_j]] = false;
@@ -134,7 +134,7 @@ fn solve() {
     let mut check_count = 0;
     let mut score = pgrid[si][sj];
     let mut res1 = (0, vec![(si, sj, ' ')]);
-    dfs((si, sj), &mut path, &mut used, &mut score, &mut res1, &tgrid, &pgrid, now, &mut check_count);
+    dfs((si, sj), &mut path, &mut used, &mut score, &mut check_count, &mut res1, &tgrid, &pgrid, now);
     for &(i, j, _) in &res1.1 {
         used[tgrid[i][j]] = true;
     }
