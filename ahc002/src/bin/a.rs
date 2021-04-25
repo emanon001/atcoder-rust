@@ -20,7 +20,7 @@ fn dfs(
     pgrid: &[Vec<i32>],
     now: Instant,
 ) {
-    if check_count == &100 {
+    if check_count == &1000 {
         let duration = Instant::now() - now;
         let stop = duration >= Duration::from_millis(1950);
         if stop {
