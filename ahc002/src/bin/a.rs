@@ -24,7 +24,7 @@ fn dfs(
 ) {
     if check_count == &1000 {
         let duration = Instant::now() - now;
-        let stop = duration >= Duration::from_millis(1980);
+        let stop = duration >= Duration::from_millis(1990);
         if stop {
             if *score > res.0 {
                 res.0 = *score;
