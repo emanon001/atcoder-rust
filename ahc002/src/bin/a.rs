@@ -9,18 +9,11 @@ use proconio::marker::*;
 use std::collections::*;
 use std::time::{Instant, Duration};
 
-fn score(path: &[(usize, usize, char)], grid: &[Vec<i32>]) -> i32 {
-    let mut res = 0;
-    for &(i, j, _) in path {
-        res += grid[i][j];
-    }
-    res
-}
-
 fn dfs(
     pos: (usize, usize),
     path: &mut Vec<(usize, usize, char)>,
     used: &mut [bool],
+    score: &mut i32,
     res: &mut (i32, Vec<(usize, usize, char)>),
     tgrid: &[Vec<usize>],
     pgrid: &[Vec<i32>],
@@ -31,9 +24,8 @@ fn dfs(
         let duration = Instant::now() - now;
         let stop = duration >= Duration::from_millis(1950);
         if stop {
-            let s = score(path, pgrid);
-            if s > res.0 {
-                res.0 = s;
+            if *score > res.0 {
+                res.0 = *score;
                 res.1 = path.clone();
             }
             return;
@@ -64,16 +56,17 @@ fn dfs(
         }
         moved = true;
         let new_pos = (new_i, new_j);
+        *score += pgrid[new_pos.0][new_pos.1];
         path.push((new_i, new_j, *d));
         used[tgrid[new_i][new_j]] = true;
-        dfs(new_pos, path, used, res, tgrid, pgrid, now, check_count);
+        dfs(new_pos, path, used, score, res, tgrid, pgrid, now, check_count);
+        *score -= pgrid[new_pos.0][new_pos.1];
         path.pop();
         used[tgrid[new_i][new_j]] = false;
     }
     if !moved {
-        let s = score(path, pgrid);
-        if s > res.0 {
-            res.0 = s;
+        if *score > res.0 {
+            res.0 = *score;
             res.1 = path.clone();
         }
     }
@@ -139,8 +132,9 @@ fn solve() {
     let mut used = vec![false; 50 * 50];
     used[tgrid[si][sj]] = true;
     let mut check_count = 0;
+    let mut score = pgrid[si][sj];
     let mut res1 = (0, vec![(si, sj, ' ')]);
-    dfs((si, sj), &mut path, &mut used, &mut res1, &tgrid, &pgrid, now, &mut check_count);
+    dfs((si, sj), &mut path, &mut used, &mut score, &mut res1, &tgrid, &pgrid, now, &mut check_count);
     for &(i, j, _) in &res1.1 {
         used[tgrid[i][j]] = true;
     }
