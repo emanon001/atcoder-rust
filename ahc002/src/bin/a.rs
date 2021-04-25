@@ -7,6 +7,7 @@ use proconio::input;
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
+use std::time::{Instant, Duration};
 
 fn score(path: &[(usize, usize, char)], grid: &[Vec<i32>]) -> i32 {
     let mut res = 0;
@@ -23,8 +24,12 @@ fn dfs(
     used: &mut [bool],
     res: &mut (i32, Vec<(usize, usize, char)>),
     tgrid: &[Vec<usize>],
-    pgrid: &[Vec<i32>]) {
-    if depth == 17 {
+    pgrid: &[Vec<i32>],
+    now: Instant
+) {
+    let duration = Instant::now() - now;
+    let stop = duration >= Duration::from_millis(1900);
+    if stop {
         let s = score(path, pgrid);
         if s > res.0 {
             res.0 = s;
@@ -57,7 +62,7 @@ fn dfs(
         let new_pos = (new_i, new_j);
         path.push((new_i, new_j, *d));
         used[tgrid[new_i][new_j]] = true;
-        dfs(new_pos, path, depth + 1, used, res, tgrid, pgrid);
+        dfs(new_pos, path, depth + 1, used, res, tgrid, pgrid, now);
         path.pop();
         used[tgrid[new_i][new_j]] = false;
     }
@@ -125,11 +130,12 @@ fn solve() {
         pgrid: [[i32; 50]; 50],
     };
 
+    let now = Instant::now();
     let mut path = Vec::new();
     let mut used = vec![false; 50 * 50];
     used[tgrid[si][sj]] = true;
     let mut res1 = (0, vec![(si, sj, ' ')]);
-    dfs((si, sj), &mut path, 0,  &mut used, &mut res1, &tgrid, &pgrid);
+    dfs((si, sj), &mut path, 0,  &mut used, &mut res1, &tgrid, &pgrid, now);
     for &(i, j, _) in &res1.1 {
         used[tgrid[i][j]] = true;
     }
