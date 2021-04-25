@@ -75,7 +75,7 @@ fn dfs(
     }
 }
 
-fn solve1(si: usize, sj: usize, used: &mut [bool], tgrid: &[Vec<usize>], pgrid: &[Vec<i32>]) -> (i32, Vec<char>) {
+fn move_to_max_point_adjacent_cells(si: usize, sj: usize, used: &mut [bool], tgrid: &[Vec<usize>], pgrid: &[Vec<i32>]) -> (i32, Vec<char>) {
     let mut score = 0_i32;
     let mut path = Vec::new();
     score += pgrid[si][sj];
@@ -140,7 +140,7 @@ fn solve() {
         used[tgrid[i][j]] = true;
     }
     let last = res1.1.last().unwrap();
-    let res2 = solve1(last.0, last.1, &mut used, &tgrid, &pgrid);
+    let res2 = move_to_max_point_adjacent_cells(last.0, last.1, &mut used, &tgrid, &pgrid);
     let res1_str = res1.1.iter().map(|(_, _, d)| *d).join("");
     let res = format!("{}{}", res1_str, res2.1.iter().join(""));
     println!("{}", res.trim());
