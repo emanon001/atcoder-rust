@@ -28,7 +28,7 @@ fn dfs(
     now: Instant
 ) {
     let duration = Instant::now() - now;
-    let stop = duration >= Duration::from_millis(1900);
+    let stop = duration >= Duration::from_millis(1970);
     if stop {
         let s = score(path, pgrid);
         if s > res.0 {
