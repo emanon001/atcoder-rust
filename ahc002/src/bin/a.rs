@@ -20,23 +20,27 @@ fn score(path: &[(usize, usize, char)], grid: &[Vec<i32>]) -> i32 {
 fn dfs(
     pos: (usize, usize),
     path: &mut Vec<(usize, usize, char)>,
-    depth: usize,
     used: &mut [bool],
     res: &mut (i32, Vec<(usize, usize, char)>),
     tgrid: &[Vec<usize>],
     pgrid: &[Vec<i32>],
-    now: Instant
+    now: Instant,
+    check_count: &mut u32,
 ) {
-    let duration = Instant::now() - now;
-    let stop = duration >= Duration::from_millis(1970);
-    if stop {
-        let s = score(path, pgrid);
-        if s > res.0 {
-            res.0 = s;
-            res.1 = path.clone();
+    if check_count == &100 {
+        let duration = Instant::now() - now;
+        let stop = duration >= Duration::from_millis(1950);
+        if stop {
+            let s = score(path, pgrid);
+            if s > res.0 {
+                res.0 = s;
+                res.1 = path.clone();
+            }
+            return;
         }
-        return;
+        *check_count = 0;
     }
+    *check_count += 1;
     let dirs = vec![
         (-1, 0, 'U'),
         (0, 1, 'R'),
@@ -62,7 +66,7 @@ fn dfs(
         let new_pos = (new_i, new_j);
         path.push((new_i, new_j, *d));
         used[tgrid[new_i][new_j]] = true;
-        dfs(new_pos, path, depth + 1, used, res, tgrid, pgrid, now);
+        dfs(new_pos, path, used, res, tgrid, pgrid, now, check_count);
         path.pop();
         used[tgrid[new_i][new_j]] = false;
     }
@@ -134,8 +138,9 @@ fn solve() {
     let mut path = Vec::new();
     let mut used = vec![false; 50 * 50];
     used[tgrid[si][sj]] = true;
+    let mut check_count = 0;
     let mut res1 = (0, vec![(si, sj, ' ')]);
-    dfs((si, sj), &mut path, 0,  &mut used, &mut res1, &tgrid, &pgrid, now);
+    dfs((si, sj), &mut path, &mut used, &mut res1, &tgrid, &pgrid, now, &mut check_count);
     for &(i, j, _) in &res1.1 {
         used[tgrid[i][j]] = true;
     }
