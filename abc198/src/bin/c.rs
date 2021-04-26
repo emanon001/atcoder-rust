@@ -10,17 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
-        r: i32, x: i32, y: i32
+        r: f64, x: f64, y: f64
     };
 
-    let a = x * x + y * y;
-    let mut b = r;
-    let mut res = 1;
-    while b * b < a {
-        b += r;
-        res += 1;
-    }
-    println!("{}", res);
+    let d = (x * x + y * y).sqrt();
+    let res = if d == r {
+        1.0
+    } else if d < r {
+        2.0
+    } else {
+        (d / r).ceil()
+    };
+    println!("{}", res as i64);
 }
 
 fn main() {
