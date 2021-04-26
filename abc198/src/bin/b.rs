@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        mut n: String
     };
+
+    let n = n.trim_matches('0');
+    let n = n.chars().collect::<Vec<_>>();
+    for i in 0..n.len() / 2 {
+        if n[i] != n[n.len() - 1 - i] {
+            println!("No");
+            return;
+        }
+    }
+    println!("Yes");
 }
 
 fn main() {
