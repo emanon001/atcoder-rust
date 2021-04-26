@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        r: i32, x: i32, y: i32
     };
+
+    let a = x * x + y * y;
+    let mut b = r;
+    let mut res = 1;
+    while b * b < a {
+        b += r;
+        res += 1;
+    }
+    println!("{}", res);
 }
 
 fn main() {
