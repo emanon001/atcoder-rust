@@ -8,9 +8,31 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[macro_export]
+macro_rules! chmax {
+    ($ max : expr , $ v : expr ) => {
+        if $max < $v {
+            $max = $v;
+            true
+        } else {
+            false
+        }
+    };
+}
+
 fn solve() {
     input! {
+        a: i32, b: i32,
+        c: i32, d: i32
     };
+
+    let mut res = -1000;
+    for x in a..=b {
+        for y in c..=d {
+            chmax!(res, x - y);
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
