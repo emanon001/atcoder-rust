@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        x: String
     };
+
+    let v: Vec<&str> = x.split('.').collect();
+    println!("{}", v[0]);
 }
 
 fn main() {
