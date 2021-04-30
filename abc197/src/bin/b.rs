@@ -10,7 +10,40 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        h: usize, w: usize, x: Usize1, y: Usize1,
+        grid: [Chars; h]
     };
+
+    let mut res = 1;
+    // left
+    for i in (0..y).rev() {
+        if grid[x][i] == '#' {
+            break;
+        }
+        res += 1;
+    }
+    // right
+    for i in y + 1..w {
+        if grid[x][i] == '#' {
+            break;
+        }
+        res += 1;
+    }
+    // top
+    for i in (0..x).rev() {
+        if grid[i][y] == '#' {
+            break;
+        }
+        res += 1;
+    }
+    // bottom
+    for i in x + 1..h {
+        if grid[i][y] == '#' {
+            break;
+        }
+        res += 1;
+    }
+    println!("{}", res);
 }
 
 fn main() {
