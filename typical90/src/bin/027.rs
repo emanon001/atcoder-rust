@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        sv: [String; n]
     };
+
+    let mut used = HashSet::new();
+    for i in 0..n {
+        if !used.contains(&sv[i]) {
+            used.insert(&sv[i]);
+            println!("{}", i + 1);
+        }
+    }
 }
 
 fn main() {
