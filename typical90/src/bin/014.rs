@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        mut av: [i64; n],
+        mut bv: [i64; n],
     };
+
+    av.sort();
+    bv.sort();
+    let mut res = 0;
+    for i in 0..n {
+        res += (av[i] - bv[i]).abs();
+    }
+    println!("{}", res);
 }
 
 fn main() {
