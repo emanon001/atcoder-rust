@@ -57,12 +57,28 @@ impl Program {
             self.check_count = 0;
         }
         self.check_count += 1;
-        let dirs = vec![
+        let mut dirs = vec![
             (-1, 0, 'U'),
             (0, 1, 'R'),
             (1, 0, 'D'),
             (0, -1, 'L')
         ];
+        dirs.sort_by_key(|(i, j, _)| {{
+            let new_i = self.pos.0 as isize + i;
+            if new_i < 0 || new_i >= 50 {
+                return usize::max_value();
+            }
+            let new_j = self.pos.1 as isize + j;
+            if new_j < 0 || new_j >= 50 {
+                return usize::max_value();
+            }
+            let new_i = new_i as usize;
+            let new_j = new_j as usize;
+            if self.used[self.tgrid[new_i * 50 + new_j]] {
+                return usize::max_value();
+            }
+            new_i.min(49 - new_i) + new_j.min(49 - new_j)
+        }});
         let mut moved = false;
         for (add_i, add_j, d) in dirs {
             let new_i = self.pos.0 as isize + add_i;
