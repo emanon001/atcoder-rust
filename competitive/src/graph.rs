@@ -14,44 +14,89 @@ where
 }
 
 #[snippet("graph")]
-pub type Edge<Cost> = (usize, usize, Cost);
+#[derive(Clone)]
+pub struct Edge<Cost>
+where
+    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+{
+    from: usize,
+    to: usize,
+    cost: Cost
+}
+
+#[snippet("graph")]
+impl<Cost> From<(usize, usize, Cost)> for Edge<Cost>
+where
+    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+ {
+    fn from(e: (usize, usize, Cost)) -> Edge<Cost> {
+        Edge {
+            from: e.0,
+            to: e.1,
+            cost: e.2
+        }
+    }
+}
+
+#[snippet("graph")]
+impl<Cost> From<(usize, usize)> for Edge<Cost>
+where
+    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+{
+    fn from(e: (usize, usize)) -> Edge<Cost> {
+        Edge {
+            from: e.0,
+            to: e.1,
+            cost: Cost::one()
+        }
+    }
+}
 
 #[snippet("graph")]
 impl<Cost> Graph<Cost>
 where
     Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
 {
-    pub fn new(edges: Vec<Edge<Cost>>, vc: usize, inf: Cost) -> Self {
+    pub fn new(edges: Vec<impl Into<Edge<Cost>>>, vc: usize, inf: Cost) -> Self {
         let mut graph = vec![Vec::new(); vc];
-        for (u, v, w) in edges {
-            graph[u].push((v, w));
-            graph[v].push((u, w));
+        for e in edges {
+            let e = e.into();
+            graph[e.from].push((e.to, e.cost));
+            graph[e.to].push((e.from, e.cost));
         }
         Self { graph, vc, inf }
     }
 
-    pub fn new_directed(edges: Vec<Edge<Cost>>, vc: usize, inf: Cost) -> Self {
+    pub fn new_noedge(vc: usize, inf: Cost) -> Self {
+        let graph = vec![Vec::new(); vc];
+        Self { graph, vc, inf }
+    }
+
+    pub fn new_directed(edges: Vec<impl Into<Edge<Cost>>>, vc: usize, inf: Cost) -> Self {
         let mut graph = vec![Vec::new(); vc];
-        for (u, v, w) in edges {
-            graph[u].push((v, w));
+        for e in edges {
+            let e = e.into();
+            graph[e.from].push((e.to, e.cost));
         }
         Self { graph, vc, inf }
     }
 
-    pub fn add_directed_edge(&mut self, e: Edge<Cost>) {
-        self.graph[e.0].push((e.1, e.2));
+    pub fn add_directed_edge(&mut self, e: impl Into<Edge<Cost>>) {
+        let e = e.into();
+        self.graph[e.from].push((e.to, e.cost));
     }
 
-    pub fn add_edge(&mut self, e: Edge<Cost>) {
-        self.graph[e.0].push((e.1, e.2));
-        self.graph[e.1].push((e.0, e.2));
+    pub fn add_edge(&mut self, e: impl Into<Edge<Cost>>) {
+        let e = e.into();
+        self.graph[e.from].push((e.to, e.cost));
+        self.graph[e.to].push((e.from, e.cost));
     }
 
     pub fn rev(&self) -> Graph<Cost> {
-        let mut edges = Vec::new();
+        let mut edges: Vec<Edge<Cost>> = Vec::new();
         for u in 0..self.vc {
             for &(v, w) in &self.graph[u] {
-                edges.push((v, u, w));
+                edges.push((v, u, w).into());
             }
         }
         Self::new_directed(edges, self.vc, self.inf)
@@ -399,13 +444,13 @@ where
         Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
         F: Fn(&Grid<T>, usize, usize) -> Vec<GridDestination<Cost>>,
     {
-        let mut edges = Vec::new();
+        let mut edges: Vec<Edge<Cost>> = Vec::new();
         for i in 0..self.h {
             for j in 0..self.w {
                 let from = self.vertex(i, j);
                 for (pos, w) in generator(&self, i, j) {
                     let to = self.vertex(pos.0, pos.1);
-                    edges.push((from, to, w));
+                    edges.push((from, to, w).into());
                 }
             }
         }
@@ -617,7 +662,7 @@ mod tests {
             // ref. https://atcoder.jp/contests/abc180/tasks/abc180_e
             let n = 3;
             let vertexes: Vec<(i64, i64, i64)> = vec![(0, 0, 0), (1, 1, 1), (-1, -1, -1)];
-            let mut graph = Graph::new(Vec::new(), 3, 1_i64 << 60);
+            let mut graph = Graph::new_noedge( 3, 1_i64 << 60);
             for u in 0..n {
                 for v in 0..n {
                     if u == v {
@@ -635,7 +680,7 @@ mod tests {
 
         #[test]
         fn test_vertex_count() {
-            let graph = Graph::new(Vec::new(), 5, 1_i64 << 60);
+            let graph = Graph::new_noedge( 5, 1_i64 << 60);
             assert_eq!(graph.vertex_count(), 5);
         }
 
