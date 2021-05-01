@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: u64, b: u32, c: u64
     };
+
+    let x = a;
+    let y = c.pow(b);
+    let res = if x < y {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", res);
 }
 
 fn main() {
