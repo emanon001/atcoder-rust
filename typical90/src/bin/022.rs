@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: u64, b: u64, c: u64,
     };
+
+    let gcd = a.gcd(&b).gcd(&c);
+    let res = (a / gcd) - 1 + (b / gcd) - 1 + (c / gcd) - 1;
+    println!("{}", res);
 }
 
 fn main() {
