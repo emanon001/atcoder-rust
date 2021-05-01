@@ -47,6 +47,49 @@ where
         self.graph[e.1].push((e.0, e.2));
     }
 
+    pub fn rev(&self) -> Graph<Cost> {
+        let mut edges = Vec::new();
+        for u in 0..self.vc {
+            for &(v, w) in &self.graph[u] {
+                edges.push((v, u, w));
+            }
+        }
+        Self::new_directed(edges, self.vc, self.inf)
+    }
+
+    pub fn reachable_vertexes(&self, s: usize) -> std::collections::HashSet<usize> {
+        let mut visited = std::collections::HashSet::new();
+        let mut queue = std::collections::VecDeque::new();
+        visited.insert(s);
+        queue.push_back(s);
+        while let Some(u) = queue.pop_front() {
+            for &(v, _) in &self.graph[u] {
+                if visited.contains(&v) {
+                    continue;
+                }
+                visited.insert(v);
+                queue.push_back(v);
+            }
+        }
+        visited
+    }
+
+    pub fn vertex_count(&self) -> usize {
+        self.vc
+    }
+
+    fn optionalize(&self, v: Vec<Cost>) -> Vec<Option<Cost>> {
+        v.into_iter()
+            .map(|x| if x == self.inf { None } else { Some(x) })
+            .collect::<Vec<_>>()
+    }
+}
+
+#[snippet("bellman_ford")]
+impl<Cost> Graph<Cost>
+where
+    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+{
     pub fn bellman_ford(&self, s: usize) -> Option<Vec<Option<Cost>>> {
         let vc = self.vc;
         let mut cost_list = vec![self.inf; vc];
@@ -69,7 +112,13 @@ where
         }
         Some(self.optionalize(cost_list))
     }
+}
 
+#[snippet("prim")]
+impl<Cost> Graph<Cost>
+where
+    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+{
     pub fn prim(&self) -> Cost {
         let mut used = std::collections::HashSet::new();
         let mut heap = std::collections::BinaryHeap::new();
@@ -91,34 +140,13 @@ where
         }
         res
     }
+}
 
-    pub fn reachable_vertexes(&self, s: usize) -> std::collections::HashSet<usize> {
-        let mut visited = std::collections::HashSet::new();
-        let mut queue = std::collections::VecDeque::new();
-        visited.insert(s);
-        queue.push_back(s);
-        while let Some(u) = queue.pop_front() {
-            for &(v, _) in &self.graph[u] {
-                if visited.contains(&v) {
-                    continue;
-                }
-                visited.insert(v);
-                queue.push_back(v);
-            }
-        }
-        visited
-    }
-
-    pub fn rev(&self) -> Graph<Cost> {
-        let mut edges = Vec::new();
-        for u in 0..self.vc {
-            for &(v, w) in &self.graph[u] {
-                edges.push((v, u, w));
-            }
-        }
-        Self::new_directed(edges, self.vc, self.inf)
-    }
-
+#[snippet("shortest_path")]
+impl<Cost> Graph<Cost>
+where
+    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+{
     pub fn shortest_path(&self, start: usize) -> Vec<Option<Cost>> {
         let mut cost_list = vec![self.inf; self.vc];
         let mut heap = std::collections::BinaryHeap::new();
@@ -140,7 +168,13 @@ where
         }
         self.optionalize(cost_list)
     }
+}
 
+#[snippet("shortest_path1")]
+impl<Cost> Graph<Cost>
+where
+    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+{
     pub fn shortest_path_1(&self, start: usize) -> Vec<Option<Cost>> {
         let mut cost_list = vec![None; self.vc];
         let mut que = std::collections::VecDeque::new();
@@ -161,7 +195,13 @@ where
         }
         cost_list
     }
+}
 
+#[snippet("shortest_path01")]
+impl<Cost> Graph<Cost>
+where
+    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+{
     pub fn shortest_path_01(&self, start: usize) -> Vec<Option<Cost>> {
         let mut cost_list = vec![self.inf; self.vc];
         let mut que = std::collections::VecDeque::new();
@@ -190,7 +230,13 @@ where
         }
         self.optionalize(cost_list)
     }
+}
 
+#[snippet("traveling_salesman")]
+impl<Cost> Graph<Cost>
+where
+    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+{
     pub fn traveling_salesman(&self, start: usize) -> Cost {
         let mut dp = vec![vec![None; self.vc]; 1 << self.vc];
         let fin = (1 << self.vc) - 1;
@@ -224,11 +270,13 @@ where
         dp[state][u] = Some(res);
         res
     }
+}
 
-    pub fn vertex_count(&self) -> usize {
-        self.vc
-    }
-
+#[snippet("warshall_floyd")]
+impl<Cost> Graph<Cost>
+where
+    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+{
     pub fn warshall_floyd(&self) -> Vec<Vec<Option<Cost>>> {
         let vc = self.vc;
         let mut cost_list = vec![vec![self.inf; vc]; vc];
@@ -253,11 +301,69 @@ where
             .map(|v| self.optionalize(v))
             .collect::<Vec<_>>()
     }
+}
 
-    fn optionalize(&self, v: Vec<Cost>) -> Vec<Option<Cost>> {
-        v.into_iter()
-            .map(|x| if x == self.inf { None } else { Some(x) })
-            .collect::<Vec<_>>()
+#[snippet("scc")]
+impl<Cost> Graph<Cost>
+where
+    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+{
+    pub fn scc(&self) -> Vec<Vec<usize>> {
+        let vc = self.vc;
+        let unknown_id = vc + 10;
+        // 番号を記録 1..=N
+        let mut id = 0;
+        let mut ids = vec![0; vc];
+        let mut used = vec![false; vc];
+        for u in 0..vc {
+            if ids[u] == 0 {
+                self.scc_dfs1(u, unknown_id, &mut id, &mut ids, &mut used);
+            }
+        }
+        let mut u_with_id = ids.into_iter().enumerate().collect::<Vec<_>>();
+        u_with_id.sort_by_key(|(_, id)| -(*id as isize));
+        // グループ分け
+        let rev_graph = self.rev();
+        let mut groups = Vec::new();
+        let mut used = vec![false; vc];
+        for (u, _) in u_with_id {
+            if used[u] {
+                continue;
+            }
+            let mut group = Vec::new();
+            rev_graph.scc_dfs2(u, unknown_id, &mut group, &mut used);
+            groups.push(group);
+        }
+        groups
+    }
+
+    fn scc_dfs1(&self, u: usize, p: usize, id: &mut usize, ids: &mut Vec<usize>, used: &mut Vec<bool>) {
+        used[u] = true;
+        for &(v, _) in &self.graph[u] {
+            if v == p {
+                continue;
+            }
+            if used[v] {
+                continue;
+            }
+            self.scc_dfs1(v, u, id, ids, used);
+        }
+        *id += 1;
+        ids[u] = *id;
+    }
+
+    fn scc_dfs2(&self, u: usize, p: usize, group: &mut Vec<usize>, used: &mut Vec<bool>) {
+        group.push(u);
+        used[u] = true;
+        for &(v, _) in &self.graph[u] {
+            if v == p {
+                continue;
+            }
+            if used[v] {
+                continue;
+            }
+            self.scc_dfs2(v, u, group, used);
+        }
     }
 }
 
@@ -390,6 +496,7 @@ where
 mod tests {
     mod graph {
         use super::super::Graph;
+        use std::collections::*;
 
         #[test]
         fn test_bellman_ford() {
@@ -586,6 +693,26 @@ mod tests {
             assert_eq!(res[5][3], None);
             assert_eq!(res[5][4], None);
             assert_eq!(res[5][5], Some(0));
+        }
+
+        #[test]
+        fn test_scc() {
+            let edges = vec![
+                (0, 1, 1),
+                (1, 0, 1),
+                (1, 2, 1),
+                (3, 2, 1),
+                (3, 0, 1),
+                (0, 3, 1),
+            ];
+            let graph = Graph::new_directed(edges, 4, 1_i64 << 60);
+            let mut res = graph.scc();
+            res.sort();
+            assert_eq!(res.len(), 2);
+            let g1 = res[0].iter().copied().collect::<HashSet<usize>>();
+            assert_eq!(g1, vec![0, 1, 3].into_iter().collect::<HashSet<_>>());
+            let g2 = res[1].iter().copied().collect::<HashSet<usize>>();
+            assert_eq!(g2, vec![2].into_iter().collect::<HashSet<_>>());
         }
     }
 
