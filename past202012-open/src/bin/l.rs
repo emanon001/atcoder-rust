@@ -8,9 +8,54 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[macro_export]
+macro_rules! chmax {
+    ($ max : expr , $ v : expr ) => {
+        if $max < $v {
+            $max = $v;
+            true
+        } else {
+            false
+        }
+    };
+}
+
+fn dfs(l: usize, r: usize, dp: &mut [Vec<i64>], s: &[char], t: &[char]) -> i64 {
+    // [l, r)
+    if dp[l][r] != -1 {
+        return dp[l][r];
+    }
+    if l + 3 > r  {
+        return 0;
+    }
+    let mut res = 0;
+    chmax!(res, dfs(l + 1, r, dp, s, t));
+    chmax!(res, dfs(l, r - 1, dp, s, t));
+    for m in l + 1..r {
+        if dfs(l + 1, m - 1, dp, s, t) == (m - l - 1) as i64
+            && dfs(m + 1, r - 1, dp, s, t) == ((r - m) as i64 - 2).max(0)
+            && s[l] == t[0] && s[m] == t[1] && s[r - 1] == t[2] {
+            let x = (r - l) as i64;
+            chmax!(res, x);
+        }
+        let x = dfs(l, m, dp, s, t) + dfs(m, r, dp, s, t);
+        chmax!(res, x);
+    }
+    dp[l][r] = res;
+    // println!("l: {}, r: {}, s: {}, res: {}", l, r, s[l..r].iter().join(""), dp[l][r]);
+    dp[l][r]
+}
+
 fn solve() {
     input! {
+        n: usize,
+        s: Chars,
+        t: Chars,
     };
+
+    let mut dp = vec![vec![-1; n + 1]; n + 1];
+    let res = dfs(0, n, &mut dp, &s, &t) / 3;
+    println!("{}", res);
 }
 
 fn main() {
