@@ -355,14 +355,13 @@ where
 {
     pub fn scc(&self) -> Vec<Vec<usize>> {
         let vc = self.vc;
-        let unknown_id = vc + 10;
         // 番号を記録 1..=N
         let mut id = 0;
         let mut ids = vec![0; vc];
         let mut used = vec![false; vc];
         for u in 0..vc {
             if ids[u] == 0 {
-                self.scc_dfs1(u, unknown_id, &mut id, &mut ids, &mut used);
+                self.scc_dfs1(u, &mut id, &mut ids, &mut used);
             }
         }
         let mut u_with_id = ids.into_iter().enumerate().collect::<Vec<_>>();
@@ -376,38 +375,32 @@ where
                 continue;
             }
             let mut group = Vec::new();
-            rev_graph.scc_dfs2(u, unknown_id, &mut group, &mut used);
+            rev_graph.scc_dfs2(u, &mut group, &mut used);
             groups.push(group);
         }
         groups
     }
 
-    fn scc_dfs1(&self, u: usize, p: usize, id: &mut usize, ids: &mut Vec<usize>, used: &mut Vec<bool>) {
+    fn scc_dfs1(&self, u: usize, id: &mut usize, ids: &mut Vec<usize>, used: &mut Vec<bool>) {
         used[u] = true;
         for &(v, _) in &self.graph[u] {
-            if v == p {
-                continue;
-            }
             if used[v] {
                 continue;
             }
-            self.scc_dfs1(v, u, id, ids, used);
+            self.scc_dfs1(v, id, ids, used);
         }
         *id += 1;
         ids[u] = *id;
     }
 
-    fn scc_dfs2(&self, u: usize, p: usize, group: &mut Vec<usize>, used: &mut Vec<bool>) {
+    fn scc_dfs2(&self, u: usize, group: &mut Vec<usize>, used: &mut Vec<bool>) {
         group.push(u);
         used[u] = true;
         for &(v, _) in &self.graph[u] {
-            if v == p {
-                continue;
-            }
             if used[v] {
                 continue;
             }
-            self.scc_dfs2(v, u, group, used);
+            self.scc_dfs2(v, group, used);
         }
     }
 }
