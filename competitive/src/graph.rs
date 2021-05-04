@@ -360,9 +360,10 @@ where
         let mut ids = vec![0; vc];
         let mut used = vec![false; vc];
         for u in 0..vc {
-            if ids[u] == 0 {
-                self.scc_dfs1(u, &mut id, &mut ids, &mut used);
+            if used[u] {
+                continue;
             }
+            self.scc_dfs1(u, &mut id, &mut ids, &mut used);
         }
         let mut u_with_id = ids.into_iter().enumerate().collect::<Vec<_>>();
         u_with_id.sort_by_key(|(_, id)| -(*id as isize));
