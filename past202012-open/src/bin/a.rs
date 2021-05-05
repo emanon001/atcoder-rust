@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: String
     };
+
+    let res = if s.contains("ooo") {
+        "o"
+    } else if s.contains("xxx") {
+        "x"
+    } else {
+        "draw"
+    };
+    println!("{}", res);
 }
 
 fn main() {
