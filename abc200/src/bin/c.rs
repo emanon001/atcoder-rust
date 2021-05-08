@@ -10,7 +10,22 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [usize; n]
     };
+
+    let mut counts = vec![0; 200];
+    for a in av {
+        counts[a % 200] += 1;
+    }
+    let mut res = 0_i64;
+    for x in 0..200 {
+        let c = counts[x];
+        if c > 0 {
+            res += c * (c - 1);
+        }
+    }
+    println!("{}", res / 2);
 }
 
 fn main() {

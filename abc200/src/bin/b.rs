@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: i64, k: i64
     };
+
+    let mut res = n;
+    for _ in 0..k {
+        if res % 200 == 0 {
+            res = res / 200;
+        } else {
+            res = res * 1000 + 200;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
