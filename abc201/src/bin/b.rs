@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        mut stv: [(String, i64); n]
     };
+
+    stv.sort_by_key(|(_, t)| -t);
+    println!("{}", stv[1].0);
 }
 
 fn main() {
