@@ -10,7 +10,21 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [i64; n],
+        bv: [i64; n],
+        cv: [Usize1; n],
     };
+    let mut table = vec![0; n + 1];
+    for i in 0..n {
+        table[bv[cv[i]] as usize] += 1;
+    }
+    let mut res = 0_i64;
+    for i in 0..n {
+        let a = av[i];
+        res += table[a as usize];
+    }
+    println!("{}", res);
 }
 
 fn main() {

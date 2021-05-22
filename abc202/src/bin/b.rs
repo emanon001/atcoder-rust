@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        mut s: Chars
     };
+
+    s.reverse();
+    for i in 0..s.len() {
+        if s[i] == '6' {
+            s[i] = '9';
+        } else if s[i] == '9' {
+            s[i] = '6';
+        }
+    }
+    println!("{}", s.iter().join(""));
 }
 
 fn main() {
