@@ -6,26 +6,19 @@ use num::*;
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
-use std::time::{Instant, Duration};
 use whiteread::{parse_line};
 
 struct Solver {
-    now: Instant,
 }
 
 impl Solver {
     fn new() -> Self {
-        let now = Instant::now();
         Self {
-            now
         }
     }
 
     fn solve(&mut self) {
         for _ in 0..1000 {
-            let duration = Instant::now() - self.now;
-            let stop = duration >= Duration::from_millis(1990);
-            if stop { return };
             let mut path = Vec::new();
             let (si, sj, ti, tj): (usize, usize, usize, usize) = parse_line().unwrap();
             // 縦方向
