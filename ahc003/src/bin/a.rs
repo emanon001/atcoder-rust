@@ -27,25 +27,21 @@ impl Solver {
                 if i > 0 {
                     let v = Self::vertex(i - 1, j);
                     graph[u].push((v, cost, 'U'));
-                    graph[v].push((u, cost, 'D'));
                 }
                 // ↓
                 if i + 1 < H {
                     let v = Self::vertex(i + 1, j);
                     graph[u].push((v, cost, 'D'));
-                    graph[v].push((u, cost, 'U'));
                 }
                 // ←
                 if j > 0 {
                     let v = Self::vertex(i, j - 1);
                     graph[u].push((v, cost, 'L'));
-                    graph[v].push((u, cost, 'R'));
                 }
                 // →
                 if j + 1 < W {
                     let v = Self::vertex(i, j + 1);
                     graph[u].push((v, cost, 'R'));
-                    graph[v].push((u, cost, 'L'));
                 }
             }
         }
