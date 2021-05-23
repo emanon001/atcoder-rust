@@ -7,19 +7,22 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 use whiteread::{parse_line};
+use rand::prelude::*;
 
 const H: usize = 30;
 const W: usize = 30;
 
 struct Solver {
-    graph: Vec<Vec<(usize, i64, char)>>
+    graph: Vec<Vec<(usize, i64, char)>>,
+    rng: ThreadRng
 }
 
 impl Solver {
     fn new() -> Self {
+        let rng = rand::thread_rng();
         let n = H * W;
         let mut graph = vec![Vec::new(); n];
-        let cost = 1;
+        let cost = 4000;
         for i in 0..H {
             for j in 0..W {
                 let u = Self::vertex(i, j);
@@ -45,8 +48,10 @@ impl Solver {
                 }
             }
         }
+
         Self {
-            graph
+            graph,
+            rng,
         }
     }
 
@@ -102,7 +107,7 @@ impl Solver {
             let mut edges = vec![];
             for e in &self.graph[u] {
                 if e.0 == v {
-                    edges.push((e.0, w, e.2));
+                    edges.push((e.0, (e.1 + w) / 2, e.2));
                 } else {
                     edges.push(*e);
                 }
