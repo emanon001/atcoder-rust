@@ -5,4 +5,9 @@ cd ..
 
 cargo build --release --bin a
 cd tools
-cargo run --release --bin tester in/0000.txt ../../target/release/a > out/0000.out
+cargo build --release --bin tester
+echo -n > out/score.txt
+for in in $(seq -f "%04g" -w 0 99); do
+  ../../target/release/tester in/${in}.txt ../../target/release/a 1> out/${in}.txt 2>>out/score.txt
+done
+ruby -e 'puts 100.times.map { gets.split("= ")[1].to_i }.sum' < out/score.txt
