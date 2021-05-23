@@ -54,8 +54,10 @@ impl Solver {
         for _ in 0..1000 {
             let (si, sj, ti, tj): (usize, usize, usize, usize) = parse_line().unwrap();
             let d = self.shortest_path(Self::vertex(si, sj));
-            println!("{}", d[Self::vertex(ti, tj)].iter().join(""));
-            let _: i64 = parse_line().unwrap();
+            let path = &d[Self::vertex(ti, tj)];
+            println!("{}", path.iter().join(""));
+            let cost: i64 = parse_line().unwrap();
+            self.update(si, sj, path, cost);
         }
     }
 
@@ -84,8 +86,38 @@ impl Solver {
         path_list
     }
 
+    fn update(&mut self, si: usize, sj: usize, path: &[char], cost: i64) {
+        let len = path.len();
+        let w = cost / len as i64;
+        let mut u = Self::vertex(si, sj);
+        for &p in path {
+            let (i, j) = Self::pos(u);
+            let v = match p {
+                'U' => Self::vertex(i - 1, j),
+                'D' => Self::vertex(i + 1, j),
+                'L' => Self::vertex(i, j - 1),
+                'R' => Self::vertex(i, j + 1),
+                _ => unreachable!()
+            };
+            let mut edges = vec![];
+            for e in &self.graph[u] {
+                if e.0 == v {
+                    edges.push((e.0, w, e.2));
+                } else {
+                    edges.push(*e);
+                }
+            }
+            self.graph[u] = edges;
+            u = v;
+        }
+    }
+
     fn vertex(i: usize, j: usize) -> usize {
         i * W + j
+    }
+
+    fn pos(u: usize) -> (usize, usize) {
+        (u / W, u % W)
     }
 }
 
