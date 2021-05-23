@@ -1,0 +1,8 @@
+#!/bin/bash -eu
+
+cd "$(dirname ${0})"
+cd ..
+
+cargo build --release --bin a
+cd tools
+cargo run --release --bin tester in/0000.txt ../../target/release/a > out/0000.out
