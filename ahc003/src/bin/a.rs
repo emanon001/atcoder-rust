@@ -11,9 +11,11 @@ use whiteread::{parse_line};
 const H: usize = 30;
 const W: usize = 30;
 
+type Path = Vec<usize>;
 struct Solver {
     graph: Vec<HashMap<usize, i64>>,
     dir: HashMap<(usize, usize), char>,
+    history: Vec<(Path, i64)>,
 }
 
 impl Solver {
@@ -55,6 +57,7 @@ impl Solver {
         Self {
             graph,
             dir,
+            history: Vec::new()
         }
     }
 
@@ -77,7 +80,7 @@ impl Solver {
         }
     }
 
-    fn shortest_path(&self, start: usize) -> Vec<Vec<usize>> {
+    fn shortest_path(&self, start: usize) -> Vec<Path> {
         let mut cost_list = vec![1_i64 << 60; self.graph.len()];
         let mut path_list = vec![vec![]; self.graph.len()];
         let mut heap = std::collections::BinaryHeap::new();
@@ -102,7 +105,7 @@ impl Solver {
         path_list
     }
 
-    fn update(&mut self, u: usize, path: &[usize], cost: i64) {
+    fn update(&mut self, u: usize, path: &Path, cost: i64) {
         let len = path.len();
         let w = cost / len as i64;
         let mut u = u;
