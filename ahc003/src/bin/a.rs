@@ -15,7 +15,7 @@ type Path = Vec<usize>;
 struct Solver {
     graph: Vec<HashMap<usize, i64>>,
     dir: HashMap<(usize, usize), char>,
-    history: Vec<(Path, i64)>,
+    history: Vec<(HashSet<(usize, usize)>, i64)>,
 }
 
 impl Solver {
@@ -57,12 +57,12 @@ impl Solver {
         Self {
             graph,
             dir,
-            history: Vec::new()
+            history: Vec::new(),
         }
     }
 
     fn solve(&mut self) {
-        for _ in 0..1000 {
+        for i in 0..1000 {
             let (si, sj, ti, tj): (usize, usize, usize, usize) = parse_line().unwrap();
             let s = Self::vertex(si, sj);
             let d = self.shortest_path(s);
@@ -76,7 +76,7 @@ impl Solver {
             }
             println!("{}", res.iter().join(""));
             let cost: i64 = parse_line().unwrap();
-            self.update(Self::vertex(si, sj), path, cost);
+            self.update(Self::vertex(si, sj), path, cost, i);
         }
     }
 
@@ -105,15 +105,19 @@ impl Solver {
         path_list
     }
 
-    fn update(&mut self, u: usize, path: &Path, cost: i64) {
-        let len = path.len();
-        let w = cost / len as i64;
-        let mut u = u;
+    fn update(&mut self, s: usize, path: &Path, cost: i64, i: usize) {
+        let mut u = s;
+        let mut path_set = HashSet::new();
+        let w = cost / path.len() as i64;
         for &v in path {
-            let new_w =  (self.graph[u][&v] + w) / 2;
+            let ratio = 0.5 as f64 * (1000 - i) as f64 / 1000 as f64;
+            let new_w =  ((self.graph[u][&v] as f64 * (1 as f64 - ratio) + (w as f64 * ratio)) as i64).max(1);
             self.graph[u].insert(v,  new_w);
+            path_set.insert((u, v));
             u = v
         }
+
+        self.history.push((path_set, cost));
     }
 
     fn vertex(i: usize, j: usize) -> usize {
