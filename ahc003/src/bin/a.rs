@@ -7,21 +7,20 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 use whiteread::{parse_line};
-use rand::prelude::*;
 
 const H: usize = 30;
 const W: usize = 30;
 
 struct Solver {
-    graph: Vec<Vec<(usize, i64, char)>>,
-    rng: ThreadRng
+    graph: Vec<HashMap<usize, i64>>,
+    dir: HashMap<(usize, usize), char>,
 }
 
 impl Solver {
     fn new() -> Self {
-        let rng = rand::thread_rng();
         let n = H * W;
-        let mut graph = vec![Vec::new(); n];
+        let mut graph = vec![HashMap::new(); n];
+        let mut dir = HashMap::new();
         let cost = 4000;
         for i in 0..H {
             for j in 0..W {
@@ -29,44 +28,56 @@ impl Solver {
                 // ↑
                 if i > 0 {
                     let v = Self::vertex(i - 1, j);
-                    graph[u].push((v, cost, 'U'));
+                    graph[u].insert(v, cost);
+                    dir.insert((u, v), 'U');
                 }
                 // ↓
                 if i + 1 < H {
                     let v = Self::vertex(i + 1, j);
-                    graph[u].push((v, cost, 'D'));
+                    graph[u].insert(v, cost);
+                    dir.insert((u, v), 'D');
                 }
                 // ←
                 if j > 0 {
                     let v = Self::vertex(i, j - 1);
-                    graph[u].push((v, cost, 'L'));
+                    graph[u].insert(v, cost);
+                    dir.insert((u, v), 'L');
                 }
                 // →
                 if j + 1 < W {
                     let v = Self::vertex(i, j + 1);
-                    graph[u].push((v, cost, 'R'));
+                    graph[u].insert(v, cost);
+                    dir.insert((u, v), 'R');
                 }
             }
         }
 
         Self {
             graph,
-            rng,
+            dir,
         }
     }
 
     fn solve(&mut self) {
         for _ in 0..1000 {
             let (si, sj, ti, tj): (usize, usize, usize, usize) = parse_line().unwrap();
-            let d = self.shortest_path(Self::vertex(si, sj));
-            let path = &d[Self::vertex(ti, tj)];
-            println!("{}", path.iter().join(""));
+            let s = Self::vertex(si, sj);
+            let d = self.shortest_path(s);
+            let g = Self::vertex(ti, tj);
+            let path = &d[g];
+            let mut u = s;
+            let mut res = vec![];
+            for &v in path {
+                res.push(self.dir[&(u, v)]);
+                u = v;
+            }
+            println!("{}", res.iter().join(""));
             let cost: i64 = parse_line().unwrap();
-            self.update(si, sj, path, cost);
+            self.update(Self::vertex(si, sj), path, cost);
         }
     }
 
-    fn shortest_path(&self, start: usize) -> Vec<Vec<char>> {
+    fn shortest_path(&self, start: usize) -> Vec<Vec<usize>> {
         let mut cost_list = vec![1_i64 << 60; self.graph.len()];
         let mut path_list = vec![vec![]; self.graph.len()];
         let mut heap = std::collections::BinaryHeap::new();
@@ -77,11 +88,11 @@ impl Solver {
             if cost > cost_list[u] {
                 continue;
             }
-            for &(v, w, d) in &self.graph[u] {
+            for (&v, &w) in &self.graph[u] {
                 let new_cost = cost + w;
                 if new_cost < cost_list[v] {
                     let mut new_path= path.clone();
-                    new_path.push(d);
+                    new_path.push(v);
                     path_list[v] = new_path.clone();
                     cost_list[v] = new_cost;
                     heap.push(std::cmp::Reverse((new_cost, v, new_path)));
@@ -91,38 +102,19 @@ impl Solver {
         path_list
     }
 
-    fn update(&mut self, si: usize, sj: usize, path: &[char], cost: i64) {
+    fn update(&mut self, u: usize, path: &[usize], cost: i64) {
         let len = path.len();
         let w = cost / len as i64;
-        let mut u = Self::vertex(si, sj);
-        for &p in path {
-            let (i, j) = Self::pos(u);
-            let v = match p {
-                'U' => Self::vertex(i - 1, j),
-                'D' => Self::vertex(i + 1, j),
-                'L' => Self::vertex(i, j - 1),
-                'R' => Self::vertex(i, j + 1),
-                _ => unreachable!()
-            };
-            let mut edges = vec![];
-            for e in &self.graph[u] {
-                if e.0 == v {
-                    edges.push((e.0, (e.1 + w) / 2, e.2));
-                } else {
-                    edges.push(*e);
-                }
-            }
-            self.graph[u] = edges;
-            u = v;
+        let mut u = u;
+        for &v in path {
+            let new_w =  (self.graph[u][&v] + w) / 2;
+            self.graph[u].insert(v,  new_w);
+            u = v
         }
     }
 
     fn vertex(i: usize, j: usize) -> usize {
         i * W + j
-    }
-
-    fn pos(u: usize) -> (usize, usize) {
-        (u / W, u % W)
     }
 }
 
