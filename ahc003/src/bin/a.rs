@@ -109,12 +109,39 @@ impl Solver {
         let mut u = s;
         let mut path_set = HashSet::new();
         let w = cost / path.len() as i64;
+        let ratio = 0.5 as f64 * (1000 - i) as f64 / 1000 as f64;
         for &v in path {
-            let ratio = 0.5 as f64 * (1000 - i) as f64 / 1000 as f64;
             let new_w =  ((self.graph[u][&v] as f64 * (1 as f64 - ratio) + (w as f64 * ratio)) as i64).max(1);
             self.graph[u].insert(v,  new_w);
             path_set.insert((u, v));
             u = v
+        }
+
+        for (path2_set, cost2) in &self.history {
+            if path_set.is_subset(path2_set) {
+                let c = cost2 - cost;
+                let len = path2_set.len() - path_set.len();
+                if len == 0 {
+                    continue;
+                }
+                let w = c / len as i64;
+                for &(u, v) in path2_set.difference(&path_set) {
+                    let new_w =  ((self.graph[u][&v] as f64 * (1 as f64 - ratio) + (w as f64 * ratio)) as i64).max(1);
+                    self.graph[u].insert(v,  new_w);
+                }
+            }
+            if path2_set.is_subset(&path_set) {
+                let c = cost - cost2;
+                let len = path_set.len() - path2_set.len();
+                if len == 0 {
+                    continue;
+                }
+                let w = c / len as i64;
+                for &(u, v) in path_set.difference(&path2_set) {
+                    let new_w =  ((self.graph[u][&v] as f64 * (1 as f64 - ratio) + (w as f64 * ratio)) as i64).max(1);
+                    self.graph[u].insert(v,  new_w);
+                }
+            }
         }
 
         self.history.push((path_set, cost));
