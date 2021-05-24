@@ -10,6 +10,7 @@ use whiteread::{parse_line};
 
 const H: usize = 30;
 const W: usize = 30;
+const INITIAL_COST: i64 = 4000;
 
 type Path = Vec<usize>;
 struct Solver {
@@ -23,7 +24,7 @@ impl Solver {
         let n = H * W;
         let mut graph = vec![HashMap::new(); n];
         let mut dir = HashMap::new();
-        let cost = 4000;
+        let cost = INITIAL_COST;
         for i in 0..H {
             for j in 0..W {
                 let u = Self::vertex(i, j);
@@ -65,7 +66,12 @@ impl Solver {
         for i in 0..1000 {
             let (si, sj, ti, tj): (usize, usize, usize, usize) = parse_line().unwrap();
             let s = Self::vertex(si, sj);
-            let d = self.shortest_path(s);
+            let d = if i < 50 {
+                // 序盤はなるべく色々なグリッドを踏む
+                self.shortest_path_for_opening(s)
+            } else {
+                self.shortest_path(s)
+            };
             let g = Self::vertex(ti, tj);
             let path = &d[g];
             let mut u = s;
@@ -78,6 +84,31 @@ impl Solver {
             let cost: i64 = parse_line().unwrap();
             self.update(Self::vertex(si, sj), path, cost, i);
         }
+    }
+
+    fn shortest_path_for_opening(&self, start: usize) -> Vec<Path> {
+        let mut cost_list = vec![1_i64 << 60; self.graph.len()];
+        let mut path_list = vec![vec![]; self.graph.len()];
+        let mut heap = std::collections::BinaryHeap::new();
+        cost_list[start] = 0;
+        path_list[start] = vec![];
+        heap.push(std::cmp::Reverse((0, start, vec![])));
+        while let Some(std::cmp::Reverse((cost, u, path))) = heap.pop() {
+            if cost > cost_list[u] {
+                continue;
+            }
+            for (&v, &w) in &self.graph[u] {
+                let new_cost = cost + if w != INITIAL_COST { 1_i64 << 30 } else { w };
+                if new_cost < cost_list[v] {
+                    let mut new_path= path.clone();
+                    new_path.push(v);
+                    path_list[v] = new_path.clone();
+                    cost_list[v] = new_cost;
+                    heap.push(std::cmp::Reverse((new_cost, v, new_path)));
+                }
+            }
+        }
+        path_list
     }
 
     fn shortest_path(&self, start: usize) -> Vec<Path> {
