@@ -274,25 +274,27 @@ impl Solver {
             Duration::from_millis(0)
         };
         while Instant::now() - now < duration {
-            let i = self.rng.gen::<usize>() % self.not_fixed_edges.len();
-            let &(u, v) = self.not_fixed_edges.iter().nth(i).unwrap();
-            let cur_cost = self.graph[u][&v];
-            let new_cost = (cur_cost + self.rng.gen_range(-100, 100)).max(1);
-            self.graph[u].insert(v, new_cost);
-            let new_score = self.update_score((u, v), cur_cost, score);
-            if new_score > score {
-                score = new_score;
-                // gen_cost更新
-                for i in 0..self.history.len() {
-                    if !self.history[i].0.contains(&(u, v)) {
-                        continue;
+            for _ in 0..10 {
+                let i = self.rng.gen::<usize>() % self.not_fixed_edges.len();
+                let &(u, v) = self.not_fixed_edges.iter().nth(i).unwrap();
+                let cur_cost = self.graph[u][&v];
+                let new_cost = (cur_cost + self.rng.gen_range(-100, 100)).max(1);
+                self.graph[u].insert(v, new_cost);
+                let new_score = self.update_score((u, v), cur_cost, score);
+                if new_score > score {
+                    score = new_score;
+                    // gen_cost更新
+                    for i in 0..self.history.len() {
+                        if !self.history[i].0.contains(&(u, v)) {
+                            continue;
+                        }
+                        let new_gen_cost = self.history[i].2 - cur_cost + new_cost;
+                        self.history[i].2 = new_gen_cost;
                     }
-                    let new_gen_cost = self.history[i].2 - cur_cost + new_cost;
-                    self.history[i].2 = new_gen_cost;
+                } else {
+                    // restore
+                    self.graph[u].insert(v, cur_cost);
                 }
-            } else {
-                // restore
-                self.graph[u].insert(v, cur_cost);
             }
         }
     }
