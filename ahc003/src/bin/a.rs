@@ -268,7 +268,7 @@ impl Solver {
         let mut score = self.score();
         let duration = if i >= 600 {
             Duration::from_millis(3)
-        } else if i >= 500 {
+        } else if i >= 450 {
             Duration::from_millis(2)
         } else {
             Duration::from_millis(0)
