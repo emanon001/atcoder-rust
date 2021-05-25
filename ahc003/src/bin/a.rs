@@ -288,7 +288,7 @@ impl Solver {
                         if !self.history[i].0.contains(&(u, v)) {
                             continue;
                         }
-                        let new_gen_cost = self.history[i].2 - cur_cost + new_cost;
+                        let new_gen_cost = (self.history[i].2 - cur_cost + new_cost).max(1);
                         self.history[i].2 = new_gen_cost;
                     }
                 } else {
