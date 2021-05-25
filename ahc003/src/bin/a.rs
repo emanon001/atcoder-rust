@@ -145,7 +145,7 @@ impl Solver {
     }
 
     fn update_costs(&mut self, s: usize, path: &Path, cost: i64, i: usize) {
-        let mut updated = false;
+        let mut added_fixed = false;
 
         // 与えられたコストから暫定のコストを計算する
         let mut path_set = HashSet::new();
@@ -168,11 +168,11 @@ impl Solver {
             self.not_fixed_edges.remove(&(u, v));
             self.fixed_edges.insert((u, v));
             self.graph[u].insert(v, not_fixed_cost.max(1));
-            updated = true;
+            added_fixed = true;
         }
 
         let ratio = 0.5 as f64 * (1000 - i) as f64 / 1000 as f64;
-        if not_fixed.len() > 0 {
+        if not_fixed.len() > 1 {
             let w = not_fixed_cost / not_fixed.len() as i64;
             let mut u = s;
             for &v in path {
@@ -184,7 +184,7 @@ impl Solver {
             }
         }
 
-        if updated {
+        if added_fixed {
             for (path2_set, cost2, _) in &self.history {
                 let mut fixed_cost = 0;
                 let mut not_fixed = vec![];
