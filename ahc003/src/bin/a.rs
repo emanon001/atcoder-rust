@@ -260,7 +260,14 @@ impl Solver {
         // ランダムにスコアを伸ばす
         let now = Instant::now();
         let mut score = self.score();
-        while i > 600 && Instant::now() - now < Duration::from_millis(3) {
+        let duration = if i >= 600 {
+            Duration::from_millis(3)
+        } else if i >= 500 {
+            Duration::from_millis(2)
+        } else {
+            Duration::from_millis(0)
+        };
+        while Instant::now() - now < duration {
             let i = self.rng.gen::<usize>() % self.not_fixed_edges.len();
             let &(u, v) = self.not_fixed_edges.iter().nth(i).unwrap();
             let cur_cost = self.graph[u][&v];
