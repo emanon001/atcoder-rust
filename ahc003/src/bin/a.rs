@@ -90,7 +90,7 @@ impl Solver {
             }
             println!("{}", res.iter().join(""));
             let cost: i64 = parse_line().unwrap();
-            self.update(Self::vertex(si, sj), path, cost, i);
+            self.update_costs(Self::vertex(si, sj), path, cost, i);
         }
     }
 
@@ -144,7 +144,7 @@ impl Solver {
         path_list
     }
 
-    fn update(&mut self, s: usize, path: &Path, cost: i64, i: usize) {
+    fn update_costs(&mut self, s: usize, path: &Path, cost: i64, i: usize) {
         let mut updated = false;
 
         // 与えられたコストから暫定のコストを計算する
@@ -260,13 +260,13 @@ impl Solver {
         // ランダムにスコアを伸ばす
         let now = Instant::now();
         let mut score = self.score();
-        while i > 500 && Instant::now() - now < Duration::from_millis(2) {
+        while i > 600 && Instant::now() - now < Duration::from_millis(3) {
             let i = self.rng.gen::<usize>() % self.not_fixed_edges.len();
             let &(u, v) = self.not_fixed_edges.iter().nth(i).unwrap();
             let cur_cost = self.graph[u][&v];
             let new_cost = (cur_cost + self.rng.gen_range(-100, 100)).max(1);
             self.graph[u].insert(v, new_cost);
-            let new_score = self.score();
+            let new_score = self.update_score((u, v), cur_cost, score);
             if new_score > score {
                 score = new_score;
             } else {
@@ -286,6 +286,23 @@ impl Solver {
             res += (cost - w).abs();
         }
         -res
+    }
+
+    fn update_score(&self, e: (usize, usize), cur_cost: i64, cur_score: i64) -> i64 {
+        let mut diff = 0_i64;
+        for (path, cost) in &self.history {
+            if !path.contains(&e) {
+                continue;
+            }
+            // 更新後のコスト
+            let mut path_cost = 0_i64;
+            for &(u, v) in path {
+                path_cost += self.graph[u][&v];
+            }
+            let prev_path_cost = path_cost - self.graph[e.0][&e.1] + cur_cost;
+            diff += (cost - prev_path_cost).abs() - (cost - path_cost).abs();
+        }
+        cur_score + diff
     }
 
     fn vertex(i: usize, j: usize) -> usize {
