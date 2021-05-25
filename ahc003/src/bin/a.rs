@@ -8,6 +8,7 @@ use proconio::marker::*;
 use std::collections::*;
 use whiteread::{parse_line};
 use rand::prelude::*;
+use std::time::{Instant, Duration};
 
 const H: usize = 30;
 const W: usize = 30;
@@ -18,7 +19,8 @@ struct Solver {
     graph: Vec<HashMap<usize, i64>>,
     dir: HashMap<(usize, usize), char>,
     history: Vec<(HashSet<(usize, usize)>, i64)>,
-    fixed: HashSet<(usize, usize)>,
+    fixed_edges: HashSet<(usize, usize)>,
+    not_fixed_edges: BTreeSet<(usize, usize)>,
     rng: ThreadRng,
 }
 
@@ -62,7 +64,8 @@ impl Solver {
             graph,
             dir,
             history: Vec::new(),
-            fixed: HashSet::new(),
+            fixed_edges: HashSet::new(),
+            not_fixed_edges: BTreeSet::new(),
             rng: rand::thread_rng(),
         }
     }
@@ -150,9 +153,10 @@ impl Solver {
         let mut not_fixed = vec![];
         let mut u = s;
         for &v in path {
-            if self.fixed.contains(&(u, v)) {
+            if self.fixed_edges.contains(&(u, v)) {
                 not_fixed_cost -= self.graph[u][&v];
             } else {
+                self.not_fixed_edges.insert((u, v));
                 not_fixed.push((u, v));
             }
             path_set.insert((u, v));
@@ -161,7 +165,8 @@ impl Solver {
 
         if not_fixed.len() == 1 {
             let (u, v) = not_fixed[0];
-            self.fixed.insert((u, v));
+            self.not_fixed_edges.remove(&(u, v));
+            self.fixed_edges.insert((u, v));
             self.graph[u].insert(v, not_fixed_cost.max(1));
             updated = true;
         }
@@ -171,7 +176,7 @@ impl Solver {
             let w = not_fixed_cost / not_fixed.len() as i64;
             let mut u = s;
             for &v in path {
-                if !self.fixed.contains(&(u, v)) {
+                if !self.fixed_edges.contains(&(u, v)) {
                     let new_w = ((self.graph[u][&v] as f64 * (1 as f64 - ratio) + (w as f64 * ratio)) as i64).max(1);
                     self.graph[u].insert(v,  new_w);
                 }
@@ -184,7 +189,7 @@ impl Solver {
                 let mut fixed_cost = 0;
                 let mut not_fixed = vec![];
                 for &(u, v) in path2_set {
-                    if self.fixed.contains(&(u, v)) {
+                    if self.fixed_edges.contains(&(u, v)) {
                         fixed_cost += self.graph[u][&v];
                     } else {
                         not_fixed.push((u, v));
@@ -193,7 +198,8 @@ impl Solver {
                 if not_fixed.len() == 1 {
                     // 過去の記録から辺のコストを確定する
                     let (u, v) = not_fixed[0];
-                    self.fixed.insert((u, v));
+                    self.not_fixed_edges.remove(&(u, v));
+                    self.fixed_edges.insert((u, v));
                     self.graph[u].insert(v, (cost2 - fixed_cost).max(1));
                 } else if not_fixed.len() > 1 {
                     let w = (cost2 - fixed_cost) / not_fixed.len() as i64;
@@ -216,7 +222,7 @@ impl Solver {
                 }
                 let mut not_fixed = vec![];
                 for &(u, v) in path2_set.difference(&path_set) {
-                    if self.fixed.contains(&(u, v)) {
+                    if self.fixed_edges.contains(&(u, v)) {
                         not_fixed_cost -= self.graph[u][&v];
                     } else {
                         not_fixed.push((u, v));
@@ -235,7 +241,7 @@ impl Solver {
                 }
                 let mut not_fixed = vec![];
                 for &(u, v) in path_set.difference(path2_set) {
-                    if self.fixed.contains(&(u, v)) {
+                    if self.fixed_edges.contains(&(u, v)) {
                         not_fixed_cost -= self.graph[u][&v];
                     } else {
                         not_fixed.push((u, v));
@@ -249,10 +255,37 @@ impl Solver {
             }
         }
 
-        // ランダムにスコアを伸ばす
-
         self.history.push((path_set, cost));
 
+        // ランダムにスコアを伸ばす
+        let now = Instant::now();
+        let mut score = self.score();
+        while i > 500 && Instant::now() - now < Duration::from_millis(2) {
+            let i = self.rng.gen::<usize>() % self.not_fixed_edges.len();
+            let &(u, v) = self.not_fixed_edges.iter().nth(i).unwrap();
+            let cur_cost = self.graph[u][&v];
+            let new_cost = (cur_cost + self.rng.gen_range(-100, 100)).max(1);
+            self.graph[u].insert(v, new_cost);
+            let new_score = self.score();
+            if new_score > score {
+                score = new_score;
+            } else {
+                // restore
+                self.graph[u].insert(v, cur_cost);
+            }
+        }
+    }
+
+    fn score(&self) -> i64 {
+        let mut res = 0_i64;
+        for (path, cost) in &self.history {
+            let mut w = 0_i64;
+            for &(u, v) in path {
+                w += self.graph[u][&v];
+            }
+            res += (cost - w).abs();
+        }
+        -res
     }
 
     fn vertex(i: usize, j: usize) -> usize {
@@ -261,14 +294,6 @@ impl Solver {
 }
 
 fn main() {
-    std::thread::Builder::new()
-        .name("big stack size".into())
-        .stack_size(256 * 1024 * 1024)
-        .spawn(|| {
-            let mut solver = Solver::new();
-            solver.solve();
-        })
-        .unwrap()
-        .join()
-        .unwrap();
+    let mut solver = Solver::new();
+    solver.solve();
 }
