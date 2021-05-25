@@ -18,7 +18,7 @@ type Path = Vec<usize>;
 struct Solver {
     graph: Vec<HashMap<usize, i64>>,
     dir: HashMap<(usize, usize), char>,
-    history: Vec<(HashSet<(usize, usize)>, i64)>,
+    history: Vec<(HashSet<(usize, usize)>, i64, i64)>,
     fixed_edges: HashSet<(usize, usize)>,
     not_fixed_edges: BTreeSet<(usize, usize)>,
     rng: ThreadRng,
@@ -185,7 +185,7 @@ impl Solver {
         }
 
         if updated {
-            for (path2_set, cost2) in &self.history {
+            for (path2_set, cost2, _) in &self.history {
                 let mut fixed_cost = 0;
                 let mut not_fixed = vec![];
                 for &(u, v) in path2_set {
@@ -212,7 +212,7 @@ impl Solver {
         }
 
         // 過去のパスについて、コストを再計算する
-        for (path2_set, cost2) in &self.history {
+        for (path2_set, cost2, _) in &self.history {
             if path_set.is_subset(path2_set) {
                 // path_setがpath_set2に包含されている
                 let mut not_fixed_cost = cost2 - cost;
@@ -255,7 +255,13 @@ impl Solver {
             }
         }
 
-        self.history.push((path_set, cost));
+        let mut gen_cost = 0;
+        let mut u = s;
+        for v in path {
+            gen_cost += self.graph[u][v];
+            u = *v;
+        }
+        self.history.push((path_set, cost, gen_cost));
 
         // ランダムにスコアを伸ばす
         let now = Instant::now();
@@ -276,6 +282,14 @@ impl Solver {
             let new_score = self.update_score((u, v), cur_cost, score);
             if new_score > score {
                 score = new_score;
+                // gen_cost更新
+                for i in 0..self.history.len() {
+                    if !self.history[i].0.contains(&(u, v)) {
+                        continue;
+                    }
+                    let new_gen_cost = self.history[i].2 - cur_cost + new_cost;
+                    self.history[i].2 = new_gen_cost;
+                }
             } else {
                 // restore
                 self.graph[u].insert(v, cur_cost);
@@ -285,29 +299,22 @@ impl Solver {
 
     fn score(&self) -> i64 {
         let mut res = 0_i64;
-        for (path, cost) in &self.history {
-            let mut w = 0_i64;
-            for &(u, v) in path {
-                w += self.graph[u][&v];
-            }
-            res += (cost - w).abs();
+        for (_, cost, gen_cost) in &self.history {
+            res += (cost - gen_cost).abs();
         }
         -res
     }
 
     fn update_score(&self, e: (usize, usize), cur_cost: i64, cur_score: i64) -> i64 {
         let mut diff = 0_i64;
-        for (path, cost) in &self.history {
+        for (path, cost, gen_cost) in &self.history {
             if !path.contains(&e) {
                 continue;
             }
-            // 更新後のコスト
-            let mut path_cost = 0_i64;
-            for &(u, v) in path {
-                path_cost += self.graph[u][&v];
-            }
-            let prev_path_cost = path_cost - self.graph[e.0][&e.1] + cur_cost;
-            diff += (cost - prev_path_cost).abs() - (cost - path_cost).abs();
+            // 更新前のコスト
+            let prev_path_cost = gen_cost;
+            let new_path_cost = gen_cost - cur_cost + self.graph[e.0][&e.1];
+            diff += (cost - prev_path_cost).abs() - (cost - new_path_cost).abs();
         }
         cur_score + diff
     }
