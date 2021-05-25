@@ -7,6 +7,7 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 use whiteread::{parse_line};
+use rand::prelude::*;
 
 const H: usize = 30;
 const W: usize = 30;
@@ -17,7 +18,8 @@ struct Solver {
     graph: Vec<HashMap<usize, i64>>,
     dir: HashMap<(usize, usize), char>,
     history: Vec<(HashSet<(usize, usize)>, i64)>,
-    fixed: Vec<Vec<bool>>
+    fixed: HashSet<(usize, usize)>,
+    rng: ThreadRng,
 }
 
 impl Solver {
@@ -60,7 +62,8 @@ impl Solver {
             graph,
             dir,
             history: Vec::new(),
-            fixed: vec![vec![false; n]; n]
+            fixed: HashSet::new(),
+            rng: rand::thread_rng(),
         }
     }
 
@@ -147,7 +150,7 @@ impl Solver {
         let mut not_fixed = vec![];
         let mut u = s;
         for &v in path {
-            if self.fixed[u][v] {
+            if self.fixed.contains(&(u, v)) {
                 not_fixed_cost -= self.graph[u][&v];
             } else {
                 not_fixed.push((u, v));
@@ -158,7 +161,7 @@ impl Solver {
 
         if not_fixed.len() == 1 {
             let (u, v) = not_fixed[0];
-            self.fixed[u][v] = true;
+            self.fixed.insert((u, v));
             self.graph[u].insert(v, not_fixed_cost.max(1));
             updated = true;
         }
@@ -168,7 +171,7 @@ impl Solver {
             let w = not_fixed_cost / not_fixed.len() as i64;
             let mut u = s;
             for &v in path {
-                if !self.fixed[u][v] {
+                if !self.fixed.contains(&(u, v)) {
                     let new_w = ((self.graph[u][&v] as f64 * (1 as f64 - ratio) + (w as f64 * ratio)) as i64).max(1);
                     self.graph[u].insert(v,  new_w);
                 }
@@ -181,7 +184,7 @@ impl Solver {
                 let mut fixed_cost = 0;
                 let mut not_fixed = vec![];
                 for &(u, v) in path2_set {
-                    if self.fixed[u][v] {
+                    if self.fixed.contains(&(u, v)) {
                         fixed_cost += self.graph[u][&v];
                     } else {
                         not_fixed.push((u, v));
@@ -190,7 +193,7 @@ impl Solver {
                 if not_fixed.len() == 1 {
                     // 過去の記録から辺のコストを確定する
                     let (u, v) = not_fixed[0];
-                    self.fixed[u][v] = true;
+                    self.fixed.insert((u, v));
                     self.graph[u].insert(v, (cost2 - fixed_cost).max(1));
                 } else if not_fixed.len() > 1 {
                     let w = (cost2 - fixed_cost) / not_fixed.len() as i64;
@@ -213,7 +216,7 @@ impl Solver {
                 }
                 let mut not_fixed = vec![];
                 for &(u, v) in path2_set.difference(&path_set) {
-                    if self.fixed[u][v] {
+                    if self.fixed.contains(&(u, v)) {
                         not_fixed_cost -= self.graph[u][&v];
                     } else {
                         not_fixed.push((u, v));
@@ -232,7 +235,7 @@ impl Solver {
                 }
                 let mut not_fixed = vec![];
                 for &(u, v) in path_set.difference(path2_set) {
-                    if self.fixed[u][v] {
+                    if self.fixed.contains(&(u, v)) {
                         not_fixed_cost -= self.graph[u][&v];
                     } else {
                         not_fixed.push((u, v));
@@ -245,6 +248,8 @@ impl Solver {
                 }
             }
         }
+
+        // ランダムにスコアを伸ばす
 
         self.history.push((path_set, cost));
 
