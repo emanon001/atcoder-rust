@@ -19,8 +19,9 @@ struct Solver {
     graph: Vec<HashMap<usize, i64>>,
     dir: HashMap<(usize, usize), char>,
     history: Vec<(HashSet<(usize, usize)>, i64, i64)>,
-    fixed_edges: HashSet<(usize, usize)>,
-    not_fixed_edges: HashSet<(usize, usize)>,
+    edge_set: HashSet<(usize, usize)>,
+    fixed_edge_set: HashSet<(usize, usize)>,
+    edges: Vec<(usize, usize)>,
     rng: ThreadRng,
 }
 
@@ -64,8 +65,9 @@ impl Solver {
             graph,
             dir,
             history: Vec::new(),
-            fixed_edges: HashSet::new(),
-            not_fixed_edges: HashSet::new(),
+            edge_set: HashSet::new(),
+            fixed_edge_set: HashSet::new(),
+            edges: Vec::new(),
             rng: rand::thread_rng(),
         }
     }
@@ -153,10 +155,13 @@ impl Solver {
         let mut not_fixed = vec![];
         let mut u = s;
         for &v in path {
-            if self.fixed_edges.contains(&(u, v)) {
+            if !self.edge_set.contains(&(u, v)) {
+                self.edge_set.insert((u, v));
+                self.edges.push((u, v));
+            }
+            if self.fixed_edge_set.contains(&(u, v)) {
                 not_fixed_cost -= self.graph[u][&v];
             } else {
-                self.not_fixed_edges.insert((u, v));
                 not_fixed.push((u, v));
             }
             path_set.insert((u, v));
@@ -166,8 +171,7 @@ impl Solver {
         if not_fixed.len() == 1 {
             // コストが確定
             let (u, v) = not_fixed[0];
-            self.not_fixed_edges.remove(&(u, v));
-            self.fixed_edges.insert((u, v));
+            self.fixed_edge_set.insert((u, v));
             self.graph[u].insert(v, not_fixed_cost.max(1));
             added_fixed = true;
         }
@@ -179,7 +183,7 @@ impl Solver {
             let w = not_fixed_cost / not_fixed.len() as i64;
             let mut u = s;
             for &v in path {
-                if !self.fixed_edges.contains(&(u, v)) {
+                if !self.fixed_edge_set.contains(&(u, v)) {
                     let new_w = ((self.graph[u][&v] as f64 * (1 as f64 - ratio) + (w as f64 * ratio)) as i64).max(1);
                     self.graph[u].insert(v,  new_w);
                 }
@@ -192,7 +196,7 @@ impl Solver {
                 let mut fixed_cost = 0;
                 let mut not_fixed = vec![];
                 for &(u, v) in path2_set {
-                    if self.fixed_edges.contains(&(u, v)) {
+                    if self.fixed_edge_set.contains(&(u, v)) {
                         fixed_cost += self.graph[u][&v];
                     } else {
                         not_fixed.push((u, v));
@@ -201,8 +205,7 @@ impl Solver {
                 if not_fixed.len() == 1 {
                     // 過去の記録から辺のコストを確定する
                     let (u, v) = not_fixed[0];
-                    self.not_fixed_edges.remove(&(u, v));
-                    self.fixed_edges.insert((u, v));
+                    self.fixed_edge_set.insert((u, v));
                     self.graph[u].insert(v, (cost2 - fixed_cost).max(1));
                 } else if not_fixed.len() > 1 {
                     let w = (cost2 - fixed_cost) / not_fixed.len() as i64;
@@ -225,7 +228,7 @@ impl Solver {
                 }
                 let mut not_fixed = vec![];
                 for &(u, v) in path2_set.difference(&path_set) {
-                    if self.fixed_edges.contains(&(u, v)) {
+                    if self.fixed_edge_set.contains(&(u, v)) {
                         not_fixed_cost -= self.graph[u][&v];
                     } else {
                         not_fixed.push((u, v));
@@ -244,7 +247,7 @@ impl Solver {
                 }
                 let mut not_fixed = vec![];
                 for &(u, v) in path_set.difference(path2_set) {
-                    if self.fixed_edges.contains(&(u, v)) {
+                    if self.fixed_edge_set.contains(&(u, v)) {
                         not_fixed_cost -= self.graph[u][&v];
                     } else {
                         not_fixed.push((u, v));
@@ -278,8 +281,12 @@ impl Solver {
         };
         while Instant::now() - now < duration {
             for _ in 0..10 {
-                let i = self.rng.gen::<usize>() % self.not_fixed_edges.len();
-                let &(u, v) = self.not_fixed_edges.iter().nth(i).unwrap();
+                let i = self.rng.gen::<usize>() % self.edges.len();
+                let uv = self.edges[i];
+                if self.fixed_edge_set.contains(&uv) {
+                    continue;
+                }
+                let (u, v) = uv;
                 let cur_cost = self.graph[u][&v];
                 let new_cost = (cur_cost + self.rng.gen_range(-100, 100)).max(1);
                 self.graph[u].insert(v, new_cost);
