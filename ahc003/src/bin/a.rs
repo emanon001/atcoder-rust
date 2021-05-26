@@ -13,9 +13,11 @@ use std::time::{Instant, Duration};
 const H: usize = 30;
 const W: usize = 30;
 const INITIAL_COST: i64 = 4000;
+const TEST_COUNT: usize = 1000;
 
 type Path = Vec<usize>;
 struct Solver {
+    start: Instant,
     graph: Vec<HashMap<usize, i64>>,
     dir: HashMap<(usize, usize), char>,
     history: Vec<(HashSet<(usize, usize)>, i64, i64)>,
@@ -64,6 +66,7 @@ impl Solver {
         }
 
         Self {
+            start: Instant::now(),
             graph,
             dir,
             history: Vec::new(),
@@ -77,7 +80,7 @@ impl Solver {
     }
 
     fn solve(&mut self) {
-        for i in 0..1000 {
+        for i in 0..TEST_COUNT {
             let (si, sj, ti, tj): (usize, usize, usize, usize) = parse_line().unwrap();
             let s = Self::vertex(si, sj);
             let d = if i < 200 {
@@ -151,6 +154,9 @@ impl Solver {
     }
 
     fn update_costs(&mut self, s: usize, path: &Path, cost: i64, i: usize) {
+        if i + 1 == TEST_COUNT {
+            return;
+        }
         let mut added_fixed = false;
 
         // 与えられたコストから暫定のコストを計算する
@@ -183,7 +189,7 @@ impl Solver {
         }
 
         // 新しいコストの重み(0.0〜1.0)
-        let ratio = 0.5 as f64 * (1000 - i) as f64 / 1000 as f64;
+        let ratio = 0.5 as f64 * (TEST_COUNT - i) as f64 / TEST_COUNT as f64;
         if not_fixed.len() > 1 {
             // 未確定のコストを、パスを構成する各頂点に分配
             let w = not_fixed_cost / not_fixed.len() as i64;
@@ -283,8 +289,10 @@ impl Solver {
         // ランダムにスコアを伸ばす
         let now = Instant::now();
         let duration = if i >= 600 {
+            // 3 * 420 = 1260
             Duration::from_millis(3)
         } else {
+            // 2 * 150 = 300
             Duration::from_millis(2)
         };
         while Instant::now() - now < duration {
