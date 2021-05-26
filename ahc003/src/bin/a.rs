@@ -284,10 +284,8 @@ impl Solver {
         let now = Instant::now();
         let duration = if i >= 600 {
             Duration::from_millis(3)
-        } else if i >= 450 {
-            Duration::from_millis(2)
         } else {
-            Duration::from_millis(0)
+            Duration::from_millis(2)
         };
         while Instant::now() - now < duration {
             for _ in 0..10 {
