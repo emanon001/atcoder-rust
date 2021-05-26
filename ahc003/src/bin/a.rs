@@ -23,6 +23,7 @@ struct Solver {
     fixed_edge_set: HashSet<(usize, usize)>,
     edges: Vec<(usize, usize)>,
     edge_to_hisidx: HashMap<(usize, usize), Vec<usize>>,
+    score: i64,
     rng: ThreadRng,
 }
 
@@ -70,6 +71,7 @@ impl Solver {
             fixed_edge_set: HashSet::new(),
             edges: Vec::new(),
             edge_to_hisidx: HashMap::new(),
+            score: 0,
             rng: rand::thread_rng(),
         }
     }
@@ -272,6 +274,7 @@ impl Solver {
             u = *v;
         }
         self.history.push((path_set, cost, gen_cost));
+        self.apply_last_history_score();
 
         if i < 450 {
             return;
@@ -279,7 +282,6 @@ impl Solver {
 
         // ランダムにスコアを伸ばす
         let now = Instant::now();
-        let mut score = self.score();
         let duration = if i >= 600 {
             Duration::from_millis(3)
         } else if i >= 450 {
@@ -298,9 +300,9 @@ impl Solver {
                 let cur_cost = self.graph[u][&v];
                 let new_cost = (cur_cost + self.rng.gen_range(-100, 100)).max(1);
                 self.graph[u].insert(v, new_cost);
-                let new_score = self.update_score((u, v), cur_cost, score);
-                if new_score > score {
-                    score = new_score;
+                let new_score = self.update_score((u, v), cur_cost, self.score);
+                if new_score > self.score {
+                    self.score = new_score;
                     // gen_cost更新
                     for i in 0..self.history.len() {
                         if !self.history[i].0.contains(&(u, v)) {
@@ -317,12 +319,9 @@ impl Solver {
         }
     }
 
-    fn score(&self) -> i64 {
-        let mut res = 0_i64;
-        for (_, cost, gen_cost) in &self.history {
-            res += (cost - gen_cost).abs();
-        }
-        -res
+    fn apply_last_history_score(&mut self) {
+        let (_, cost, gen_cost) = &self.history[self.history.len() - 1];
+        self.score -= (cost - gen_cost).abs();
     }
 
     fn update_score(&self, e: (usize, usize), cur_cost: i64, cur_score: i64) -> i64 {
