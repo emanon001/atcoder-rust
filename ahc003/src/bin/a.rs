@@ -164,6 +164,7 @@ impl Solver {
         }
 
         if not_fixed.len() == 1 {
+            // コストが確定
             let (u, v) = not_fixed[0];
             self.not_fixed_edges.remove(&(u, v));
             self.fixed_edges.insert((u, v));
@@ -171,8 +172,10 @@ impl Solver {
             added_fixed = true;
         }
 
+        // 新しいコストの重み(0.0〜1.0)
         let ratio = 0.5 as f64 * (1000 - i) as f64 / 1000 as f64;
         if not_fixed.len() > 1 {
+            // 未確定のコストを、パスを構成する各頂点に分配
             let w = not_fixed_cost / not_fixed.len() as i64;
             let mut u = s;
             for &v in path {
