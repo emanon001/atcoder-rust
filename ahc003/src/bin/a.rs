@@ -196,12 +196,12 @@ impl Solver {
 
         // ランダムにスコアを伸ばす
         let now = Instant::now();
-        let duration = if i >= 600 {
-            // 3 * 420 = 1260
-            Duration::from_millis(3)
+        let duration = if i >= 550 {
+            // 3 * 450 = 1350
+            Duration::from_micros(3000)
         } else {
-            // 2 * 150 = 300
-            Duration::from_millis(2)
+            // 2 * 100 = 200
+            Duration::from_micros(2000)
         };
         while Instant::now() - now < duration {
             for _ in 0..10 {
