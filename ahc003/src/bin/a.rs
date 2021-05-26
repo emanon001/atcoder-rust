@@ -269,6 +269,10 @@ impl Solver {
         }
         self.history.push((path_set, cost, gen_cost));
 
+        if i < 450 {
+            return;
+        }
+
         // ランダムにスコアを伸ばす
         let now = Instant::now();
         let mut score = self.score();
