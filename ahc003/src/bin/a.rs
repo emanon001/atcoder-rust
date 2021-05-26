@@ -20,7 +20,7 @@ struct Solver {
     dir: HashMap<(usize, usize), char>,
     history: Vec<(HashSet<(usize, usize)>, i64, i64)>,
     fixed_edges: HashSet<(usize, usize)>,
-    not_fixed_edges: BTreeSet<(usize, usize)>,
+    not_fixed_edges: HashSet<(usize, usize)>,
     rng: ThreadRng,
 }
 
@@ -65,7 +65,7 @@ impl Solver {
             dir,
             history: Vec::new(),
             fixed_edges: HashSet::new(),
-            not_fixed_edges: BTreeSet::new(),
+            not_fixed_edges: HashSet::new(),
             rng: rand::thread_rng(),
         }
     }
