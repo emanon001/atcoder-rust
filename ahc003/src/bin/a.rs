@@ -22,6 +22,7 @@ struct Solver {
     edge_set: HashSet<(usize, usize)>,
     fixed_edge_set: HashSet<(usize, usize)>,
     edges: Vec<(usize, usize)>,
+    edge_to_hisidx: HashMap<(usize, usize), Vec<usize>>,
     rng: ThreadRng,
 }
 
@@ -68,6 +69,7 @@ impl Solver {
             edge_set: HashSet::new(),
             fixed_edge_set: HashSet::new(),
             edges: Vec::new(),
+            edge_to_hisidx: HashMap::new(),
             rng: rand::thread_rng(),
         }
     }
@@ -155,16 +157,18 @@ impl Solver {
         let mut not_fixed = vec![];
         let mut u = s;
         for &v in path {
-            if !self.edge_set.contains(&(u, v)) {
-                self.edge_set.insert((u, v));
-                self.edges.push((u, v));
+            let e = (u, v);
+            self.edge_to_hisidx.entry(e).or_insert(Vec::new()).push(i);
+            if !self.edge_set.contains(&e) {
+                self.edge_set.insert(e);
+                self.edges.push(e);
             }
-            if self.fixed_edge_set.contains(&(u, v)) {
+            if self.fixed_edge_set.contains(&e) {
                 not_fixed_cost -= self.graph[u][&v];
             } else {
-                not_fixed.push((u, v));
+                not_fixed.push(e);
             }
-            path_set.insert((u, v));
+            path_set.insert(e);
             u = v;
         }
 
@@ -323,10 +327,8 @@ impl Solver {
 
     fn update_score(&self, e: (usize, usize), cur_cost: i64, cur_score: i64) -> i64 {
         let mut diff = 0_i64;
-        for (path, cost, gen_cost) in &self.history {
-            if !path.contains(&e) {
-                continue;
-            }
+        for i in &self.edge_to_hisidx[&e] {
+            let (_, cost, gen_cost) = &self.history[*i];
             // 更新前のコスト
             let prev_path_cost = gen_cost;
             let new_path_cost = gen_cost - cur_cost + self.graph[e.0][&e.1];
