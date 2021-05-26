@@ -17,12 +17,11 @@ const TEST_COUNT: usize = 1000;
 
 type Path = Vec<usize>;
 struct Solver {
-    start: Instant,
+    _start: Instant,
     graph: Vec<HashMap<usize, i64>>,
     dir: HashMap<(usize, usize), char>,
     history: Vec<(HashSet<(usize, usize)>, i64, i64)>,
     edge_set: HashSet<(usize, usize)>,
-    fixed_edge_set: HashSet<(usize, usize)>,
     edges: Vec<(usize, usize)>,
     edge_to_hisidx: HashMap<(usize, usize), Vec<usize>>,
     score: i64,
@@ -66,12 +65,11 @@ impl Solver {
         }
 
         Self {
-            start: Instant::now(),
+            _start: Instant::now(),
             graph,
             dir,
             history: Vec::new(),
             edge_set: HashSet::new(),
-            fixed_edge_set: HashSet::new(),
             edges: Vec::new(),
             edge_to_hisidx: HashMap::new(),
             score: 0,
@@ -157,12 +155,9 @@ impl Solver {
         if i + 1 == TEST_COUNT {
             return;
         }
-        let mut added_fixed = false;
 
         // 与えられたコストから暫定のコストを計算する
         let mut path_set = HashSet::new();
-        let mut not_fixed_cost = cost;
-        let mut not_fixed = vec![];
         let mut u = s;
         for &v in path {
             let e = (u, v);
@@ -171,106 +166,19 @@ impl Solver {
                 self.edge_set.insert(e);
                 self.edges.push(e);
             }
-            if self.fixed_edge_set.contains(&e) {
-                not_fixed_cost -= self.graph[u][&v];
-            } else {
-                not_fixed.push(e);
-            }
             path_set.insert(e);
             u = v;
         }
 
-        if not_fixed.len() == 1 {
-            // コストが確定
-            let (u, v) = not_fixed[0];
-            self.fixed_edge_set.insert((u, v));
-            self.graph[u].insert(v, not_fixed_cost.max(1));
-            added_fixed = true;
-        }
-
         // 新しいコストの重み(0.0〜1.0)
         let ratio = 0.5 as f64 * (TEST_COUNT - i) as f64 / TEST_COUNT as f64;
-        if not_fixed.len() > 1 {
-            // 未確定のコストを、パスを構成する各頂点に分配
-            let w = not_fixed_cost / not_fixed.len() as i64;
-            let mut u = s;
-            for &v in path {
-                if !self.fixed_edge_set.contains(&(u, v)) {
-                    let new_w = ((self.graph[u][&v] as f64 * (1 as f64 - ratio) + (w as f64 * ratio)) as i64).max(1);
-                    self.graph[u].insert(v,  new_w);
-                }
-                u = v
-            }
-        }
-
-        if added_fixed {
-            for (path2_set, cost2, _) in &self.history {
-                let mut fixed_cost = 0;
-                let mut not_fixed = vec![];
-                for &(u, v) in path2_set {
-                    if self.fixed_edge_set.contains(&(u, v)) {
-                        fixed_cost += self.graph[u][&v];
-                    } else {
-                        not_fixed.push((u, v));
-                    }
-                }
-                if not_fixed.len() == 1 {
-                    // 過去の記録から辺のコストを確定する
-                    let (u, v) = not_fixed[0];
-                    self.fixed_edge_set.insert((u, v));
-                    self.graph[u].insert(v, (cost2 - fixed_cost).max(1));
-                } else if not_fixed.len() > 1 {
-                    let w = (cost2 - fixed_cost) / not_fixed.len() as i64;
-                    for (u, v) in not_fixed {
-                        let new_w = ((self.graph[u][&v] as f64 * (1 as f64 - ratio) + (w as f64 * ratio)) as i64).max(1);
-                        self.graph[u].insert(v,  new_w);
-                    }
-                }
-            }
-        }
-
-        // 過去のパスについて、コストを再計算する
-        for (path2_set, cost2, _) in &self.history {
-            if path_set.is_subset(path2_set) {
-                // path_setがpath_set2に包含されている
-                let mut not_fixed_cost = cost2 - cost;
-                let len = path2_set.len() - path_set.len();
-                if len == 0 {
-                    continue;
-                }
-                let mut not_fixed = vec![];
-                for &(u, v) in path2_set.difference(&path_set) {
-                    if self.fixed_edge_set.contains(&(u, v)) {
-                        not_fixed_cost -= self.graph[u][&v];
-                    } else {
-                        not_fixed.push((u, v));
-                    }
-                }
-                let w = not_fixed_cost / not_fixed.len() as i64;
-                for (u, v) in not_fixed {
-                    let new_w =  ((self.graph[u][&v] as f64 * (1 as f64 - ratio) + (w as f64 * ratio)) as i64).max(1);
-                    self.graph[u].insert(v,  new_w);
-                }
-            } else if path2_set.is_subset(&path_set) {
-                let mut not_fixed_cost = cost - cost2;
-                let len = path_set.len() - path2_set.len();
-                if len == 0 {
-                    continue;
-                }
-                let mut not_fixed = vec![];
-                for &(u, v) in path_set.difference(path2_set) {
-                    if self.fixed_edge_set.contains(&(u, v)) {
-                        not_fixed_cost -= self.graph[u][&v];
-                    } else {
-                        not_fixed.push((u, v));
-                    }
-                }
-                let w = not_fixed_cost / not_fixed.len() as i64;
-                for (u, v) in not_fixed {
-                    let new_w =  ((self.graph[u][&v] as f64 * (1 as f64 - ratio) + (w as f64 * ratio)) as i64).max(1);
-                    self.graph[u].insert(v,  new_w);
-                }
-            }
+        // コストを、パスを構成する各頂点に分配
+        let w = cost / path.len() as i64;
+        let mut u = s;
+        for &v in path {
+            let new_w = ((self.graph[u][&v] as f64 * (1 as f64 - ratio) + (w as f64 * ratio)) as i64).max(1);
+            self.graph[u].insert(v,  new_w);
+            u = v
         }
 
         let mut gen_cost = 0;
@@ -299,9 +207,6 @@ impl Solver {
             for _ in 0..10 {
                 let i = self.rng.gen::<usize>() % self.edges.len();
                 let uv = self.edges[i];
-                if self.fixed_edge_set.contains(&uv) {
-                    continue;
-                }
                 let (u, v) = uv;
                 let cur_cost = self.graph[u][&v];
                 let new_cost = (cur_cost + self.rng.gen_range(-100, 100)).max(1);
