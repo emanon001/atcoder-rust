@@ -74,8 +74,7 @@ impl Solver {
         for i in 0..1000 {
             let (si, sj, ti, tj): (usize, usize, usize, usize) = parse_line().unwrap();
             let s = Self::vertex(si, sj);
-            let d = if i < 50 {
-                // 序盤はなるべく色々なグリッドを踏む
+            let d = if i < 200 {
                 self.shortest_path_for_opening(s)
             } else {
                 self.shortest_path(s)
@@ -105,8 +104,9 @@ impl Solver {
             if cost > cost_list[u] {
                 continue;
             }
-            for (&v, &w) in &self.graph[u] {
-                let new_cost = cost + if w != INITIAL_COST { 1_i64 << 30 } else { w };
+            for (&v, _) in &self.graph[u] {
+                // なるべく頂点間の移動を少なくする
+                let new_cost = cost + 1;
                 if new_cost < cost_list[v] {
                     let mut new_path= path.clone();
                     new_path.push(v);
