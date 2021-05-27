@@ -81,7 +81,7 @@ impl Solver {
         for i in 0..TEST_COUNT {
             let (si, sj, ti, tj): (usize, usize, usize, usize) = parse_line().unwrap();
             let s = Self::vertex(si, sj);
-            let d = if i < 200 {
+            let d = if i < 150 {
                 self.shortest_path_for_opening(s)
             } else {
                 self.shortest_path(s)
