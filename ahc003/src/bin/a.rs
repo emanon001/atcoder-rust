@@ -24,7 +24,7 @@ struct Solver {
     edge_set: HashSet<(usize, usize)>,
     edges: Vec<(usize, usize)>,
     edge_to_hisidx: HashMap<(usize, usize), Vec<usize>>,
-    score: i64,
+    cur_score: i64,
     rng: ThreadRng,
 }
 
@@ -72,7 +72,7 @@ impl Solver {
             edge_set: HashSet::new(),
             edges: Vec::new(),
             edge_to_hisidx: HashMap::new(),
-            score: 0,
+            cur_score: 0,
             rng: rand::thread_rng(),
         }
     }
@@ -162,8 +162,7 @@ impl Solver {
         for &v in path {
             let e = (u, v);
             self.edge_to_hisidx.entry(e).or_insert(Vec::new()).push(i);
-            if !self.edge_set.contains(&e) {
-                self.edge_set.insert(e);
+            if self.edge_set.insert(e) {
                 self.edges.push(e);
             }
             path_set.insert(e);
@@ -211,9 +210,9 @@ impl Solver {
                 let cur_cost = self.graph[u][&v];
                 let new_cost = (cur_cost + self.rng.gen_range(-100, 100)).max(1);
                 self.graph[u].insert(v, new_cost);
-                let new_score = self.update_score((u, v), cur_cost, self.score);
-                if new_score > self.score {
-                    self.score = new_score;
+                let new_score = self.update_score((u, v), cur_cost, self.cur_score);
+                if new_score > self.cur_score {
+                    self.cur_score = new_score;
                     // gen_cost更新
                     for i in 0..self.history.len() {
                         if !self.history[i].0.contains(&(u, v)) {
@@ -232,7 +231,7 @@ impl Solver {
 
     fn apply_last_history_score(&mut self) {
         let (_, cost, gen_cost) = &self.history[self.history.len() - 1];
-        self.score -= (cost - gen_cost).abs();
+        self.cur_score -= (cost - gen_cost).abs();
     }
 
     fn update_score(&self, e: (usize, usize), cur_cost: i64, cur_score: i64) -> i64 {
