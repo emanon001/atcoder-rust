@@ -189,7 +189,7 @@ impl Solver {
         self.history.push((path_set, cost, gen_cost));
         self.apply_last_history_score();
 
-        if i < 450 {
+        if i < 350 {
             return;
         }
 
@@ -198,9 +198,12 @@ impl Solver {
         let duration = if i >= 550 {
             // 3 * 450 = 1350
             Duration::from_micros(3000)
-        } else {
+        } else if i >= 450 {
             // 2 * 100 = 200
             Duration::from_micros(2000)
+        } else {
+            // 0.5 * 100 = 50
+            Duration::from_micros(500)
         };
         while Instant::now() - now < duration {
             for _ in 0..10 {
