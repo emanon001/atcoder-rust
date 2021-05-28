@@ -209,13 +209,13 @@ impl Solver {
             u = v
         }
 
-        let mut gen_cost = 0;
+        let mut calc_cost = 0;
         let mut u = s;
         for v in path {
-            gen_cost += self.graph[u][v];
+            calc_cost += self.graph[u][v];
             u = *v;
         }
-        self.history.push((path_set, cost, gen_cost));
+        self.history.push((path_set, cost, calc_cost));
         self.apply_last_history_score();
 
         if i < 350 {
@@ -245,13 +245,13 @@ impl Solver {
                 let new_score = self.update_score((u, v), cur_cost, self.cur_score);
                 if new_score > self.cur_score {
                     self.cur_score = new_score;
-                    // gen_cost更新
+                    // cost更新
                     for i in 0..self.history.len() {
                         if !self.history[i].0.contains(&(u, v)) {
                             continue;
                         }
-                        let new_gen_cost = (self.history[i].2 - cur_cost + new_cost).max(1);
-                        self.history[i].2 = new_gen_cost;
+                        let new_calc_cost = (self.history[i].2 - cur_cost + new_cost).max(1);
+                        self.history[i].2 = new_calc_cost;
                     }
                 } else {
                     // restore
@@ -269,10 +269,10 @@ impl Solver {
     fn update_score(&self, e: (usize, usize), cur_cost: i64, cur_score: i64) -> i64 {
         let mut diff = 0_i64;
         for i in &self.edge_to_hisidx[&e] {
-            let (_, cost, gen_cost) = &self.history[*i];
+            let (_, cost, calc_cost) = &self.history[*i];
             // 更新前のコスト
-            let prev_path_cost = gen_cost;
-            let new_path_cost = gen_cost - cur_cost + self.graph[e.0][&e.1];
+            let prev_path_cost = calc_cost;
+            let new_path_cost = calc_cost - cur_cost + self.graph[e.0][&e.1];
             diff += (cost - prev_path_cost).abs() - (cost - new_path_cost).abs();
         }
         cur_score + diff
