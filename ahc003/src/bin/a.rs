@@ -190,9 +190,12 @@ impl Solver {
         let mut u = s;
         for &v in path {
             let e = (u, v);
+            let re = (v, u);
             self.edge_to_hisidx.entry(e).or_insert(Vec::new()).push(i);
+            self.edge_to_hisidx.entry(re).or_insert(Vec::new()).push(i);
             if self.edge_set.insert(e) {
                 self.edges.push(e);
+                self.edges.push(re);
             }
             path_set.insert(e);
             u = v;
@@ -206,6 +209,7 @@ impl Solver {
         for &v in path {
             let new_w = ((self.graph[u][&v] as f64 * (1 as f64 - ratio) + (w as f64 * ratio)) as i64).max(1);
             self.graph[u].insert(v,  new_w);
+            self.graph[v].insert(u,  new_w);
             u = v
         }
 
