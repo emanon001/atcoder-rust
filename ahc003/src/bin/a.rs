@@ -83,8 +83,6 @@ impl Solver {
             let s = Self::vertex(si, sj);
             let d = if i < 150 {
                 self.shortest_path_for_opening(s)
-            // } else if i < 300 {
-            //     self.shortest_path_for_new_edge(s, i)
             } else {
                 self.shortest_path(s)
             };
@@ -103,6 +101,7 @@ impl Solver {
     }
 
     fn shortest_path_for_opening(&self, start: usize) -> Vec<Path> {
+        // なるべく頂点間の移動を少なくする
         let mut cost_list = vec![1_i64 << 60; self.graph.len()];
         let mut path_list = vec![vec![]; self.graph.len()];
         let mut heap = std::collections::BinaryHeap::new();
@@ -114,34 +113,7 @@ impl Solver {
                 continue;
             }
             for (&v, _) in &self.graph[u] {
-                // なるべく頂点間の移動を少なくする
                 let new_cost = cost + 1;
-                if new_cost < cost_list[v] {
-                    let mut new_path= path.clone();
-                    new_path.push(v);
-                    path_list[v] = new_path.clone();
-                    cost_list[v] = new_cost;
-                    heap.push(std::cmp::Reverse((new_cost, v, new_path)));
-                }
-            }
-        }
-        path_list
-    }
-
-    fn shortest_path_for_new_edge(&self, start: usize, i: usize) -> Vec<Path> {
-        let mut cost_list = vec![1_i64 << 60; self.graph.len()];
-        let mut path_list = vec![vec![]; self.graph.len()];
-        let mut heap = std::collections::BinaryHeap::new();
-        let ratio = (TEST_COUNT - i) as f64 / TEST_COUNT as f64;
-        cost_list[start] = 0;
-        path_list[start] = vec![];
-        heap.push(std::cmp::Reverse((0, start, vec![])));
-        while let Some(std::cmp::Reverse((cost, u, path))) = heap.pop() {
-            if cost > cost_list[u] {
-                continue;
-            }
-            for (&v, &w) in &self.graph[u] {
-                let new_cost = cost + w + if w == INITIAL_COST { 0 } else { (10 as f64 * ratio) as i64 };
                 if new_cost < cost_list[v] {
                     let mut new_path= path.clone();
                     new_path.push(v);
