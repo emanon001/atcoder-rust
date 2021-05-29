@@ -13,10 +13,11 @@ use std::time::{Instant, Duration};
 
 const H: usize = 30;
 const W: usize = 30;
+const N: usize = H * W;
 const INITIAL_COST: i64 = 4000;
 const TEST_COUNT: usize = 1000;
 
-type Path = Vec<usize>;
+type Path = VecDeque<usize>;
 struct Solver {
     graph: Vec<HashMap<usize, i64>>,
     dir: HashMap<(usize, usize), char>,
@@ -30,8 +31,7 @@ struct Solver {
 
 impl Solver {
     fn new() -> Self {
-        let n = H * W;
-        let mut graph = vec![HashMap::new(); n];
+        let mut graph = vec![HashMap::new(); N];
         let mut dir = HashMap::new();
         let cost = INITIAL_COST;
         for i in 0..H {
@@ -80,16 +80,15 @@ impl Solver {
         for i in 0..TEST_COUNT {
             let (si, sj, ti, tj): (usize, usize, usize, usize) = parse_line().unwrap();
             let s = Self::vertex(si, sj);
-            let d = if i < 150 {
-                self.shortest_path_for_opening(s)
-            } else {
-                self.shortest_path(s)
-            };
             let g = Self::vertex(ti, tj);
-            let path = &d[g];
-            let mut u = s;
+            let path = if i < 150 {
+                self.shortest_path_for_opening(s, g)
+            } else {
+                self.shortest_path(s, g)
+            };
             let mut res = vec![];
-            for &v in path {
+            let mut u = s;
+            for &v in &path {
                 res.push(self.dir[&(u, v)]);
                 u = v;
             }
@@ -99,58 +98,66 @@ impl Solver {
         }
     }
 
-    fn shortest_path_for_opening(&self, start: usize) -> Vec<Path> {
+    fn shortest_path_for_opening(&self, start: usize, goal: usize) -> Path {
         // なるべく頂点間の移動を少なくする
         let mut cost_list = vec![1_i64 << 60; self.graph.len()];
-        let mut path_list = vec![vec![]; self.graph.len()];
+        let mut from_edge_list = vec![N; self.graph.len()];
         let mut heap = BinaryHeap::new();
         cost_list[start] = 0;
-        path_list[start] = vec![];
-        heap.push(Reverse((0, start, vec![])));
-        while let Some(Reverse((cost, u, path))) = heap.pop() {
+        heap.push(Reverse((0, start)));
+        while let Some(Reverse((cost, u))) = heap.pop() {
             if cost > cost_list[u] {
                 continue;
             }
             for (&v, _) in &self.graph[u] {
                 let new_cost = cost + 1;
                 if new_cost < cost_list[v] {
-                    let mut new_path= path.clone();
-                    new_path.push(v);
-                    path_list[v] = new_path.clone();
+                    from_edge_list[v] = u;
                     cost_list[v] = new_cost;
-                    heap.push(Reverse((new_cost, v, new_path)));
+                    heap.push(Reverse((new_cost, v)));
                 }
             }
         }
-        path_list
+        let mut path: Path = VecDeque::new();
+        let mut from = goal;
+        while from != N {
+            path.push_front(from);
+            from = from_edge_list[from];
+        }
+        path.pop_front();
+        path
     }
 
-    fn shortest_path(&self, start: usize) -> Vec<Path> {
+    fn shortest_path(&self, start: usize, goal: usize) -> Path {
         let mut cost_list = vec![1_i64 << 60; self.graph.len()];
-        let mut path_list = vec![vec![]; self.graph.len()];
+        let mut from_edge_list = vec![N; self.graph.len()];
         let mut heap = BinaryHeap::new();
         cost_list[start] = 0;
-        path_list[start] = vec![];
-        heap.push(Reverse((0, start, vec![])));
-        while let Some(Reverse((cost, u, path))) = heap.pop() {
+        heap.push(Reverse((0, start)));
+        while let Some(Reverse((cost, u))) = heap.pop() {
             if cost > cost_list[u] {
                 continue;
             }
             for (&v, &w) in &self.graph[u] {
                 let new_cost = cost + w;
                 if new_cost < cost_list[v] {
-                    let mut new_path= path.clone();
-                    new_path.push(v);
-                    path_list[v] = new_path.clone();
+                    from_edge_list[v] = u;
                     cost_list[v] = new_cost;
-                    heap.push(Reverse((new_cost, v, new_path)));
+                    heap.push(Reverse((new_cost, v)));
                 }
             }
         }
-        path_list
+        let mut path: Path = VecDeque::new();
+        let mut from = goal;
+        while from != N {
+            path.push_front(from);
+            from = from_edge_list[from];
+        }
+        path.pop_front();
+        path
     }
 
-    fn update_costs(&mut self, s: usize, path: &Path, path_cost: i64, i: usize) {
+    fn update_costs(&mut self, s: usize, path: Path, path_cost: i64, i: usize) {
         if i + 1 == TEST_COUNT {
             return;
         }
@@ -158,7 +165,7 @@ impl Solver {
         // 与えられたコストから暫定のコストを計算する
         let mut path_set = HashSet::new();
         let mut u = s;
-        for &v in path {
+        for &v in &path {
             let e = (u, v);
             let re = (v, u);
             self.edge_to_hisidx.entry(e).or_insert(Vec::new()).push(i);
@@ -176,7 +183,7 @@ impl Solver {
         // コストを、パスを構成する辺に分配
         let w = path_cost / path.len() as i64;
         let mut u = s;
-        for &v in path {
+        for &v in &path {
             let new_w = ((self.graph[u][&v] as f64 * (1 as f64 - new_cost_ratio) + (w as f64 * new_cost_ratio)) as i64).max(1);
             self.graph[u].insert(v,  new_w);
             self.graph[v].insert(u,  new_w);
@@ -185,7 +192,7 @@ impl Solver {
 
         let mut calclated_path_cost = 0;
         let mut u = s;
-        for v in path {
+        for v in &path {
             calclated_path_cost += self.graph[u][v];
             u = *v;
         }
