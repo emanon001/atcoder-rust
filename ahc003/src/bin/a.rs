@@ -204,11 +204,7 @@ impl Solver {
             self.cur_cost_diff = self.calc_cost_diff((u, v), new_edge_cost, cur_edge_cost);
             self.graph[u].insert(v,  new_edge_cost);
             self.graph[v].insert(u,  new_edge_cost);
-            for i in 0..self.history.len() {
-                let h = &self.history[i];
-                if !h.0.contains(&(u, v)) && !h.0.contains(&(v, u)) {
-                    continue;
-                }
+            for &i in &self.edge_to_hisidx[&(u, v)] {
                 let new_path_cost = (self.history[i].2 - cur_edge_cost + new_edge_cost).max(1);
                 self.history[i].2 = new_path_cost;
             }
