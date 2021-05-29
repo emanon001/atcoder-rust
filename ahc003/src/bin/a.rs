@@ -205,9 +205,9 @@ impl Solver {
         }
 
         // ランダムにスコアを伸ばす
-        // 1600msを目安にする
+        // 1700msを目安にする
         let now = Instant::now();
-        let duration = Duration::from_micros(1600000_u64 / (TEST_COUNT - random_start) as u64);
+        let duration = Duration::from_micros(1700000_u64 / (TEST_COUNT - random_start) as u64);
         while Instant::now() - now < duration {
             for _ in 0..10 {
                 let i = self.rng.gen::<usize>() % self.edges.len();
