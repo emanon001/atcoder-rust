@@ -84,7 +84,7 @@ impl Solver {
             let d = if i < 150 {
                 self.shortest_path_for_opening(s)
             } else if i < 300 {
-                self.shortest_path_for_new_vertex(s, i)
+                self.shortest_path_for_new_edge(s, i)
             } else {
                 self.shortest_path(s)
             };
@@ -128,7 +128,7 @@ impl Solver {
         path_list
     }
 
-    fn shortest_path_for_new_vertex(&self, start: usize, i: usize) -> Vec<Path> {
+    fn shortest_path_for_new_edge(&self, start: usize, i: usize) -> Vec<Path> {
         let mut cost_list = vec![1_i64 << 60; self.graph.len()];
         let mut path_list = vec![vec![]; self.graph.len()];
         let mut heap = std::collections::BinaryHeap::new();
