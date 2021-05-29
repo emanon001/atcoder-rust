@@ -213,8 +213,7 @@ impl Solver {
         }
 
         // ランダムにスコアを伸ばす
-        // 1700msを目安にする
-        let random_start = 300;
+        let random_start = 150;
         if i < random_start {
             return;
         }
