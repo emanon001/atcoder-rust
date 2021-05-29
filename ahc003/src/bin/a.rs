@@ -141,7 +141,6 @@ impl Solver {
                 continue;
             }
             for (&v, &w) in &self.graph[u] {
-                // なるべく頂点間の移動を少なくする
                 let new_cost = cost + w + if w == INITIAL_COST { 0 } else { (10 as f64 * ratio) as i64 };
                 if new_cost < cost_list[v] {
                     let mut new_path= path.clone();
