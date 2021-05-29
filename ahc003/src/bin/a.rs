@@ -204,13 +204,13 @@ impl Solver {
         }
 
         // 履歴にパスを追加
-        let mut calclated_path_cost = 0;
+        let mut calculated_path_cost = 0;
         let mut u = s;
         for v in &path {
-            calclated_path_cost += self.graph[u][v];
+            calculated_path_cost += self.graph[u][v];
             u = *v;
         }
-        self.history.push((path_set, path_cost, calclated_path_cost));
+        self.history.push((path_set, path_cost, calculated_path_cost));
         self.apply_last_history_cost();
 
         // 与えられたコストから暫定のコストを計算する
