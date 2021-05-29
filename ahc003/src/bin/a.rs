@@ -86,13 +86,13 @@ impl Solver {
             } else {
                 self.shortest_path(s, g)
             };
-            let mut res = vec![];
+            let mut path_dirs = vec![];
             let mut u = s;
             for &v in &path {
-                res.push(self.dir[&(u, v)]);
+                path_dirs.push(self.dir[&(u, v)]);
                 u = v;
             }
-            println!("{}", res.iter().join(""));
+            println!("{}", path_dirs.iter().join(""));
             let cost: i64 = parse_line().unwrap();
             self.update_costs(Self::vertex(si, sj), path, cost, i);
         }
