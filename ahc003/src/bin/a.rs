@@ -202,7 +202,7 @@ impl Solver {
         // ランダムにスコアを伸ばす
         // 1600msを目安にする
         let now = Instant::now();
-        let duration = Duration::from_micros(1630000_u64 / (TEST_COUNT - random_start) as u64);
+        let duration = Duration::from_micros(1600000_u64 / (TEST_COUNT - random_start) as u64);
         while Instant::now() - now < duration {
             for _ in 0..10 {
                 let i = self.rng.gen::<usize>() % self.edges.len();
@@ -221,8 +221,8 @@ impl Solver {
                         if !h.0.contains(&(u, v)) && !h.0.contains(&(v, u)) {
                             continue;
                         }
-                        let new_calc_cost = (self.history[i].2 - cur_edge_cost + new_edge_cost).max(1);
-                        self.history[i].2 = new_calc_cost;
+                        let new_path_cost = (self.history[i].2 - cur_edge_cost + new_edge_cost).max(1);
+                        self.history[i].2 = new_path_cost;
                     }
                 }
             }
