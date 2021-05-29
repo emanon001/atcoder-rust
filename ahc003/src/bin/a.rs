@@ -172,7 +172,6 @@ impl Solver {
             self.edge_to_hisidx.entry(re).or_insert(Vec::new()).push(i);
             if self.edge_set.insert(e) {
                 self.edges.push(e);
-                self.edges.push(re);
             }
             path_set.insert(e);
             u = v;
