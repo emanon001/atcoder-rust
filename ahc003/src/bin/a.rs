@@ -25,7 +25,7 @@ struct Solver {
     edge_set: HashSet<(usize, usize)>,
     edges: Vec<(usize, usize)>,
     edge_to_hisidx: HashMap<(usize, usize), Vec<usize>>,
-    cur_score: i64,
+    cur_cost_diff: i64,
     rng: ThreadRng,
 }
 
@@ -71,7 +71,7 @@ impl Solver {
             edge_set: HashSet::new(),
             edges: Vec::new(),
             edge_to_hisidx: HashMap::new(),
-            cur_score: 0,
+            cur_cost_diff: 0,
             rng: rand::thread_rng(),
         }
     }
@@ -196,7 +196,7 @@ impl Solver {
             u = *v;
         }
         self.history.push((path_set, path_cost, calclated_path_cost));
-        self.apply_last_history_score();
+        self.apply_last_history_cost();
 
         let random_start = 150;
         if i < random_start {
@@ -214,11 +214,11 @@ impl Solver {
                 let (u, v) = uv;
                 let cur_edge_cost = self.graph[u][&v];
                 let new_edge_cost = (cur_edge_cost + self.rng.gen_range(-100, 100)).max(1);
-                let new_score = self.calc_score((u, v), new_edge_cost, cur_edge_cost);
-                if new_score > self.cur_score {
+                let new_cost_diff = self.calc_cost_diff((u, v), new_edge_cost, cur_edge_cost);
+                if new_cost_diff < self.cur_cost_diff {
                     self.graph[u].insert(v, new_edge_cost);
                     self.graph[v].insert(u, new_edge_cost);
-                    self.cur_score = new_score;
+                    self.cur_cost_diff = new_cost_diff;
                     // cost更新
                     for i in 0..self.history.len() {
                         let h = &self.history[i];
@@ -233,19 +233,19 @@ impl Solver {
         }
     }
 
-    fn apply_last_history_score(&mut self) {
+    fn apply_last_history_cost(&mut self) {
         let (_, path_cost, calculated_path_cost) = &self.history[self.history.len() - 1];
-        self.cur_score -= (path_cost - calculated_path_cost).abs();
+        self.cur_cost_diff += (path_cost - calculated_path_cost).abs();
     }
 
-    fn calc_score(&self, e: (usize, usize), new_edge_cost: i64, cur_edge_cost: i64) -> i64 {
-        let mut new_score = self.cur_score;
+    fn calc_cost_diff(&self, e: (usize, usize), new_edge_cost: i64, cur_edge_cost: i64) -> i64 {
+        let mut new_diff = self.cur_cost_diff;
         for i in &self.edge_to_hisidx[&e] {
             let (_, actual_path_cost, cur_calculated_path_cost) = &self.history[*i];
             let new_calculated_path_cost = cur_calculated_path_cost - cur_edge_cost + new_edge_cost;
-            new_score += (actual_path_cost - cur_calculated_path_cost).abs() - (actual_path_cost - new_calculated_path_cost).abs();
+            new_diff += (actual_path_cost - new_calculated_path_cost).abs() - (actual_path_cost - cur_calculated_path_cost).abs();
         }
-        new_score
+        new_diff
     }
 
     fn vertex(i: usize, j: usize) -> usize {
