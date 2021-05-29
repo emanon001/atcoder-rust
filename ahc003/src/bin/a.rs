@@ -152,7 +152,7 @@ impl Solver {
         path_list
     }
 
-    fn update_costs(&mut self, s: usize, path: &Path, cost: i64, i: usize) {
+    fn update_costs(&mut self, s: usize, path: &Path, path_cost: i64, i: usize) {
         if i + 1 == TEST_COUNT {
             return;
         }
@@ -176,7 +176,7 @@ impl Solver {
         // 新しいコストの重み(0.0〜0.5)
         let new_cost_ratio = 0.5 as f64 * (TEST_COUNT - i) as f64 / TEST_COUNT as f64;
         // コストを、パスを構成する辺に分配
-        let w = cost / path.len() as i64;
+        let w = path_cost / path.len() as i64;
         let mut u = s;
         for &v in path {
             let new_w = ((self.graph[u][&v] as f64 * (1 as f64 - new_cost_ratio) + (w as f64 * new_cost_ratio)) as i64).max(1);
@@ -185,13 +185,13 @@ impl Solver {
             u = v
         }
 
-        let mut calc_cost = 0;
+        let mut calclated_path_cost = 0;
         let mut u = s;
         for v in path {
-            calc_cost += self.graph[u][v];
+            calclated_path_cost += self.graph[u][v];
             u = *v;
         }
-        self.history.push((path_set, cost, calc_cost));
+        self.history.push((path_set, path_cost, calclated_path_cost));
         self.apply_last_history_score();
 
         let random_start = 150;
