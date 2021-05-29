@@ -162,7 +162,8 @@ impl Solver {
             return;
         }
 
-        // 与えられたコストから暫定のコストを計算する
+        // 辺とパスの対応を記録
+        // 登場した辺を記録
         let mut path_set = HashSet::new();
         let mut u = s;
         for &v in &path {
@@ -177,6 +178,7 @@ impl Solver {
             u = v;
         }
 
+        // 与えられたコストから暫定のコストを計算する
         // 新しいコストの重み(0.0〜0.5)
         let new_cost_ratio = 0.5 as f64 * (TEST_COUNT - i) as f64 / TEST_COUNT as f64;
         // コストを、パスを構成する辺に分配
