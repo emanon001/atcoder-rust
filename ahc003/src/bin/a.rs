@@ -27,6 +27,7 @@ struct Solver {
     edge_to_hisidx: HashMap<(usize, usize), Vec<usize>>,
     cur_cost_diff: i64,
     rng: ThreadRng,
+    max_duration_each_test: Duration,
 }
 
 impl Solver {
@@ -73,11 +74,13 @@ impl Solver {
             edge_to_hisidx: HashMap::new(),
             cur_cost_diff: 0,
             rng: rand::thread_rng(),
+            max_duration_each_test: Duration::from_millis(1900) / TEST_COUNT as u32,
         }
     }
 
     fn solve(&mut self) {
         for i in 0..TEST_COUNT {
+            let start = Instant::now();
             let (si, sj, ti, tj): (usize, usize, usize, usize) = parse_line().unwrap();
             let s = Self::vertex(si, sj);
             let g = Self::vertex(ti, tj);
@@ -94,7 +97,7 @@ impl Solver {
             }
             println!("{}", path_dirs.iter().join(""));
             let cost: i64 = parse_line().unwrap();
-            self.update_costs(Self::vertex(si, sj), path, cost, i);
+            self.update_costs(Self::vertex(si, sj), path, cost, i, start);
         }
     }
 
@@ -157,7 +160,7 @@ impl Solver {
         path
     }
 
-    fn update_costs(&mut self, s: usize, path: Path, path_cost: i64, i: usize) {
+    fn update_costs(&mut self, s: usize, path: Path, path_cost: i64, i: usize, start_time: Instant) {
         if i + 1 == TEST_COUNT {
             return;
         }
@@ -218,7 +221,11 @@ impl Solver {
             return;
         }
         let now = Instant::now();
-        let duration = Duration::from_micros(1600000_u64 / (TEST_COUNT - random_start) as u64);
+        let duration = now - start_time;
+        if duration > self.max_duration_each_test {
+            return;
+        }
+        let duration = self.max_duration_each_test - duration;
         while Instant::now() - now < duration {
             for _ in 0..10 {
                 let i = self.rng.gen::<usize>() % self.edges.len();
