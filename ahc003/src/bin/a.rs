@@ -221,25 +221,15 @@ impl Solver {
         self.history.push((path_set, cost, calc_cost));
         self.apply_last_history_score();
 
-        if i < 150 {
+        let random_start = 150;
+        if i < random_start {
             return;
         }
 
         // ランダムにスコアを伸ばす
         // 1600msを目安にする
         let now = Instant::now();
-        // let duration = if i >= 550 {
-        //     // 3 * 450 = 1350
-        //     Duration::from_micros(3000)
-        // } else if i >= 450 {
-        //     // 2 * 100 = 200
-        //     Duration::from_micros(2000)
-        // } else {
-        //     // 0.5 * 100 = 50
-        //     Duration::from_micros(500)
-        // };
-        // 
-        let duration = Duration::from_micros(1882);
+        let duration = Duration::from_micros(1600000_u64 / (TEST_COUNT - random_start) as u64);
         while Instant::now() - now < duration {
             for _ in 0..10 {
                 let i = self.rng.gen::<usize>() % self.edges.len();
