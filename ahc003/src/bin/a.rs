@@ -175,7 +175,7 @@ impl Solver {
 
         // 新しいコストの重み(0.0〜0.5)
         let new_cost_ratio = 0.5 as f64 * (TEST_COUNT - i) as f64 / TEST_COUNT as f64;
-        // コストを、パスを構成する各頂点に分配
+        // コストを、パスを構成する辺に分配
         let w = cost / path.len() as i64;
         let mut u = s;
         for &v in path {
