@@ -6,6 +6,7 @@ use num::*;
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
+use std::cmp::Reverse;
 use whiteread::{parse_line};
 use rand::prelude::*;
 use std::time::{Instant, Duration};
@@ -104,11 +105,11 @@ impl Solver {
         // なるべく頂点間の移動を少なくする
         let mut cost_list = vec![1_i64 << 60; self.graph.len()];
         let mut path_list = vec![vec![]; self.graph.len()];
-        let mut heap = std::collections::BinaryHeap::new();
+        let mut heap = BinaryHeap::new();
         cost_list[start] = 0;
         path_list[start] = vec![];
-        heap.push(std::cmp::Reverse((0, start, vec![])));
-        while let Some(std::cmp::Reverse((cost, u, path))) = heap.pop() {
+        heap.push(Reverse((0, start, vec![])));
+        while let Some(Reverse((cost, u, path))) = heap.pop() {
             if cost > cost_list[u] {
                 continue;
             }
@@ -119,7 +120,7 @@ impl Solver {
                     new_path.push(v);
                     path_list[v] = new_path.clone();
                     cost_list[v] = new_cost;
-                    heap.push(std::cmp::Reverse((new_cost, v, new_path)));
+                    heap.push(Reverse((new_cost, v, new_path)));
                 }
             }
         }
@@ -129,11 +130,11 @@ impl Solver {
     fn shortest_path(&self, start: usize) -> Vec<Path> {
         let mut cost_list = vec![1_i64 << 60; self.graph.len()];
         let mut path_list = vec![vec![]; self.graph.len()];
-        let mut heap = std::collections::BinaryHeap::new();
+        let mut heap = BinaryHeap::new();
         cost_list[start] = 0;
         path_list[start] = vec![];
-        heap.push(std::cmp::Reverse((0, start, vec![])));
-        while let Some(std::cmp::Reverse((cost, u, path))) = heap.pop() {
+        heap.push(Reverse((0, start, vec![])));
+        while let Some(Reverse((cost, u, path))) = heap.pop() {
             if cost > cost_list[u] {
                 continue;
             }
@@ -144,7 +145,7 @@ impl Solver {
                     new_path.push(v);
                     path_list[v] = new_path.clone();
                     cost_list[v] = new_cost;
-                    heap.push(std::cmp::Reverse((new_cost, v, new_path)));
+                    heap.push(Reverse((new_cost, v, new_path)));
                 }
             }
         }
