@@ -83,8 +83,8 @@ impl Solver {
             let s = Self::vertex(si, sj);
             let d = if i < 150 {
                 self.shortest_path_for_opening(s)
-            } else if i < 300 {
-                self.shortest_path_for_new_edge(s, i)
+            // } else if i < 300 {
+            //     self.shortest_path_for_new_edge(s, i)
             } else {
                 self.shortest_path(s)
             };
@@ -221,22 +221,25 @@ impl Solver {
         self.history.push((path_set, cost, calc_cost));
         self.apply_last_history_score();
 
-        if i < 350 {
+        if i < 150 {
             return;
         }
 
         // ランダムにスコアを伸ばす
+        // 1600msを目安にする
         let now = Instant::now();
-        let duration = if i >= 550 {
-            // 3 * 450 = 1350
-            Duration::from_micros(3000)
-        } else if i >= 450 {
-            // 2 * 100 = 200
-            Duration::from_micros(2000)
-        } else {
-            // 0.5 * 100 = 50
-            Duration::from_micros(500)
-        };
+        // let duration = if i >= 550 {
+        //     // 3 * 450 = 1350
+        //     Duration::from_micros(3000)
+        // } else if i >= 450 {
+        //     // 2 * 100 = 200
+        //     Duration::from_micros(2000)
+        // } else {
+        //     // 0.5 * 100 = 50
+        //     Duration::from_micros(500)
+        // };
+        // 
+        let duration = Duration::from_micros(1882);
         while Instant::now() - now < duration {
             for _ in 0..10 {
                 let i = self.rng.gen::<usize>() % self.edges.len();
