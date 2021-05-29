@@ -106,7 +106,7 @@ impl Solver {
             let (si, sj, ti, tj): (usize, usize, usize, usize) = parse_line().unwrap();
             let s = Self::vertex(si, sj);
             let g = Self::vertex(ti, tj);
-            let path = if i < 150 {
+            let path = if i < FULL_QUERY_START_NO {
                 self.shortest_path_for_opening(s, g)
             } else {
                 self.shortest_path(s, g)
