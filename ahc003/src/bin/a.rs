@@ -16,9 +16,11 @@ const W: usize = 30;
 const N: usize = H * W;
 const INITIAL_COST: i64 = 4000;
 const TEST_COUNT: usize = 1000;
+const RANDOM_TEST_START_NO: usize = 150;
 
 type Path = VecDeque<usize>;
 struct Solver {
+    start: Instant,
     graph: Vec<HashMap<usize, i64>>,
     dir: HashMap<(usize, usize), char>,
     history: Vec<(HashSet<(usize, usize)>, i64, i64)>,
@@ -27,7 +29,7 @@ struct Solver {
     edge_to_hisidx: HashMap<(usize, usize), Vec<usize>>,
     cur_cost_diff: i64,
     rng: ThreadRng,
-    max_duration_each_test: Duration,
+    max_duration_each_full_test: Duration,
 }
 
 impl Solver {
@@ -66,6 +68,7 @@ impl Solver {
         }
 
         Self {
+            start: Instant::now(),
             graph,
             dir,
             history: Vec::new(),
@@ -74,13 +77,17 @@ impl Solver {
             edge_to_hisidx: HashMap::new(),
             cur_cost_diff: 0,
             rng: rand::thread_rng(),
-            max_duration_each_test: Duration::from_millis(1900) / TEST_COUNT as u32,
+            max_duration_each_full_test: Duration::from_millis(0)
         }
     }
 
     fn solve(&mut self) {
         for i in 0..TEST_COUNT {
-            let start = Instant::now();
+            let test_start = Instant::now();
+            if i == RANDOM_TEST_START_NO {
+                let duration = self.start + Duration::from_millis(1900) - test_start;
+                self.max_duration_each_full_test = duration / (TEST_COUNT - RANDOM_TEST_START_NO) as u32;
+            }
             let (si, sj, ti, tj): (usize, usize, usize, usize) = parse_line().unwrap();
             let s = Self::vertex(si, sj);
             let g = Self::vertex(ti, tj);
@@ -97,7 +104,7 @@ impl Solver {
             }
             println!("{}", path_dirs.iter().join(""));
             let cost: i64 = parse_line().unwrap();
-            self.update_costs(Self::vertex(si, sj), path, cost, i, start);
+            self.update_costs(Self::vertex(si, sj), path, cost, i, test_start);
         }
     }
 
@@ -160,7 +167,7 @@ impl Solver {
         path
     }
 
-    fn update_costs(&mut self, s: usize, path: Path, path_cost: i64, i: usize, start_time: Instant) {
+    fn update_costs(&mut self, s: usize, path: Path, path_cost: i64, i: usize, test_start: Instant) {
         if i + 1 == TEST_COUNT {
             return;
         }
@@ -212,16 +219,15 @@ impl Solver {
         }
 
         // ランダムにスコアを伸ばす
-        let random_start = 150;
-        if i < random_start {
+        if i < RANDOM_TEST_START_NO {
             return;
         }
         let now = Instant::now();
-        let duration = now - start_time;
-        if duration > self.max_duration_each_test {
+        let duration = now - test_start;
+        if duration > self.max_duration_each_full_test {
             return;
         }
-        let duration = self.max_duration_each_test - duration;
+        let duration = self.max_duration_each_full_test - duration;
         while Instant::now() - now < duration {
             for _ in 0..10 {
                 let i = self.rng.gen::<usize>() % self.edges.len();
