@@ -178,19 +178,7 @@ impl Solver {
             u = v;
         }
 
-        // 与えられたコストから暫定のコストを計算する
-        // 新しいコストの重み(0.0〜0.5)
-        let new_cost_ratio = 0.5 as f64 * (TEST_COUNT - i) as f64 / TEST_COUNT as f64;
-        // コストを、パスを構成する辺に分配
-        let w = path_cost / path.len() as i64;
-        let mut u = s;
-        for &v in &path {
-            let new_w = ((self.graph[u][&v] as f64 * (1 as f64 - new_cost_ratio) + (w as f64 * new_cost_ratio)) as i64).max(1);
-            self.graph[u].insert(v,  new_w);
-            self.graph[v].insert(u,  new_w);
-            u = v
-        }
-
+        // 履歴にパスを追加
         let mut calclated_path_cost = 0;
         let mut u = s;
         for v in &path {
@@ -200,15 +188,38 @@ impl Solver {
         self.history.push((path_set, path_cost, calclated_path_cost));
         self.apply_last_history_cost();
 
-        let random_start = 150;
-        if i < random_start {
-            return;
+        // 与えられたコストから暫定のコストを計算する
+        // 新しいコストの重み(0.0〜0.5)
+        let new_cost_ratio = 0.5 as f64 * (TEST_COUNT - i) as f64 / TEST_COUNT as f64;
+        // コストを、パスを構成する辺に分配
+        let avg_edge_cost = path_cost / path.len() as i64;
+        let mut u = s;
+        for &v in &path {
+            // cost更新
+            let cur_edge_cost = self.graph[u][&v];
+            let new_edge_cost = ((cur_edge_cost as f64 * (1 as f64 - new_cost_ratio) + (avg_edge_cost as f64 * new_cost_ratio)) as i64).max(1);
+            self.cur_cost_diff = self.calc_cost_diff((u, v), new_edge_cost, cur_edge_cost);
+            self.graph[u].insert(v,  new_edge_cost);
+            self.graph[v].insert(u,  new_edge_cost);
+            for i in 0..self.history.len() {
+                let h = &self.history[i];
+                if !h.0.contains(&(u, v)) && !h.0.contains(&(v, u)) {
+                    continue;
+                }
+                let new_path_cost = (self.history[i].2 - cur_edge_cost + new_edge_cost).max(1);
+                self.history[i].2 = new_path_cost;
+            }
+            u = v
         }
 
         // ランダムにスコアを伸ばす
         // 1700msを目安にする
+        let random_start = 300;
+        if i < random_start {
+            return;
+        }
         let now = Instant::now();
-        let duration = Duration::from_micros(1700000_u64 / (TEST_COUNT - random_start) as u64);
+        let duration = Duration::from_micros(1600000_u64 / (TEST_COUNT - random_start) as u64);
         while Instant::now() - now < duration {
             for _ in 0..10 {
                 let i = self.rng.gen::<usize>() % self.edges.len();
