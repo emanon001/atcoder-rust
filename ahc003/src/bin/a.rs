@@ -211,7 +211,7 @@ impl Solver {
                 let cur_cost = self.graph[u][&v];
                 let new_cost = (cur_cost + self.rng.gen_range(-100, 100)).max(1);
                 self.graph[u].insert(v, new_cost);
-                let new_score = self.update_score((u, v), cur_cost, self.cur_score);
+                let new_score = self.calc_score((u, v), cur_cost, self.cur_score);
                 if new_score > self.cur_score {
                     self.cur_score = new_score;
                     // cost更新
@@ -235,7 +235,7 @@ impl Solver {
         self.cur_score -= (cost - gen_cost).abs();
     }
 
-    fn update_score(&self, e: (usize, usize), cur_cost: i64, cur_score: i64) -> i64 {
+    fn calc_score(&self, e: (usize, usize), cur_cost: i64, cur_score: i64) -> i64 {
         let mut diff = 0_i64;
         for i in &self.edge_to_hisidx[&e] {
             let (_, cost, calc_cost) = &self.history[*i];
