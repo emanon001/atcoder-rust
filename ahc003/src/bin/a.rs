@@ -15,12 +15,12 @@ const H: usize = 30;
 const W: usize = 30;
 const N: usize = H * W;
 const INITIAL_COST: i64 = 4000;
-const TEST_COUNT: usize = 1000;
-const RANDOM_TEST_START_NO: usize = 150;
+const QUERY_COUNT: usize = 1000;
+const FULL_QUERY_START_NO: usize = 150;
 
 type Path = VecDeque<usize>;
 struct Solver {
-    start: Instant,
+    start_time: Instant,
     graph: Vec<HashMap<usize, i64>>,
     dir: HashMap<(usize, usize), char>,
     history: Vec<(HashSet<(usize, usize)>, i64, i64)>,
@@ -29,7 +29,8 @@ struct Solver {
     edge_to_hisidx: HashMap<(usize, usize), Vec<usize>>,
     cur_cost_diff: i64,
     rng: ThreadRng,
-    max_duration_each_full_test: Duration,
+    full_query_start_time: Instant,
+    max_duration_each_full_query: Duration,
 }
 
 impl Solver {
@@ -67,8 +68,9 @@ impl Solver {
             }
         }
 
+        let now = Instant::now();
         Self {
-            start: Instant::now(),
+            start_time: now,
             graph,
             dir,
             history: Vec::new(),
@@ -77,17 +79,30 @@ impl Solver {
             edge_to_hisidx: HashMap::new(),
             cur_cost_diff: 0,
             rng: rand::thread_rng(),
-            max_duration_each_full_test: Duration::from_millis(0)
+            full_query_start_time: now, // dummy
+            max_duration_each_full_query: Duration::from_millis(0),
         }
     }
 
     fn solve(&mut self) {
-        for i in 0..TEST_COUNT {
-            let test_start = Instant::now();
-            if i == RANDOM_TEST_START_NO {
-                let duration = self.start + Duration::from_millis(1900) - test_start;
-                self.max_duration_each_full_test = duration / (TEST_COUNT - RANDOM_TEST_START_NO) as u32;
+        for i in 0..QUERY_COUNT {
+            let query_start_time = Instant::now();
+            if i == FULL_QUERY_START_NO {
+                // 乱択を含むクエリ処理にかけられる時間
+                let duration = self.start_time + Duration::from_millis(1950) - query_start_time;
+                self.max_duration_each_full_query = duration / (QUERY_COUNT - FULL_QUERY_START_NO - 1) as u32;
+                self.full_query_start_time = query_start_time;
             }
+            let query_duration = if i < FULL_QUERY_START_NO {
+                Duration::from_millis(0)
+            } else {
+                let limit = self.full_query_start_time + self.max_duration_each_full_query * (i - FULL_QUERY_START_NO + 1) as u32;
+                if query_start_time > limit {
+                    Duration::from_millis(0)
+                } else  {
+                    limit - query_start_time
+                }
+            };
             let (si, sj, ti, tj): (usize, usize, usize, usize) = parse_line().unwrap();
             let s = Self::vertex(si, sj);
             let g = Self::vertex(ti, tj);
@@ -104,7 +119,7 @@ impl Solver {
             }
             println!("{}", path_dirs.iter().join(""));
             let cost: i64 = parse_line().unwrap();
-            self.update_costs(Self::vertex(si, sj), path, cost, i, test_start);
+            self.update_costs(Self::vertex(si, sj), path, cost, i, query_start_time, query_duration);
         }
     }
 
@@ -167,8 +182,8 @@ impl Solver {
         path
     }
 
-    fn update_costs(&mut self, s: usize, path: Path, path_cost: i64, i: usize, test_start: Instant) {
-        if i + 1 == TEST_COUNT {
+    fn update_costs(&mut self, s: usize, path: Path, path_cost: i64, i: usize, query_start_time: Instant, query_duration: Duration) {
+        if i + 1 == QUERY_COUNT {
             return;
         }
 
@@ -200,7 +215,7 @@ impl Solver {
 
         // 与えられたコストから暫定のコストを計算する
         // 新しいコストの重み(0.0〜0.5)
-        let new_cost_ratio = 0.5 as f64 * (TEST_COUNT - i) as f64 / TEST_COUNT as f64;
+        let new_cost_ratio = 0.5 as f64 * (QUERY_COUNT - i) as f64 / QUERY_COUNT as f64;
         // コストを、パスを構成する辺に分配
         let avg_edge_cost = path_cost / path.len() as i64;
         let mut u = s;
@@ -219,16 +234,10 @@ impl Solver {
         }
 
         // ランダムにスコアを伸ばす
-        if i < RANDOM_TEST_START_NO {
+        if i < FULL_QUERY_START_NO {
             return;
         }
-        let now = Instant::now();
-        let duration = now - test_start;
-        if duration > self.max_duration_each_full_test {
-            return;
-        }
-        let duration = self.max_duration_each_full_test - duration;
-        while Instant::now() - now < duration {
+        while Instant::now() - query_start_time < query_duration {
             for _ in 0..10 {
                 let i = self.rng.gen::<usize>() % self.edges.len();
                 let uv = self.edges[i];
