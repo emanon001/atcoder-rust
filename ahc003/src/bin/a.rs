@@ -174,12 +174,12 @@ impl Solver {
         }
 
         // 新しいコストの重み(0.0〜0.5)
-        let ratio = 0.5 as f64 * (TEST_COUNT - i) as f64 / TEST_COUNT as f64;
+        let new_cost_ratio = 0.5 as f64 * (TEST_COUNT - i) as f64 / TEST_COUNT as f64;
         // コストを、パスを構成する各頂点に分配
         let w = cost / path.len() as i64;
         let mut u = s;
         for &v in path {
-            let new_w = ((self.graph[u][&v] as f64 * (1 as f64 - ratio) + (w as f64 * ratio)) as i64).max(1);
+            let new_w = ((self.graph[u][&v] as f64 * (1 as f64 - new_cost_ratio) + (w as f64 * new_cost_ratio)) as i64).max(1);
             self.graph[u].insert(v,  new_w);
             self.graph[v].insert(u,  new_w);
             u = v
