@@ -18,7 +18,6 @@ const TEST_COUNT: usize = 1000;
 
 type Path = Vec<usize>;
 struct Solver {
-    _start: Instant,
     graph: Vec<HashMap<usize, i64>>,
     dir: HashMap<(usize, usize), char>,
     history: Vec<(HashSet<(usize, usize)>, i64, i64)>,
@@ -66,7 +65,6 @@ impl Solver {
         }
 
         Self {
-            _start: Instant::now(),
             graph,
             dir,
             history: Vec::new(),
