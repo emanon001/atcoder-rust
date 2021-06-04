@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, k: usize
     };
+
+    let mut res = 0;
+    for i in 1..=n {
+        for j in 1..=k {
+            res += i * 100 + j;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
