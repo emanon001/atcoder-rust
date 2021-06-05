@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        x: usize, y: usize, z: usize
     };
+
+    for a in (0..=1000 * 1000).rev() {
+        if (a as f64 / z as f64) < (y as f64 / x as f64) {
+            println!("{}", a);
+            return;
+        }
+    }
 }
 
 fn main() {
