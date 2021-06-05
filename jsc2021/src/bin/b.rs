@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, m: usize,
+        av: [usize; n],
+        bv: [usize; m],
     };
+
+    let aset = av.into_iter().collect::<BTreeSet<_>>();
+    let bset = bv.into_iter().collect::<BTreeSet<_>>();
+    let res = aset.symmetric_difference(&bset).join(" ");
+    println!("{}", res);
 }
 
 fn main() {
