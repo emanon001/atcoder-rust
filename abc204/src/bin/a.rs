@@ -10,7 +10,21 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        x: usize, y: usize
     };
+
+    let res = if x == y {
+        x
+    } else {
+        let mut v = HashSet::new();
+        v.insert(0);
+        v.insert(1);
+        v.insert(2);
+        v.remove(&x);
+        v.remove(&y);
+        v.into_iter().next().unwrap()
+    };
+    println!("{}", res);
 }
 
 fn main() {
