@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars
     };
+
+    let res = if s[..3].into_iter().all(|ch| ch.is_numeric())
+        && s[3] == '-'
+        && s[4..].into_iter().all(|ch| ch.is_numeric()) {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", res);
 }
 
 fn main() {
