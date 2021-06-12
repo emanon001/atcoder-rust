@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: String
     };
+
+    let mut i = 0;
+    while i + 4 <= s.len() {
+        if &s[i..i + 4] == "post" {
+            println!("{}", i / 4 + 1);
+            return;
+        }
+        i += 4;
+    }
+    println!("none");
 }
 
 fn main() {
