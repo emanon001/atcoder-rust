@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [usize; n]
     };
+
+    let mut table = vec![0; n + 1];
+    for a in av {
+        table[a] += 1;
+        if table[a] >= 2 {
+            println!("No");
+            return;
+        }
+    }
+    println!("Yes");
 }
 
 fn main() {
