@@ -10,7 +10,59 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: i64, b: i64, c: i64
     };
+
+    if a == b {
+        println!("=");
+        return;
+    }
+
+    if a.abs() == b.abs() && c % 2 == 0 {
+        println!("=");
+        return;
+    }
+
+    if a >= 0 && b >= 0 {
+        let res = if a > b {
+            ">"
+        } else {
+            "<"
+        };
+        println!("{}", res);
+        return;
+    }
+
+    if a <= 0 && b <= 0 {
+        if c % 2 == 0 {
+            if a < b {
+                println!(">")
+            } else {
+                println!("<")
+            }
+        } else {
+            if a < b {
+                println!("<")
+            } else {
+                println!(">")
+            }
+        }
+        return;
+    }
+
+    if c % 2 == 0 {
+        if a.abs() > b.abs() {
+            println!(">")
+        } else {
+            println!("<")
+        }
+    } else {
+        if a > b {
+            println!(">")
+        } else {
+            println!("<")
+        }
+    }
 }
 
 fn main() {
