@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
     };
+
+    let x = (n as f64 * 1.08) as usize;
+    let res = if x == 206 {
+        "so-so"
+    } else if x < 206 {
+        "Yay!"
+    } else {
+        ":("
+    };
+    println!("{}", res);
 }
 
 fn main() {
