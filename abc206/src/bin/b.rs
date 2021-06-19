@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: u64
     };
+    let mut sum = 0_u64;
+    let mut day = 1;
+    loop {
+        sum += day;
+        if sum >= n {
+            println!("{}", day);
+            return;
+        }
+        day += 1;
+    }
 }
 
 fn main() {
