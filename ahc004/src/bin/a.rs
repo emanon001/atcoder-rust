@@ -56,9 +56,9 @@ impl Solver {
         let chars = vec![
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'
         ];
-        let prob_inf = 1000000000;
-        let start_temp = 50_f64;
-        let end_temp = 10_f64;
+        // let prob_inf = 1000000000;
+        // let start_temp = 50_f64;
+        // let end_temp = 10_f64;
 
         let mut loop_count: u64 = 0;
         let mut now_time = Instant::now();
@@ -81,9 +81,10 @@ impl Solver {
             let cur_score = self.score;
             let (new_score, horizontal_count, vertical_count, updated_count) = self.calc_score(i, j, ch);
 
-            let temp = start_temp + (end_temp - start_temp) * ((now_time - self.start_time).as_secs_f64() / duration.as_secs_f64()) as f64;
-            let prob = ((new_score - cur_score) / temp).exp();
-            if prob > (self.rng.gen::<usize>() % prob_inf) as f64 / prob_inf as f64 {
+            // let temp = start_temp + (end_temp - start_temp) * ((now_time - self.start_time).as_secs_f64() / duration.as_secs_f64()) as f64;
+            // let prob = ((new_score - cur_score) / temp).exp();
+            // if prob > (self.rng.gen::<usize>() % prob_inf) as f64 / prob_inf as f64 {
+            if new_score >= cur_score {
                 self.update_score(i, j, ch, new_score, horizontal_count, vertical_count, updated_count);
             }
         }
