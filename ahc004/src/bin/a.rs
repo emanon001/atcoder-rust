@@ -56,10 +56,6 @@ impl Solver {
         let chars = vec![
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'
         ];
-        let mut full_chars = chars.clone();
-        full_chars.push('.');
-        let full_chars = full_chars;
-
         let prob_inf = 1000000000;
         let start_temp = 50_f64;
         let end_temp = 10_f64;
@@ -80,16 +76,14 @@ impl Solver {
             let ch = if self.used_count.len() < self.m {
                 chars[self.rng.gen::<usize>() % chars.len()]
             } else {
-                full_chars[self.rng.gen::<usize>() % full_chars.len()]
+                '.'
             };
             let cur_score = self.score;
             let (new_score, horizontal_count, vertical_count, updated_count) = self.calc_score(i, j, ch);
 
-            // 温度関数
             let temp = start_temp + (end_temp - start_temp) * ((now_time - self.start_time).as_secs_f64() / duration.as_secs_f64()) as f64;
-            // 遷移確率関数(最大化の場合)
             let prob = ((new_score - cur_score) / temp).exp();
-            if prob > (self.rng.gen::<usize>() % prob_inf) as f64 / prob_inf as f64 { // 確率probで遷移する
+            if prob > (self.rng.gen::<usize>() % prob_inf) as f64 / prob_inf as f64 {
                 self.update_score(i, j, ch, new_score, horizontal_count, vertical_count, updated_count);
             }
         }
