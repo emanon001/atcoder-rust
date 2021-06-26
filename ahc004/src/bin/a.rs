@@ -56,21 +56,22 @@ impl Solver {
         let chars = vec![
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'
         ];
-        // let prob_inf = 1000000000;
-        // let start_temp = 50_f64;
-        // let end_temp = 10_f64;
+        let start_temp = 2e3;
+        let end_temp = 6e2;
+        let mut temp = start_temp;
 
         let mut loop_count: u64 = 0;
-        let mut now_time = Instant::now();
-        let duration = Duration::from_millis(2950);
+        let tl = Duration::from_millis(2900).as_secs_f64();
         loop {
+            loop_count += 1;
             if loop_count % 100 == 0 {
-                now_time = Instant::now();
-                if now_time > self.start_time + duration {
+                let d = Instant::now() - self.start_time;
+                let t = d.as_secs_f64() / tl;
+                if t >= 1.0 {
                     break;
                 }
+                temp = start_temp.powf(1.0 - t) * end_temp.powf(t);
             }
-            loop_count += 1;
             let i = self.rng.gen::<usize>() % self.n;
             let j = self.rng.gen::<usize>() % self.n;
             let ch = if self.used_count.len() < self.m {
@@ -80,11 +81,7 @@ impl Solver {
             };
             let cur_score = self.score;
             let (new_score, horizontal_count, vertical_count, updated_count) = self.calc_score(i, j, ch);
-
-            // let temp = start_temp + (end_temp - start_temp) * ((now_time - self.start_time).as_secs_f64() / duration.as_secs_f64()) as f64;
-            // let prob = ((new_score - cur_score) / temp).exp();
-            // if prob > (self.rng.gen::<usize>() % prob_inf) as f64 / prob_inf as f64 {
-            if new_score >= cur_score {
+            if new_score > cur_score || !self.rng.gen_bool(f64::exp((new_score - cur_score) / temp) ){
                 self.update_score(i, j, ch, new_score, horizontal_count, vertical_count, updated_count);
             }
         }
