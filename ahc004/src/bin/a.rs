@@ -56,21 +56,16 @@ impl Solver {
         let chars = vec![
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'
         ];
-        let start_temp = 2e3;
-        let end_temp = 6e2;
-        let mut temp = start_temp;
 
         let mut loop_count: u64 = 0;
-        let tl = Duration::from_millis(2900).as_secs_f64();
+        let tl = Duration::from_millis(2950);
         loop {
             loop_count += 1;
             if loop_count % 100 == 0 {
                 let d = Instant::now() - self.start_time;
-                let t = d.as_secs_f64() / tl;
-                if t >= 1.0 {
+                if d >= tl {
                     break;
                 }
-                temp = start_temp.powf(1.0 - t) * end_temp.powf(t);
             }
             let i = self.rng.gen::<usize>() % self.n;
             let j = self.rng.gen::<usize>() % self.n;
@@ -81,7 +76,7 @@ impl Solver {
             };
             let cur_score = self.score;
             let (new_score, horizontal_count, vertical_count, updated_count) = self.calc_score(i, j, ch);
-            if new_score > cur_score || !self.rng.gen_bool(f64::exp((new_score - cur_score) / temp) ){
+            if new_score >= cur_score {
                 self.update_score(i, j, ch, new_score, horizontal_count, vertical_count, updated_count);
             }
         }
@@ -269,7 +264,7 @@ impl Solver {
                 }
             }
         }
-        self.score = self._calc_score(self.used_count.len(), self.dot_count).round();
+        self.score = self._calc_score(self.used_count.len(), self.dot_count);
     }
 
     fn gen_initial_grid(&mut self) {
