@@ -59,10 +59,20 @@ impl Solver {
         let mut full_chars = chars.clone();
         full_chars.push('.');
         let full_chars = full_chars;
+
+        let prob_inf = 1000000000;
+        let start_temp = 50_f64;
+        let end_temp = 10_f64;
+
         let mut loop_count: u64 = 0;
+        let mut now_time = Instant::now();
+        let duration = Duration::from_millis(2950);
         loop {
-            if loop_count % 100 == 0 && Instant::now() > self.start_time + Duration::from_millis(2950) {
-                break;
+            if loop_count % 100 == 0 {
+                now_time = Instant::now();
+                if now_time > self.start_time + duration {
+                    break;
+                }
             }
             loop_count += 1;
             let i = self.rng.gen::<usize>() % self.n;
@@ -74,7 +84,12 @@ impl Solver {
             };
             let cur_score = self.score;
             let (new_score, horizontal_count, vertical_count, updated_count) = self.calc_score(i, j, ch);
-            if new_score >= cur_score {
+
+            // 温度関数
+            let temp = start_temp + (end_temp - start_temp) * ((now_time - self.start_time).as_secs_f64() / duration.as_secs_f64()) as f64;
+            // 遷移確率関数(最大化の場合)
+            let prob = ((new_score - cur_score) / temp).exp();
+            if prob > (self.rng.gen::<usize>() % prob_inf) as f64 / prob_inf as f64 { // 確率probで遷移する
                 self.update_score(i, j, ch, new_score, horizontal_count, vertical_count, updated_count);
             }
         }
