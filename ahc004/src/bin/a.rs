@@ -10,6 +10,8 @@ use std::collections::*;
 use rand::prelude::*;
 use std::time::{Instant, Duration};
 
+const SCORE_BASE: f64 = 100000000_f64;
+
 struct Solver {
     n: usize,
     m: usize,
@@ -18,7 +20,8 @@ struct Solver {
     horizontal_used_count: Vec<HashMap<usize, i64>>,
     vertical_used_count: Vec<HashMap<usize, i64>>,
     used_count: HashMap<usize, i64>,
-    score: i64,
+    dot_count: usize,
+    score: f64,
     start_time: Instant,
     rng: ThreadRng,
 }
@@ -39,7 +42,8 @@ impl Solver {
             used_count: HashMap::new(),
             horizontal_used_count: vec![HashMap::new(); m],
             vertical_used_count: vec![HashMap::new(); m],
-            score: 0,
+            score: 0_f64,
+            dot_count: n * n,
             start_time: now,
             rng: rand::thread_rng(),
         }
@@ -54,6 +58,9 @@ impl Solver {
         let chars = vec![
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'
         ];
+        let mut full_chars = chars.clone();
+        full_chars.push('.');
+        let full_chars = full_chars;
         let mut loop_count: u64 = 0;
         loop {
             if loop_count % 100 == 0 && Instant::now() > self.start_time + Duration::from_millis(2950) {
@@ -62,7 +69,11 @@ impl Solver {
             loop_count += 1;
             let i = self.rng.gen::<usize>() % self.n;
             let j = self.rng.gen::<usize>() % self.n;
-            let ch = chars[self.rng.gen::<usize>() % 8];
+            let ch = if self.used_count.len() < self.m {
+                chars[self.rng.gen::<usize>() % chars.len()]
+            } else {
+                full_chars[self.rng.gen::<usize>() % full_chars.len()]
+            };
             let cur_score = self.score;
             let (new_score, horizontal_count, vertical_count, updated_count) = self.calc_score(i, j, ch);
             if new_score >= cur_score {
@@ -74,7 +85,7 @@ impl Solver {
         }
     }
 
-    fn calc_score(&self, update_i: usize, update_j: usize, ch: char) -> (i64, HashMap<usize, i64>, HashMap<usize, i64>, HashMap<usize, i64>) {
+    fn calc_score(&self, update_i: usize, update_j: usize, ch: char) -> (f64, HashMap<usize, i64>, HashMap<usize, i64>, HashMap<usize, i64>) {
         let n = self.n;
         let mut new_horizontal_count = HashMap::new();
         // 横
@@ -161,11 +172,19 @@ impl Solver {
             }
         }
 
-        let score = self.used_count.len() as i64 + add_count;
+        let c = self.used_count.len() as i64 + add_count;
+        let d = (self.dot_count as i64 + if self.grid[update_i][update_j] == '.' && ch != '.' {
+            -1
+        } else if self.grid[update_i][update_j] != '.' && ch == '.' {
+            1
+        } else {
+            0
+        }) as usize;
+        let score = self._calc_score(c as usize, d);
         (score, new_horizontal_count, new_vertical_count, updated_count)
     }
 
-    fn update_score(&mut self, i: usize, j: usize, ch: char, score: i64,
+    fn update_score(&mut self, i: usize, j: usize, ch: char, score: f64,
         horizontal_count: HashMap<usize, i64>,
         vertical_count: HashMap<usize, i64>,
         updated_count: HashMap<usize, i64>) {
@@ -185,6 +204,22 @@ impl Solver {
             } else {
                 self.used_count.insert(s_i, uc);
             }
+        }
+        self.dot_count = (self.dot_count as i64 + if self.grid[i][j] == '.' && ch != '.' {
+            -1
+        } else if self.grid[i][j] != '.' && ch == '.' {
+            1
+        } else {
+            0
+        }) as usize;
+    }
+
+    fn _calc_score(&self, c: usize, d: usize) -> f64 {
+        let n = self.n as i64;
+        if c == self.m {
+            ((SCORE_BASE * (2 * n.pow(2)) as f64)) / ((2 * n.pow(2) - d as i64) as f64).round()
+        } else {
+            (SCORE_BASE * c as f64 / self.m as f64).round()
         }
     }
 
@@ -229,7 +264,7 @@ impl Solver {
                 }
             }
         }
-        self.score = self.used_count.len() as i64;
+        self.score = self._calc_score(self.used_count.len(), self.dot_count).round();
     }
 
     fn gen_initial_grid(&mut self) {
@@ -264,6 +299,15 @@ impl Solver {
                 j += s.len();
             }
         }
+        let mut dot_count = 0;
+        for i in 0..self.n {
+            for j in 0..self.n {
+                if self.grid[i][j] == '.' {
+                    dot_count += 1;
+                }
+            }
+        }
+        self.dot_count = dot_count;
     }
 
 }
