@@ -145,27 +145,27 @@ impl Solver {
         let mut updated_count = HashMap::new();
         for (&s_i, &c) in &self.horizontal_used_count[update_i] {
             if let Some(nc) = new_horizontal_count.get(&s_i) {
-                *updated_count.entry(s_i).or_insert(0) = nc - c;
+                *updated_count.entry(s_i).or_insert(0) += nc - c;
             } else {
-                *updated_count.entry(s_i).or_insert(0) = -c;
+                *updated_count.entry(s_i).or_insert(0) -= c;
             }
         }
         for (&s_i, &c) in &new_horizontal_count {
             if !self.horizontal_used_count[update_i].contains_key(&s_i) {
-                *updated_count.entry(s_i).or_insert(0) = c;
+                *updated_count.entry(s_i).or_insert(0) += c;
             }
         }
 
         for (&s_i, &c) in &self.vertical_used_count[update_j] {
             if let Some(nc) = new_vertical_count.get(&s_i) {
-                *updated_count.entry(s_i).or_insert(0) = nc - c;
+                *updated_count.entry(s_i).or_insert(0) += nc - c;
             } else {
-                *updated_count.entry(s_i).or_insert(0) = -c;
+                *updated_count.entry(s_i).or_insert(0) -= c;
             }
         }
         for (&s_i, &c) in &new_vertical_count {
             if !self.vertical_used_count[update_j].contains_key(&s_i) {
-                *updated_count.entry(s_i).or_insert(0) = c;
+                *updated_count.entry(s_i).or_insert(0) += c;
             }
         }
 
