@@ -50,8 +50,6 @@ impl Solver {
     }
 
     fn solve(&mut self) {
-        self.sv.sort_by_key(|s| s.len());
-
         self.gen_initial_grid();
         self.init_score();
 
@@ -268,6 +266,8 @@ impl Solver {
     }
 
     fn gen_initial_grid(&mut self) {
+        self.sv.sort_by_key(|s| -(s.len() as isize));
+
         let mut used: HashSet<String> = HashSet::new();
         let mut s_i = 0;
         for i in 0..self.n {
