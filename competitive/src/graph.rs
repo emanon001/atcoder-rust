@@ -538,6 +538,20 @@ mod tests {
         use std::collections::*;
 
         #[test]
+        fn test_new_noweight() {
+            let edges = vec![
+                (0, 1),
+                (1, 2)
+            ];
+            let graph = Graph::new(edges, 3, 1_i64 << 60);
+            // コスト0で生成されていることを確認する
+            let d = graph.shortest_path(0);
+            assert_eq!(d[0], Some(0));
+            assert_eq!(d[1], Some(1));
+            assert_eq!(d[2], Some(2));
+        }
+
+        #[test]
         fn test_bellman_ford() {
             let edges = vec![(0, 1, 1), (0, 2, 2), (1, 3, 3), (2, 3, 3)];
             // 頂点4には到達しない
