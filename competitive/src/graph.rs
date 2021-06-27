@@ -67,7 +67,7 @@ where
         Self { graph, vc, inf }
     }
 
-    pub fn new_noedge(vc: usize, inf: Cost) -> Self {
+    pub fn new_empty(vc: usize, inf: Cost) -> Self {
         let graph = vec![Vec::new(); vc];
         Self { graph, vc, inf }
     }
@@ -656,7 +656,7 @@ mod tests {
             // ref. https://atcoder.jp/contests/abc180/tasks/abc180_e
             let n = 3;
             let vertexes: Vec<(i64, i64, i64)> = vec![(0, 0, 0), (1, 1, 1), (-1, -1, -1)];
-            let mut graph = Graph::new_noedge( 3, 1_i64 << 60);
+            let mut graph = Graph::new_empty( 3, 1_i64 << 60);
             for u in 0..n {
                 for v in 0..n {
                     if u == v {
@@ -674,7 +674,7 @@ mod tests {
 
         #[test]
         fn test_vertex_count() {
-            let graph = Graph::new_noedge( 5, 1_i64 << 60);
+            let graph = Graph::new_empty( 5, 1_i64 << 60);
             assert_eq!(graph.vertex_count(), 5);
         }
 
