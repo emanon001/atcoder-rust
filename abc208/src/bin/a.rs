@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: usize, b: usize,
     };
+
+    let res = if b >= a && b <= 6 * a {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", res);
 }
 
 fn main() {
