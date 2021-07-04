@@ -10,7 +10,22 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        p: usize
     };
+
+    let mut res = 0;
+    let mut n = p;
+    while n > 0 {
+        let mut x = 1;
+        let mut y = 1;
+        while x * (y + 1) <= n {
+            y += 1;
+            x *= y;
+        }
+        res += 1;
+        n -= x;
+    }
+    println!("{}", res);
 }
 
 fn main() {
