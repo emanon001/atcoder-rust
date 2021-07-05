@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        _: usize,
+        s: Chars
     };
+
+    let mut v = Vec::new();
+    for ch in s {
+        v.push(ch);
+        if v.len() >= 3 && v[v.len() - 3..] == ['f', 'o', 'x'] {
+            v.pop(); v.pop(); v.pop();
+        }
+    }
+    println!("{}", v.len());
 }
 
 fn main() {
