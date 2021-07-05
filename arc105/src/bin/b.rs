@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [i64; n]
     };
+
+    let res = av.into_iter().fold1(|acc, x| acc.gcd(&x));
+    println!("{}", res.unwrap());
 }
 
 fn main() {
