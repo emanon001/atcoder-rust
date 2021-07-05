@@ -29,24 +29,13 @@ fn solve() {
         n: u64
     };
 
-    if n == 1 {
-        println!("2");
-        return;
-    }
-
-    let divs = divisors(n);
+    let n2 = 2 * n;
     let mut res = 0_u64;
-    if n % 2 == 0 {
-        for d in divs {
-            if d % 2 == 0 && (n / d) % 2 == 1 {
-                res += 2;
-            }
-        }
-    } else {
-        for d in divs {
-            if d % 2 == 1 && (n / d) % 2 == 1 {
-                res += 2;
-            }
+    for l in divisors(n2) {
+        let n2 = n2 as i64;
+        let l = l as i64;
+        if (n2 / l - l + 1).abs() % 2 == 0 {
+            res += 1;
         }
     }
     println!("{}", res);
