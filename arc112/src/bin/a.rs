@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        t: usize,
+        lrv: [(i64, i64); t]
     };
+
+    for (l, r) in lrv {
+        let c = r - l * 2 + 1;
+        let res = if c <= 0 {
+            0
+        } else {
+            (c + 1) * c / 2
+        };
+        println!("{}", res);
+    }
 }
 
 fn main() {
