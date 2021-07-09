@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        _: usize,
+        s: String
     };
+
+    let mut res = "".to_string();
+    for ch in s.chars() {
+        res = res.replace(ch, "");
+        res.push(ch);
+    }
+    println!("{}", res);
 }
 
 fn main() {
