@@ -10,7 +10,25 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, x: i64,
+        av: [i64; n]
     };
+
+    let mut sum = 0;
+    for i in 0..n {
+        let m = i + 1;
+        if m % 2 == 1 {
+            sum += av[i];
+        } else {
+            sum += av[i] - 1;
+        }
+    }
+    let res = if sum <= x {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", res);
 }
 
 fn main() {
