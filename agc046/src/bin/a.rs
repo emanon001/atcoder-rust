@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        x: u64
     };
+
+    let mut m = 0;
+    let mut res = 0;
+    loop {
+        m = (m + x) % 360;
+        res += 1;
+        if m == 0 {
+            break;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
