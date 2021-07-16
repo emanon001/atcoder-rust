@@ -57,7 +57,7 @@ impl<Cost> Graph<Cost>
 where
     Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
 {
-    pub fn new(edges: Vec<impl Into<Edge<Cost>>>, vc: usize, inf: Cost) -> Self {
+    pub fn new_undirected(edges: Vec<impl Into<Edge<Cost>>>, vc: usize, inf: Cost) -> Self {
         let mut graph = vec![Vec::new(); vc];
         for e in edges {
             let e = e.into();
@@ -67,17 +67,17 @@ where
         Self { graph, vc, inf }
     }
 
-    pub fn new_empty(vc: usize, inf: Cost) -> Self {
-        let graph = vec![Vec::new(); vc];
-        Self { graph, vc, inf }
-    }
-
     pub fn new_directed(edges: Vec<impl Into<Edge<Cost>>>, vc: usize, inf: Cost) -> Self {
         let mut graph = vec![Vec::new(); vc];
         for e in edges {
             let e = e.into();
             graph[e.from].push((e.to, e.cost));
         }
+        Self { graph, vc, inf }
+    }
+
+    pub fn new_empty(vc: usize, inf: Cost) -> Self {
+        let graph = vec![Vec::new(); vc];
         Self { graph, vc, inf }
     }
 
@@ -547,7 +547,7 @@ mod tests {
                 (0, 1),
                 (1, 2)
             ];
-            let graph = Graph::new(edges, 3, 1_i64 << 60);
+            let graph = Graph::new_undirected(edges, 3, 1_i64 << 60);
             // コスト0で生成されていることを確認する
             let d = graph.shortest_path(0);
             assert_eq!(d[0], Some(0));
@@ -559,7 +559,7 @@ mod tests {
         fn test_bellman_ford() {
             let edges = vec![(0, 1, 1), (0, 2, 2), (1, 3, 3), (2, 3, 3)];
             // 頂点4には到達しない
-            let graph = Graph::new(edges, 5, 1_i64 << 60);
+            let graph = Graph::new_undirected(edges, 5, 1_i64 << 60);
             let res = graph.bellman_ford(0);
             assert!(res.is_some());
             let res = res.unwrap();
@@ -594,7 +594,7 @@ mod tests {
         #[test]
         fn test_prim() {
             let edges = vec![(0, 1, 1), (0, 2, 5), (0, 3, 2), (1, 3, 1), (2, 3, 3)];
-            let graph = Graph::new(edges, 4, 1_i64 << 60);
+            let graph = Graph::new_undirected(edges, 4, 1_i64 << 60);
             assert_eq!(graph.prim(), 5);
         }
 
@@ -638,7 +638,7 @@ mod tests {
                 (3, 4, 2),
             ];
             // 頂点5には到達しない
-            let graph = Graph::new(edges, 6, 1_i64 << 60);
+            let graph = Graph::new_undirected(edges, 6, 1_i64 << 60);
             let res = graph.shortest_path(0);
             assert_eq!(res[0], Some(0));
             assert_eq!(res[1], Some(1));
@@ -659,7 +659,7 @@ mod tests {
                 (3, 4, 1),
             ];
             // 頂点5には到達しない
-            let graph = Graph::new(edges, 6, 1_i64 << 60);
+            let graph = Graph::new_undirected(edges, 6, 1_i64 << 60);
             let res = graph.shortest_path_01(0);
             assert_eq!(res[0], Some(0));
             assert_eq!(res[1], Some(0));
@@ -706,7 +706,7 @@ mod tests {
                 (2, 3, 3),
                 (3, 4, 2),
             ];
-            let graph = Graph::new(edges, 6, 1_i64 << 60);
+            let graph = Graph::new_undirected(edges, 6, 1_i64 << 60);
             let res = graph.warshall_floyd();
             // start: 0
             assert_eq!(res[0][0], Some(0));
