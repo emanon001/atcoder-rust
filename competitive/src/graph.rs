@@ -119,6 +119,10 @@ where
         visited
     }
 
+    pub fn edges<'a>(&self, u: usize) -> &Vec<(usize, Cost)> {
+        &self.graph[u]
+    }
+
     pub fn vertex_count(&self) -> usize {
         self.vc
     }
