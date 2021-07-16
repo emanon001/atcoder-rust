@@ -158,6 +158,10 @@ impl Lca {
         let i = self.vidx[u];
         self.vdepth[i]
     }
+    pub fn distance(&self, u: usize, v: usize) -> usize {
+        let p = self.query(u, v);
+        self.depth(u) + self.depth(v) - self.depth(p) * 2
+    }
     pub fn query(&self, u: usize, v: usize) -> usize {
         let ui = self.vidx[u];
         let vi = self.vidx[v];
@@ -200,9 +204,8 @@ fn solve() {
 
     let lca = Lca::new(edges, n, 0);
     for (c, d) in queries {
-        let p = lca.query(c, d);
-        let distace = lca.depth(c) + lca.depth(d) - lca.depth(p) * 2;
-        let res = if distace % 2 == 0 {
+        let distance = lca.distance(c, d);
+        let res = if distance % 2 == 0 {
             "Town"
         } else {
             "Road"
