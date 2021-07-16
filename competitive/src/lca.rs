@@ -84,6 +84,11 @@ impl Lca {
         self.vdepth[i]
     }
 
+    pub fn distance(&self, u: usize, v: usize) -> usize {
+        let p = self.query(u, v);
+        self.depth(u) + self.depth(v) - self.depth(p) * 2
+    }
+
     pub fn query(&self, u: usize, v: usize) -> usize {
         let ui = self.vidx[u];
         let vi = self.vidx[v];
@@ -134,6 +139,17 @@ mod tests {
             assert_eq!(lca.depth(4), 3);
             assert_eq!(lca.depth(5), 2);
             assert_eq!(lca.depth(6), 2);
+        }
+
+        #[test]
+        fn test_distance() {
+            let edges = vec![(0, 1), (0, 2), (1, 3), (3, 4), (1, 5), (2, 6)];
+            let lca = Lca::new(edges, 7, 0);
+            assert_eq!(lca.distance(0, 0), 0);
+            assert_eq!(lca.distance(0, 4), 3);
+            assert_eq!(lca.distance(1, 2), 2);
+            assert_eq!(lca.distance(4, 6), 5);
+            assert_eq!(lca.distance(4, 5), 3);
         }
 
         #[test]
