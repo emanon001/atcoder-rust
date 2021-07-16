@@ -81,15 +81,15 @@ where
         Self { graph, vc, inf }
     }
 
-    pub fn add_directed_edge(&mut self, e: impl Into<Edge<Cost>>) {
-        let e = e.into();
-        self.graph[e.from].push((e.to, e.cost));
-    }
-
-    pub fn add_edge(&mut self, e: impl Into<Edge<Cost>>) {
+    pub fn add_undirected_edge(&mut self, e: impl Into<Edge<Cost>>) {
         let e = e.into();
         self.graph[e.from].push((e.to, e.cost));
         self.graph[e.to].push((e.from, e.cost));
+    }
+
+    pub fn add_directed_edge(&mut self, e: impl Into<Edge<Cost>>) {
+        let e = e.into();
+        self.graph[e.from].push((e.to, e.cost));
     }
 
     pub fn rev(&self) -> Graph<Cost> {
