@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        h: usize, w: usize
     };
+
+    if h < 2 || w < 2 {
+        println!("{}", h * w);
+        return;
+    }
+
+    let size = 2;
+    let res = ((h + 1) / size) * ((w + 1) / size);
+    println!("{}", res);
 }
 
 fn main() {
