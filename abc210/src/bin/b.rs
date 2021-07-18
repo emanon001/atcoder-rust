@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        mut s: Chars
     };
+
+    for i in 0..n {
+        if s[i] == '1' {
+            let res = if i % 2 == 0 { "Takahashi" } else { "Aoki" };
+            println!("{}", res);
+            return;
+        }
+    }
 }
 
 fn main() {
