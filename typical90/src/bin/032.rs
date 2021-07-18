@@ -32,12 +32,12 @@ fn solve() {
     let inf = 1_i64 << 60;
     let mut res = inf;
     'outer: for perm in (0..n).into_iter().permutations(n) {
-        let mut sum = 0;
         for (&x, &y) in perm.iter().tuple_windows() {
             if ng_set.contains(&(x.min(y), x.max(y))) {
                 continue 'outer;
             }
         }
+        let mut sum = 0;
         for i in 0..n {
             sum += time_table[perm[i]][i];
         }
