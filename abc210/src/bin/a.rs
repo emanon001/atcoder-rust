@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: i64, a: i64, x: i64, y: i64
     };
+
+    let res = n.min(a) * x + (n - a).max(0) * y;
+    println!("{}", res);
 }
 
 fn main() {
