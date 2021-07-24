@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        sv: [String; 4]
     };
+
+    let mut set = HashSet::new();
+    set.insert("H".to_string());
+    set.insert("2B".to_string());
+    set.insert("3B".to_string());
+    set.insert("HR".to_string());
+    for s in sv {
+        set.remove(&s);
+    }
+    let res = if set.is_empty() { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {
