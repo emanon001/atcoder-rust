@@ -15,27 +15,28 @@ fn solve() {
     };
 
     let max_hw = 1000;
-    let mut counts = vec![vec![0_isize; max_hw + 2]; max_hw + 2];
+    let mut counts = vec![vec![0_isize; max_hw + 1]; max_hw + 1];
     for (lx, ly, rx, ry) in rects {
-        counts[ly][lx] += 1;
-        counts[ry][lx] -= 1;
-        counts[ly][rx] -= 1;
-        counts[ry][rx] += 1;
+        counts[lx][ly] += 1;
+        counts[rx][ly] -= 1;
+        counts[lx][ry] -= 1;
+        counts[rx][ry] += 1;
     }
-    let mut cusum = vec![vec![0_isize; max_hw + 2]; max_hw + 2];
-    for i in 0..=max_hw {
-        for j in 0..=max_hw {
-            cusum[i + 1][j + 1] = cusum[i + 1][j] + cusum[i][j + 1] + counts[i][j] - cusum[i][j];
+    for i in 0..max_hw {
+        for j in 1..max_hw {
+            counts[i][j] += counts[i][j - 1];
+        }
+    }
+    for j in 0..max_hw {
+        for i in 1..max_hw {
+            counts[i][j] += counts[i - 1][j];
         }
     }
     let mut res = vec![0; n + 1];
-    for i in 0..=max_hw {
-        for j in 0..=max_hw {
-            let c = cusum[i + 1][j + 1];
-            if c <= 0 {
-                continue;
-            }
-            res[cusum[i + 1][j + 1] as usize] += 1;
+    for i in 0..max_hw {
+        for j in 0..max_hw {
+            let c = counts[i][j];
+            res[c as usize] += 1;
         }
     }
     for k in 1..=n {
