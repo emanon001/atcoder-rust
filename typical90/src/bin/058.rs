@@ -8,6 +8,7 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+// doubling
 fn solve() {
     input! {
         n: usize, k: usize,
