@@ -20,32 +20,57 @@ macro_rules! chmax {
     };
 }
 
+fn dfs(pos: (usize, usize), k: isize, used: &mut HashSet<(usize, usize)>, start: (usize, usize), size: (usize, usize), grid: &[Vec<char>]) -> isize {
+    used.insert(pos);
+    let dirs = vec![
+        (-1, 0),
+        (1, 0),
+        (0, -1),
+        (0, 1),
+    ];
+    let mut res = -1;
+    for (add_i, add_j) in dirs {
+        let new_i = pos.0 as isize + add_i;
+        let new_j = pos.1 as isize + add_j;
+        if new_i < 0 || new_i >= size.0 as isize || new_j < 0 || new_j >= size.1 as isize {
+            continue;
+        }
+        let new_pos = (new_i as usize, new_j as usize);
+        if grid[new_pos.0][new_pos.1] == '#' {
+            continue;
+        }
+        if new_pos == start {
+            if k + 1 >= 3 {
+                chmax!(res, k + 1);
+            }
+            continue;
+        }
+        if used.contains(&new_pos) {
+            continue;
+        }
+        let score = dfs(new_pos, k + 1, used, start, size, grid);
+        chmax!(res, score);
+    }
+    used.remove(&pos);
+    res
+}
+
 fn solve() {
     input! {
         h: usize, w: usize,
-        grid: [[usize; w]; h]
+        grid: [Chars; h]
     };
 
-    let mut res = 0;
-    for bits in 1..1 << h {
-        let mut map = HashMap::new();
-        let mut score = 0;
+    let mut res = -1;
+    let mut used = HashSet::new();
+    for i in 0..h {
         for j in 0..w {
-            let mut hc = 0;
-            let mut set = HashSet::new();
-            for i in 0..h {
-                if (bits >> i) & 1 == 1 {
-                    hc += 1;
-                    set.insert(grid[i][j]);
-                }
+            if grid[i][j] == '#' {
+                continue;
             }
-            if set.len() == 1 {
-                let key = *set.iter().next().unwrap();
-                *map.entry(key).or_insert(0) += hc;
-                chmax!(score, map[&key]);
-            }
+            let score = dfs((i, j), 0, &mut used, (i, j), (h, w), &grid);
+            chmax!(res, score);
         }
-        chmax!(res, score);
     }
     println!("{}", res);
 }
