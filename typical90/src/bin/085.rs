@@ -8,9 +8,45 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+pub fn divisors(n: u64) -> Vec<u64> {
+    let mut res = Vec::new();
+    let mut x = 1;
+    while x * x <= n {
+        if n % x == 0 {
+            res.push(x);
+            let y = n / x;
+            if y != x {
+                res.push(y);
+            }
+        }
+        x += 1;
+    }
+    res
+}
+
 fn solve() {
     input! {
+        k: u64
     };
+
+    let mut divs = divisors(k);
+    divs.sort();
+
+    let mut res = 0;
+    for i in 0..divs.len() {
+        let a = divs[i];
+        for b in divisors(k / a) {
+            if a > b {
+                continue;
+            }
+            let c = k / a / b;
+            if b > c {
+                continue;
+            }
+            res += 1;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
