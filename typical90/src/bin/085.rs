@@ -35,15 +35,14 @@ fn solve() {
     let mut res = 0;
     for i in 0..divs.len() {
         let a = divs[i];
-        for b in divisors(k / a) {
-            if a > b {
-                continue;
+        for j in i..divs.len() {
+            let b = divs[j];
+            if (k / a) % b == 0 {
+                let c = k / a / b;
+                if c >= b {
+                    res += 1;
+                }
             }
-            let c = k / a / b;
-            if b > c {
-                continue;
-            }
-            res += 1;
         }
     }
     println!("{}", res);
