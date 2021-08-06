@@ -112,7 +112,7 @@ mod tests {
 
     #[test]
     fn test_from() {
-        let v = vec![1, 3, 2];
+        let v = vec![1_usize, 3, 2];
         let st = SegmentTree::from(v);
         assert_eq!(st.query(0, 1), 1);
         assert_eq!(st.query(0, 2), 3);
@@ -123,8 +123,8 @@ mod tests {
     }
 
     #[test]
-    fn tst_from_size1() {
-        let v = vec![1];
+    fn test_from_size1() {
+        let v = vec![1_usize];
         let st = SegmentTree::from(v);
         assert_eq!(st.query(0, 1), 1);
     }
