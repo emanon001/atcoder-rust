@@ -8,21 +8,40 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+pub fn primes(n: usize) -> Vec<usize> {
+    if n < 2 {
+        return Vec::new();
+    }
+    let mut is_prime = vec![true; n + 1];
+    is_prime[0] = false;
+    is_prime[1] = false;
+    let mut res = Vec::new();
+    for i in 2..=n {
+        if is_prime[i] {
+            res.push(i);
+            let mut j = 2 * i;
+            while j <= n {
+                is_prime[j] = false;
+                j += i;
+            }
+        }
+    }
+    res
+}
+
 fn solve() {
     input! {
         n: usize,
         k: usize
     };
 
+    let primes = primes(n);
     let mut counts = vec![0; n + 1];
-    for x in 2..=n {
-        if counts[x] > 0 {
-            continue;
-        }
-        let mut i = 1;
-        while x * i <= n {
-            counts[x * i] += 1;
-            i += 1;
+    for p in primes {
+        let mut x = p;
+        while x <= n {
+            counts[x] += 1;
+            x += p;
         }
     }
     let mut res = 0;
