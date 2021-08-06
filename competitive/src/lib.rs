@@ -12,6 +12,7 @@ pub mod mod_int;
 pub mod monoid;
 pub mod prime;
 pub mod segment_tree;
+pub mod lazy_segment_tree;
 pub mod square;
 pub mod strings;
 pub mod union_find;
