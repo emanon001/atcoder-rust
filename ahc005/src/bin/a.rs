@@ -17,6 +17,7 @@ struct Solver {
     grid: Vec<Vec<char>>,
     r: usize,
     score: f64,
+    visited: HashSet<(usize, usize)>,
     path: Vec<char>,
     start_time: Instant,
     rng: ThreadRng,
@@ -46,74 +47,99 @@ impl Solver {
             r,
             score: 0_f64,
             path,
+            visited: HashSet::new(),
             start_time: now,
             rng: rand::thread_rng(),
         }
     }
 
     fn solve(&mut self) {
-        // let mut loop_count: u64 = 0;
-        // let tl = Duration::from_millis(2950);
-        // loop {
-        //     loop_count += 1;
-        //     if loop_count % 100 == 0 {
-        //         let d = Instant::now() - self.start_time;
-        //         if d >= tl {
-        //             break;
-        //         }
-        //     }
-        // }
-        // 上下左右にまっすぐ移動して戻ってくる
-        if self.si > 0 {
+        self.visited.insert((self.si, self.sj));
+        self.move_vertical(self.si, self.sj);
+        self.move_horizontal(self.si, self.sj);
+        println!("{}", self.path.iter().join(""));
+    }
+
+    fn move_vertical(&mut self, i: usize, j: usize) {
+        // 上
+        if i > 0 {
             let mut step = 0;
-            for i in (0..self.si).rev() {
-                if self.grid[i][self.sj] == '.' {
-                    step += 1;
-                    self.path.push('U');
+            for move_i in (0..i).rev() {
+                if self.grid[move_i][j] == '#' {
+                    break;
                 }
+                if self.visited.contains(&(move_i, j)) {
+                    break;
+                }
+                self.visited.insert((move_i, j));
+                step += 1;
+                self.path.push('U');
+                self.move_horizontal(move_i, j);
             }
             for _ in 0..step {
                 self.path.push('D');
             }
         }
-        if self.si < self.n - 1 {
+        // 下
+        if i < self.n - 1 {
             let mut step = 0;
-            for i in self.si..self.n - 1 {
-                if self.grid[i][self.sj] == '.' {
-                    step += 1;
-                    self.path.push('D');
+            for move_i in i + 1..self.n {
+                if self.grid[move_i][j] == '#' {
+                    break;
                 }
+                if self.visited.contains(&(move_i, j)) {
+                    break;
+                }
+                self.visited.insert((move_i, j));
+                step += 1;
+                self.path.push('D');
+                self.move_horizontal(move_i, j);
             }
             for _ in 0..step {
                 self.path.push('U');
             }
         }
-        if self.sj > 0 {
+    }
+
+    fn move_horizontal(&mut self, i: usize, j: usize) {
+        // 左
+        if j > 0 {
             let mut step = 0;
-            for j in (0..self.sj).rev() {
-                if self.grid[self.si][j] == '.' {
-                    step += 1;
-                    self.path.push('L');
+            for move_j in (0..j).rev() {
+                if self.grid[i][move_j] == '#' {
+                    break;
                 }
+                if self.visited.contains(&(i, move_j)) {
+                    break;
+                }
+                self.visited.insert((i, move_j));
+                step += 1;
+                self.path.push('L');
+                self.move_vertical(i, move_j);
             }
             for _ in 0..step {
                 self.path.push('R');
             }
         }
-        if self.sj < self.n - 1 {
+        // 右
+        if j < self.n - 1 {
             let mut step = 0;
-            for j in self.sj..self.n - 1 {
-                if self.grid[self.si][j] == '.' {
-                    step += 1;
-                    self.path.push('R');
+            for move_j in j + 1..self.n {
+                if self.grid[i][move_j] == '#' {
+                    break;
                 }
+                if self.visited.contains(&(i, move_j)) {
+                    break;
+                }
+                self.visited.insert((i, move_j));
+                step += 1;
+                self.path.push('R');
+                self.move_vertical(i, move_j);
             }
             for _ in 0..step {
                 self.path.push('L');
             }
         }
-
-        println!("{}", self.path.iter().join(""));
     }
 
     fn calc_score(&self, t: usize) {
