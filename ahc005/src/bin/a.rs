@@ -33,7 +33,7 @@ impl Solver {
         let mut r = 0;
         for i in 0..n {
             for j in 0..n {
-                if grid[i][j] == '.' {
+                if grid[i][j] != '#' {
                     r += 1;
                 }
             }
@@ -55,12 +55,23 @@ impl Solver {
 
     fn solve(&mut self) {
         self.visited.insert((self.si, self.sj));
-        self.move_vertical(self.si, self.sj);
-        self.move_horizontal(self.si, self.sj);
+        let pos = self.move_vertical(self.si, self.sj);
+        if pos != (self.si, self.sj) {
+            let rest_path = self.shortest_path(pos, (self.si, self.sj));
+            println!("{}{}", self.path.iter().join(""), rest_path.iter().join(""));
+            return;
+        }
+
+        let pos = self.move_horizontal(self.si, self.sj);
+        if pos != (self.si, self.sj) {
+            let rest_path = self.shortest_path(pos, (self.si, self.sj));
+            println!("{}{}", self.path.iter().join(""), rest_path.iter().join(""));
+            return;
+        }
         println!("{}", self.path.iter().join(""));
     }
 
-    fn move_vertical(&mut self, i: usize, j: usize) {
+    fn move_vertical(&mut self, i: usize, j: usize) -> (usize, usize) {
         // 上
         if i > 0 {
             let mut step = 0;
@@ -74,7 +85,14 @@ impl Solver {
                 self.visited.insert((move_i, j));
                 step += 1;
                 self.path.push('U');
-                self.move_horizontal(move_i, j);
+                if self.visited.len() == self.r {
+                    // 全てのマスを見た
+                    return (move_i, j);
+                }
+                let pos = self.move_horizontal(move_i, j);
+                if pos != (move_i, j) {
+                    return pos;
+                }
             }
             for _ in 0..step {
                 self.path.push('D');
@@ -93,15 +111,23 @@ impl Solver {
                 self.visited.insert((move_i, j));
                 step += 1;
                 self.path.push('D');
-                self.move_horizontal(move_i, j);
+                if self.visited.len() == self.r {
+                    // 全てのマスを見た
+                    return (move_i, j);
+                }
+                let pos = self.move_horizontal(move_i, j);
+                if pos != (move_i, j) {
+                    return pos;
+                }
             }
             for _ in 0..step {
                 self.path.push('U');
             }
         }
+        (i, j)
     }
 
-    fn move_horizontal(&mut self, i: usize, j: usize) {
+    fn move_horizontal(&mut self, i: usize, j: usize) -> (usize, usize) {
         // 左
         if j > 0 {
             let mut step = 0;
@@ -115,8 +141,16 @@ impl Solver {
                 self.visited.insert((i, move_j));
                 step += 1;
                 self.path.push('L');
-                self.move_vertical(i, move_j);
+                if self.visited.len() == self.r {
+                    // 全てのマスを見た
+                    return (i, move_j);
+                }
+                let pos = self.move_vertical(i, move_j);
+                if pos != (i, move_j) {
+                    return pos;
+                }
             }
+            // 戻り
             for _ in 0..step {
                 self.path.push('R');
             }
@@ -134,18 +168,80 @@ impl Solver {
                 self.visited.insert((i, move_j));
                 step += 1;
                 self.path.push('R');
-                self.move_vertical(i, move_j);
+                if self.visited.len() == self.r {
+                    // 全てのマスを見た
+                    return (i, move_j);
+                }
+                let pos = self.move_vertical(i, move_j);
+                if pos != (i, move_j) {
+                    return pos;
+                }
             }
             for _ in 0..step {
                 self.path.push('L');
             }
         }
+        (i, j)
     }
 
-    fn calc_score(&self, t: usize) {
-    }
-
-    fn update_score(&mut self) {
+    fn shortest_path(&self, goal: (usize, usize), start: (usize, usize)) -> Vec<char> {
+        let mut cost_map: HashMap<(usize, usize), i64> = HashMap::new();
+        let mut heap = std::collections::BinaryHeap::new();
+        cost_map.insert(goal, 0_i64);
+        heap.push(std::cmp::Reverse((0_i64, goal)));
+        let mut path_map: HashMap<(usize, usize), (usize, usize)> = HashMap::new();
+        while let Some(std::cmp::Reverse((cost, pos))) = heap.pop() {
+            if cost_map.contains_key(&pos) && cost > *cost_map.get(&pos).unwrap() {
+                continue;
+            }
+            let i = pos.0;
+            let j = pos.1;
+            let directions = vec![
+                (0, -1),
+                (1, 0),
+                (0, 1),
+                (-1, 0),
+            ];
+            for (di, dj) in directions {
+                let new_i = i as isize + di;
+                let new_j = j as isize + dj;
+                if new_i < 0 || new_i >= self.n as isize || new_j < 0 || new_j >= self.n as isize {
+                    continue;
+                }
+                let new_i = new_i as usize;
+                let new_j = new_j as usize;
+                if self.grid[new_i][new_j] == '#' {
+                    continue;
+                }
+                let new_cost = cost + self.grid[new_i][new_j].to_digit(10).unwrap() as i64;
+                let new_pos = (new_i, new_j);
+                if !cost_map.contains_key(&new_pos) || new_cost < cost_map[&new_pos] {
+                    heap.push(std::cmp::Reverse((new_cost, new_pos)));
+                    cost_map.insert(new_pos, new_cost);
+                    path_map.insert(new_pos, pos);
+                }
+            }
+        }
+        let mut path = VecDeque::new();
+        let mut to_pos = start;
+        while to_pos != goal {
+            let from_pos = path_map[&to_pos];
+            // eprintln!("{:?} {:?}", to_pos, from_pos);
+            let d = if from_pos.0 + 1 == to_pos.0 {
+                'D'
+            } else if from_pos.0 == to_pos.0 + 1 {
+                'U'
+            } else if from_pos.1 + 1 == to_pos.1 {
+                'R'
+            } else {
+                'L'
+            };
+            path.push_front(d);
+            to_pos = from_pos;
+        }
+        // eprintln!("goal: {:?}, start: {:?}", goal, start);
+        // eprintln!("path: {}", path.iter().join(""));
+        path.into_iter().collect::<Vec<_>>()
     }
 }
 
