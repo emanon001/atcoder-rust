@@ -13,6 +13,7 @@ where
 }
 
 #[snippet("lazy_segment_tree")]
+#[derive(Clone, Debug)]
 pub struct LazySegmentTree<T, U>
 where
     T: LazySegmentTreeItem<U>,

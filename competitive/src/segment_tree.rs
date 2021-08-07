@@ -3,6 +3,7 @@ use cargo_snippet::snippet;
 
 #[snippet("segment_tree")]
 #[snippet(include = "monoid")]
+#[derive(Clone, Debug)]
 pub struct SegmentTree<T>
 where
     T: Monoid + Clone,
