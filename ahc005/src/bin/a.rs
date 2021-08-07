@@ -16,11 +16,8 @@ struct Solver {
     sj: usize,
     grid: Vec<Vec<char>>,
     r: usize,
-    score: f64,
     visited: HashSet<(usize, usize)>,
     path: Vec<char>,
-    start_time: Instant,
-    rng: ThreadRng,
 }
 
 impl Solver {
@@ -45,11 +42,8 @@ impl Solver {
             sj,
             grid,
             r,
-            score: 0_f64,
             path,
             visited: HashSet::new(),
-            start_time: now,
-            rng: rand::thread_rng(),
         }
     }
 
@@ -74,7 +68,7 @@ impl Solver {
     fn move_vertical(&mut self, i: usize, j: usize) -> (usize, usize) {
         // 上
         if i > 0 {
-            let mut step = 0;
+            let mut has_horizontal = false;
             for move_i in (0..i).rev() {
                 if self.grid[move_i][j] == '#' {
                     break;
@@ -82,25 +76,42 @@ impl Solver {
                 if self.visited.contains(&(move_i, j)) {
                     break;
                 }
-                self.visited.insert((move_i, j));
-                step += 1;
-                self.path.push('U');
-                if self.visited.len() == self.r {
-                    // 全てのマスを見た
-                    return (move_i, j);
+                if j > 0 && self.grid[move_i][j - 1] != '#' && !self.visited.contains(&(move_i, j - 1)) {
+                    has_horizontal = true;
                 }
-                let pos = self.move_horizontal(move_i, j);
-                if pos != (move_i, j) {
-                    return pos;
+                if j + 1 < self.n && self.grid[move_i][j + 1] != '#' && !self.visited.contains(&(move_i, j + 1)) {
+                    has_horizontal = true;
                 }
             }
-            for _ in 0..step {
-                self.path.push('D');
+            if has_horizontal {
+                let mut step = 0;
+                for move_i in (0..i).rev() {
+                    if self.grid[move_i][j] == '#' {
+                        break;
+                    }
+                    if self.visited.contains(&(move_i, j)) {
+                        break;
+                    }
+                    self.visited.insert((move_i, j));
+                    step += 1;
+                    self.path.push('U');
+                    if self.visited.len() == self.r {
+                        // 全てのマスを見た
+                        return (move_i, j);
+                    }
+                    let pos = self.move_horizontal(move_i, j);
+                    if pos != (move_i, j) {
+                        return pos;
+                    }
+                }
+                for _ in 0..step {
+                    self.path.push('D');
+                }
             }
         }
         // 下
         if i < self.n - 1 {
-            let mut step = 0;
+            let mut has_horizontal = false;
             for move_i in i + 1..self.n {
                 if self.grid[move_i][j] == '#' {
                     break;
@@ -108,20 +119,37 @@ impl Solver {
                 if self.visited.contains(&(move_i, j)) {
                     break;
                 }
-                self.visited.insert((move_i, j));
-                step += 1;
-                self.path.push('D');
-                if self.visited.len() == self.r {
-                    // 全てのマスを見た
-                    return (move_i, j);
+                if j > 0 && self.grid[move_i][j - 1] != '#' && !self.visited.contains(&(move_i, j - 1)) {
+                    has_horizontal = true;
                 }
-                let pos = self.move_horizontal(move_i, j);
-                if pos != (move_i, j) {
-                    return pos;
+                if j + 1 < self.n && self.grid[move_i][j + 1] != '#' && !self.visited.contains(&(move_i, j + 1)) {
+                    has_horizontal = true;
                 }
             }
-            for _ in 0..step {
-                self.path.push('U');
+            if has_horizontal {
+                let mut step = 0;
+                for move_i in i + 1..self.n {
+                    if self.grid[move_i][j] == '#' {
+                        break;
+                    }
+                    if self.visited.contains(&(move_i, j)) {
+                        break;
+                    }
+                    self.visited.insert((move_i, j));
+                    step += 1;
+                    self.path.push('D');
+                    if self.visited.len() == self.r {
+                        // 全てのマスを見た
+                        return (move_i, j);
+                    }
+                    let pos = self.move_horizontal(move_i, j);
+                    if pos != (move_i, j) {
+                        return pos;
+                    }
+                }
+                for _ in 0..step {
+                    self.path.push('U');
+                }
             }
         }
         (i, j)
@@ -130,7 +158,7 @@ impl Solver {
     fn move_horizontal(&mut self, i: usize, j: usize) -> (usize, usize) {
         // 左
         if j > 0 {
-            let mut step = 0;
+            let mut has_vertical = false;
             for move_j in (0..j).rev() {
                 if self.grid[i][move_j] == '#' {
                     break;
@@ -138,26 +166,43 @@ impl Solver {
                 if self.visited.contains(&(i, move_j)) {
                     break;
                 }
-                self.visited.insert((i, move_j));
-                step += 1;
-                self.path.push('L');
-                if self.visited.len() == self.r {
-                    // 全てのマスを見た
-                    return (i, move_j);
+                if i > 0 && self.grid[i - 1][move_j] != '#' && !self.visited.contains(&(i - 1, move_j)) {
+                    has_vertical = true;
                 }
-                let pos = self.move_vertical(i, move_j);
-                if pos != (i, move_j) {
-                    return pos;
+                if i + 1 < self.n && self.grid[i + 1][move_j] != '#' && !self.visited.contains(&(i + 1, move_j)) {
+                    has_vertical = true;
                 }
             }
-            // 戻り
-            for _ in 0..step {
-                self.path.push('R');
+            if has_vertical {
+                let mut step = 0;
+                for move_j in (0..j).rev() {
+                    if self.grid[i][move_j] == '#' {
+                        break;
+                    }
+                    if self.visited.contains(&(i, move_j)) {
+                        break;
+                    }
+                    self.visited.insert((i, move_j));
+                    step += 1;
+                    self.path.push('L');
+                    if self.visited.len() == self.r {
+                        // 全てのマスを見た
+                        return (i, move_j);
+                    }
+                    let pos = self.move_vertical(i, move_j);
+                    if pos != (i, move_j) {
+                        return pos;
+                    }
+                }
+                // 戻り
+                for _ in 0..step {
+                    self.path.push('R');
+                }
             }
         }
         // 右
         if j < self.n - 1 {
-            let mut step = 0;
+            let mut has_vertical = false;
             for move_j in j + 1..self.n {
                 if self.grid[i][move_j] == '#' {
                     break;
@@ -165,20 +210,37 @@ impl Solver {
                 if self.visited.contains(&(i, move_j)) {
                     break;
                 }
-                self.visited.insert((i, move_j));
-                step += 1;
-                self.path.push('R');
-                if self.visited.len() == self.r {
-                    // 全てのマスを見た
-                    return (i, move_j);
+                if i > 0 && self.grid[i - 1][move_j] != '#' && !self.visited.contains(&(i - 1, move_j)) {
+                    has_vertical = true;
                 }
-                let pos = self.move_vertical(i, move_j);
-                if pos != (i, move_j) {
-                    return pos;
+                if i + 1 < self.n && self.grid[i + 1][move_j] != '#' && !self.visited.contains(&(i + 1, move_j)) {
+                    has_vertical = true;
                 }
             }
-            for _ in 0..step {
-                self.path.push('L');
+            if has_vertical {
+                let mut step = 0;
+                for move_j in j + 1..self.n {
+                    if self.grid[i][move_j] == '#' {
+                        break;
+                    }
+                    if self.visited.contains(&(i, move_j)) {
+                        break;
+                    }
+                    self.visited.insert((i, move_j));
+                    step += 1;
+                    self.path.push('R');
+                    if self.visited.len() == self.r {
+                        // 全てのマスを見た
+                        return (i, move_j);
+                    }
+                    let pos = self.move_vertical(i, move_j);
+                    if pos != (i, move_j) {
+                        return pos;
+                    }
+                }
+                for _ in 0..step {
+                    self.path.push('L');
+                }
             }
         }
         (i, j)
