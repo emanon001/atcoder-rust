@@ -1,0 +1,20 @@
+#!/bin/bash -eu
+
+cd "$(dirname ${0})"
+cd ..
+
+if [ $# == 0 ]; then
+  count=100
+else
+  count="${1}"
+fi
+
+cargo build --release --bin a
+cd tools
+cargo build --release --bin vis
+echo -n > out/score.txt
+for in in $(seq -f "%04g" -w 0 $(($count - 1))); do
+  ../../target/release/a < in/${in}.txt > out/${in}.txt
+  ../../target/release/vis in/${in}.txt out/${in}.txt >> out/score.txt
+done
+ruby -e "puts ${count}.times.map { gets.split('= ')[1].to_i }.sum" < out/score.txt
