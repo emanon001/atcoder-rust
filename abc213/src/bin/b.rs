@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        mut av: [i64; n]
     };
+
+    let mut av = av.into_iter().enumerate().map(|(i, a)| (a, i)).collect::<Vec<_>>();
+    av.sort();
+    let res = av[n - 2].1 + 1;
+    println!("{}", res);
 }
 
 fn main() {
