@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: usize, b: usize,
     };
+
+    for c in 0..=255 {
+        if a ^ c == b {
+            println!("{}", c);
+            return;
+        }
+    }
 }
 
 fn main() {
