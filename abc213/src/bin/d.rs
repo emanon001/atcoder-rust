@@ -8,6 +8,17 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+fn dfs(u: usize, p: usize, res: &mut Vec<usize>, graph: &[BTreeSet<usize>]) {
+    res.push(u + 1);
+    for &v in &graph[u] {
+        if v == p {
+            continue;
+        }
+        dfs(v, u, res, graph);
+        res.push(u + 1);
+    }
+}
+
 fn solve() {
     input! {
         n: usize,
@@ -19,26 +30,8 @@ fn solve() {
         graph[u].insert(v);
         graph[v].insert(u);
     }
-    let mut first = vec![n; n];
     let mut res = Vec::new();
-    let mut cur = 0;
-    loop {
-        res.push(cur + 1);
-        if graph[cur].is_empty() {
-            if cur == 0 {
-                break;
-            }
-            cur = first[cur];
-        } else {
-            let u = *graph[cur].iter().next().unwrap();
-            graph[cur].remove(&u);
-            graph[u].remove(&cur);
-            if first[u] == n {
-                first[u] = cur;
-            }
-            cur = u;
-        }
-    }
+    dfs(0, n, &mut res, &graph);
     println!("{}", res.iter().join(" "));
 }
 
