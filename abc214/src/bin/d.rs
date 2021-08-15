@@ -95,8 +95,8 @@ fn solve() {
     for (u, v, w) in edges {
         let a = uf.size(u) as u64;
         let b = uf.size(v) as u64;
-        uf.unite(u, v);
         res += a * b * w;
+        uf.unite(u, v);
     }
     println!("{}", res);
 }
