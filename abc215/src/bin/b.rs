@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: u128
     };
+
+    let mut res = 0;
+    while 2.pow(res + 1) <= n {
+        res = res + 1;
+    }
+    println!("{}", res);
 }
 
 fn main() {
