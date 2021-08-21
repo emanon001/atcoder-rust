@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: String
     };
+
+    let res = if s == "Hello,World!" { "AC" } else { "WA" };
+    println!("{}", res);
 }
 
 fn main() {
