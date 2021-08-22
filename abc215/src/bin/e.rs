@@ -135,9 +135,19 @@ impl num::One for ModInt {
     }
 }
 
-fn to_i(c: char) -> usize {
-    (c as usize) - 65
+fn to_bits(c: char) -> usize {
+    1_usize << ((c as usize) - 65)
 }
+
+fn to_k(ch: char) -> usize {
+    if ch == EMPTY_CH {
+        0
+    } else {
+        (ch as usize) - 64
+    }
+}
+
+const EMPTY_CH: char = ' ';
 
 fn solve() {
     input! {
@@ -145,38 +155,31 @@ fn solve() {
         s: Chars
     };
 
-    let chars = vec!['_', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    let chars = vec![EMPTY_CH, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     let max_j = 1_usize << 10;
-    let mut dp = vec![HashMap::new(); n + 1];
-    dp[0].insert((0_usize, '_'), ModInt::one());
+    let mut dp = vec![vec![vec![ModInt::zero(); chars.len()]; max_j]; n + 1];
+    dp[0][0][0] = ModInt::one();
     for i in 0..n {
         let ch = s[i];
-        let ch_pos = to_i(ch);
+        let ch_bits = to_bits(ch);
         for j in 0..max_j {
             for &last_ch in &chars {
-                let key = (j, last_ch);
-                let new_v = *dp[i + 1].get(&key).unwrap_or(&ModInt::zero()) + *dp[i].get(&key).unwrap_or(&ModInt::zero());
-                dp[i + 1].insert(key, new_v);
-                if (1 << ch_pos) & j == 0 || last_ch == ch {
-                    let new_j = if last_ch == ch {
-                        j
-                    } else if ch == '_' {
-                        j
-                    } else {
-                        j | (1 << to_i(ch))
-                    };
-                    let new_key = (new_j, ch);
-                    let new_v = *dp[i + 1].get(&new_key).unwrap_or(&ModInt::zero()) + *dp[i].get(&key).unwrap_or(&ModInt::zero());
-                    dp[i + 1].insert(new_key, new_v);
+                let k = to_k(last_ch);
+                let new_v = dp[i + 1][j][k] + dp[i][j][k];
+                dp[i + 1][j][k] = new_v;
+                if ch_bits & j == 0 || last_ch == ch {
+                    let new_j = j | ch_bits;
+                    let new_k = to_k(ch);
+                    let new_v = dp[i + 1][new_j][new_k] + dp[i][j][k];
+                    dp[i + 1][new_j][new_k] = new_v;
                 }
             }
         }
-        // eprintln!("{:?}", dp[i + 1]);
     }
     let mut res = ModInt::zero();
-    for (key, v) in dp[n].clone() {
-        if key.1 != '_' {
-            res += v;
+    for j in 1..max_j {
+        for k in 0..chars.len() {
+            res += dp[n][j][k];
         }
     }
     println!("{}", res);
