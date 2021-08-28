@@ -135,27 +135,33 @@ impl num::One for ModInt {
     }
 }
 
-fn dfs(k: usize, u: usize, n: usize, ng: &HashSet<(usize, usize)>, dp: &mut Vec<Vec<Option<ModInt>>>) -> ModInt {
-    if u == 0 && k == 0 {
-        return ModInt::one();
-    }
-    if u != 0 && k == 0 {
-        return ModInt::zero();
-    }
-    if let Some(res) = dp[k][u] {
+fn dfs(k: usize, u: usize, n: usize, ng: &Vec<Vec<usize>>, dp1: &mut Vec<Vec<Option<ModInt>>>, dp2: &mut Vec<Option<ModInt>>) -> ModInt {
+    if k == 0 && u == 0  {
+        let res = ModInt::one();
+        dp1[k][u] = Some(res);
         return res;
     }
-    let mut res = ModInt::zero();
-    for v in 0..n {
-        if u == v {
-            continue;
-        }
-        if ng.contains(&(u, v)) {
-            continue;
-        }
-        res = res + dfs(k - 1, v, n, ng, dp);
+    if k == 0 && u != 0 {
+        let res = ModInt::zero();
+        dp1[k][u] = Some(res);
+        return res;
     }
-    dp[k][u] = Some(res);
+    if let Some(res) = dp1[k][u] {
+        return res;
+    }
+    if dp2[k - 1].is_none() {
+        let mut sum = ModInt::zero();
+        for v in 0..n {
+            sum += dfs(k - 1, v, n, ng, dp1, dp2);
+        }
+        dp2[k - 1] = Some(sum);
+    };
+    let mut res = dp2[k - 1].unwrap();
+    res -= dfs(k - 1, u, n, ng, dp1, dp2);
+    for &v in &ng[u] {
+        res -= dfs(k - 1, v, n, ng, dp1, dp2);
+    }
+    dp1[k][u] = Some(res);
     res
 }
 
@@ -165,13 +171,14 @@ fn solve() {
         edges: [(Usize1, Usize1); m]
     };
 
-    let mut ng = HashSet::new();
+    let mut ng = vec![vec![]; n];
     for (u, v) in edges {
-        ng.insert((u, v));
-        ng.insert((v, u));
+        ng[u].push(v);
+        ng[v].push(u);
     }
-    let mut dp = vec![vec![None; n]; k + 1];
-    let res = dfs(k, 0, n, &ng, &mut dp);
+    let mut dp1 = vec![vec![None; n]; k + 1];
+    let mut dp2 = vec![None; k + 1];
+    let res = dfs(k, 0, n, &ng, &mut dp1, &mut dp2);
     println!("{}", res);
 }
 
