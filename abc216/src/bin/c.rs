@@ -10,7 +10,22 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize
     };
+
+    let mut res = VecDeque::new();
+    let mut n = n;
+    while n > 1 {
+        if n % 2 == 0 {
+            res.push_front('B');
+            n /= 2;
+        } else {
+            res.push_front('A');
+            n -= 1;
+        }
+    }
+    res.push_front('A');
+    println!("{}", res.iter().join(""));
 }
 
 fn main() {
