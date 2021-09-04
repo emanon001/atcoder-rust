@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: String, t: String
     };
+
+    let res = if s < t {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", res);
 }
 
 fn main() {
