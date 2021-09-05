@@ -7,13 +7,14 @@ use proconio::input;
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
+use std::cmp::Reverse;
 
 fn solve() {
     input! {
         q: usize,
     };
 
-    let mut front_map: BTreeMap<usize, usize> = BTreeMap::new();
+    let mut front_heap = BinaryHeap::new();
     let mut back = VecDeque::new();
     for _ in 0..q {
         input! { kind: usize };
@@ -23,14 +24,9 @@ fn solve() {
                 back.push_back(x);
             }
             2 => {
-                if !front_map.is_empty() {
-                    let (&v, &c) = front_map.iter().next().unwrap();
+                if !front_heap.is_empty() {
+                    let Reverse(v) = front_heap.pop().unwrap();
                     println!("{}", v);
-                    let next_c = c - 1;
-                    front_map.insert(v, next_c);
-                    if next_c == 0 {
-                        front_map.remove(&v);
-                    }
                 } else {
                     let v = back.pop_front().unwrap();
                     println!("{}", v);
@@ -38,7 +34,7 @@ fn solve() {
             }
             3 => {
                 for &v in &back {
-                    *front_map.entry(v).or_insert(0) += 1;
+                    front_heap.push(Reverse(v));
                 }
                 back = VecDeque::new();
             }
