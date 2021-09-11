@@ -74,7 +74,7 @@ fn get(grid: &[Vec<char>]) -> Vec<Vec<char>> {
     res
 }
 
-fn rorate(grid: Vec<Vec<char>>) -> Vec<Vec<char>> {
+fn rotate(grid: Vec<Vec<char>>) -> Vec<Vec<char>> {
     let h = grid.len();
     let w = grid[0].len();
     let mut res = vec![vec!['.'; h]; w];
@@ -94,24 +94,22 @@ fn solve() {
     };
 
     let grid1 = get(&grid1);
-    // println!("{:?}", grid1);
-    // return;
     let grid2 = get(&grid2);
     if grid1 == grid2 {
         println!("Yes");
         return;
     }
-    let grid2 = rorate(grid2);
+    let grid2 = rotate(grid2);
     if grid1 == grid2 {
         println!("Yes");
         return;
     }
-    let grid2 = rorate(grid2);
+    let grid2 = rotate(grid2);
     if grid1 == grid2 {
         println!("Yes");
         return;
     }
-    let grid2 = rorate(grid2);
+    let grid2 = rotate(grid2);
     if grid1 == grid2 {
         println!("Yes");
         return;
