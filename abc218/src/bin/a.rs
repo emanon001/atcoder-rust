@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: Usize1,
+        s: Chars
     };
+
+    let res = if s[n] == 'o' { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {
