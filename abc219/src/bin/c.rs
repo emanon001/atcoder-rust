@@ -10,7 +10,23 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        x: Chars,
+        n: usize,
+        mut sv: [Chars; n]
     };
+
+    let mut order: HashMap<char, usize> = HashMap::new();
+    for i in 0..26 {
+        order.insert(x[i], i);
+    }
+    sv.sort_by_key(|s| {
+        let s = s.clone();
+        s.into_iter().map(|ch| order[&ch]).collect::<Vec<_>>()
+    });
+
+    for s in sv {
+        println!("{}", s.iter().join(""));
+    }
 }
 
 fn main() {
