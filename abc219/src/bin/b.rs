@@ -10,7 +10,23 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s1: String,
+        s2: String,
+        s3: String,
+        t: Chars
     };
+
+    let mut res = Vec::new();
+    for ch in t {
+        if ch == '1' {
+            res.push(&s1);
+        } else if ch == '2' {
+            res.push(&s2);
+        } else {
+            res.push(&s3);
+        }
+    }
+    println!("{}", res.iter().join(""));
 }
 
 fn main() {
