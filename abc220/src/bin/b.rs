@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        k: u32,
+        a: String, b: String,
     };
+
+    let res = u64::from_str_radix(&a, k).unwrap() * u64::from_str_radix(&b, k).unwrap();
+    println!("{}", res);
 }
 
 fn main() {
