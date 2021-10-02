@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: u32, b: u32
     };
+
+    let res = 32_u64.pow(a - b);
+    println!("{}", res);
 }
 
 fn main() {
