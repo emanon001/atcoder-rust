@@ -10,7 +10,7 @@ use std::collections::*;
 
 fn solve() {
     input! {
-        s: Chars,
+        mut s: Chars,
         t: Chars,
     };
 
@@ -20,12 +20,12 @@ fn solve() {
     }
 
     for i in 0..s.len() - 1 {
-        let mut s2 = s.clone();
-        s2.swap(i, i + 1);
-        if s2 == t {
+        s.swap(i, i + 1);
+        if s == t {
             println!("Yes");
             return;
         }
+        s.swap(i, i + 1);
     }
     println!("No");
 }
