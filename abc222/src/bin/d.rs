@@ -135,62 +135,6 @@ impl num::One for ModInt {
     }
 }
 
-/// `T` is numeric only
-pub struct Bit<T>
-where
-    T: std::ops::AddAssign + std::ops::Sub<Output = T> + num::Zero + Clone,
-{
-    n: usize,
-    data: Vec<T>,
-}
-/// 0-origin
-/// [0, n)
-impl<T> Bit<T>
-where
-    T: std::ops::AddAssign + std::ops::Sub<Output = T> + num::Zero + Clone,
-{
-    pub fn new(n: usize) -> Self {
-        Self {
-            n,
-            data: vec![T::zero(); n + 1],
-        }
-    }
-    /// 0-origin
-    pub fn add(&mut self, i: usize, x: T) {
-        if i >= self.n {
-            panic!();
-        }
-        let mut i = i + 1;
-        while i <= self.n {
-            self.data[i] += x.clone();
-            i += ((i as isize) & -(i as isize)) as usize;
-        }
-    }
-    /// [0, i)
-    pub fn sum(&self, i: usize) -> T {
-        if i > self.n {
-            panic!();
-        }
-        let mut i = i;
-        let mut res = T::zero();
-        while i > 0 {
-            res += self.data[i].clone();
-            i -= ((i as isize) & -(i as isize)) as usize;
-        }
-        res
-    }
-    /// [i, j)
-    pub fn range_sum(&self, i: usize, j: usize) -> T {
-        if i > self.n || j > self.n {
-            panic!();
-        }
-        if i >= j {
-            return T::zero();
-        }
-        self.sum(j) - self.sum(i)
-    }
-}
-
 fn solve() {
     input! {
         n: usize,
@@ -198,29 +142,31 @@ fn solve() {
         bv: [usize; n],
     };
 
-    let mut dp = vec![vec![ModInt::zero(); 3000 + 1]; n + 1];
-    let mut bit = Bit::new(3000 + 1);
+    let size = 3000 + 1;
+    let mut dp = vec![vec![ModInt::zero(); size]; n + 1];
+    for i in 0..size {
+        dp[0][i] = ModInt::one();
+    }
     for i in 0..n {
         let a = av[i];
         let b = bv[i];
         let min = a.min(b);
         let max = a.max(b);
         for j in min..=max {
-            let new_v = dp[i + 1][j]
-                + if i == 0 {
-                    ModInt::one()
-                } else {
-                    bit.sum(j + 1)
-                };
+            let new_v = dp[i + 1][j] + dp[i][j];
             dp[i + 1][j] = new_v;
         }
-        let mut new_bit = Bit::new(3000 + 1);
-        for j in 0..3000 + 1 {
-            new_bit.add(j, dp[i + 1][j]);
+        if i < n - 1 {
+            for j in 1..size {
+                let x = dp[i + 1][j - 1];
+                dp[i + 1][j] += x;
+            }
         }
-        bit = new_bit;
     }
-    let res = bit.sum(3000 + 1);
+    let mut res = ModInt::zero();
+    for i in 0..size {
+        res += dp[n][i];
+    }
     println!("{}", res);
 }
 
