@@ -10,7 +10,20 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        abv: [(f64, f64); n]
     };
+    let mut t = 0_f64;
+    for &(a, b) in &abv {
+        t += a / b;
+    }
+    t /= 2_f64;
+    let mut res = 0_f64;
+    for &(a, b) in &abv {
+        res += (a / b).min(t) * b;
+        t -= (a / b).min(t);
+    }
+    println!("{}", res);
 }
 
 fn main() {
