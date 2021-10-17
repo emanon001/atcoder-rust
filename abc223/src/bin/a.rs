@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        x: usize
     };
+
+    let res = if x >= 100 && x % 100 == 0 {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", res);
 }
 
 fn main() {
