@@ -10,7 +10,23 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        h: usize, w: usize,
+        grid: [[i64; w]; h]
     };
+
+    for i in 0..h {
+        for j in 0..w {
+            for i2 in i + 1..h {
+                for j2 in j + 1..w {
+                    if grid[i][j] + grid[i2][j2] > grid[i2][j] + grid[i][j2] {
+                        println!("No");
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    println!("Yes");
 }
 
 fn main() {
