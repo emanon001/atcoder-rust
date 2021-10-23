@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: String
     };
+
+    let res = if s.ends_with("er") { "er" } else { "ist" };
+    println!("{}", res);
 }
 
 fn main() {
