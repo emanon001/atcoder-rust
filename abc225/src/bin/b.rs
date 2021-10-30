@@ -10,7 +10,22 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        edges: [(Usize1, Usize1); n - 1]
     };
+
+    let mut graph = vec![Vec::new(); n];
+    for (u, v) in edges {
+        graph[u].push(v);
+        graph[v].push(u);
+    }
+    for u in 0..n {
+        if graph[u].len() == n - 1 {
+            println!("Yes");
+            return;
+        }
+    }
+    println!("No");
 }
 
 fn main() {
