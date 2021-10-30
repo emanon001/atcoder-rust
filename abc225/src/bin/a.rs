@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars
     };
+
+    let mut set = HashSet::new();
+    for s1 in s.into_iter().permutations(3) {
+        set.insert(s1);
+    }
+    println!("{}", set.len());
 }
 
 fn main() {
