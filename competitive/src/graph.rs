@@ -21,19 +21,19 @@ where
 {
     from: usize,
     to: usize,
-    cost: Cost
+    cost: Cost,
 }
 
 #[snippet("graph")]
 impl<Cost> From<(usize, usize, Cost)> for Edge<Cost>
 where
     Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
- {
+{
     fn from(e: (usize, usize, Cost)) -> Edge<Cost> {
         Edge {
             from: e.0,
             to: e.1,
-            cost: e.2
+            cost: e.2,
         }
     }
 }
@@ -47,7 +47,7 @@ where
         Edge {
             from: e.0,
             to: e.1,
-            cost: Cost::one()
+            cost: Cost::one(),
         }
     }
 }
@@ -173,8 +173,8 @@ where
         let mut heap = std::collections::BinaryHeap::new();
 
         let mut res = Cost::zero();
-        heap.push(std::cmp::Reverse((Cost::zero(), 0)));
-        while let Some(std::cmp::Reverse((weight, u))) = heap.pop() {
+        heap.push((std::cmp::Reverse(Cost::zero()), 0));
+        while let Some((std::cmp::Reverse(weight), u)) = heap.pop() {
             if used.contains(&u) {
                 continue;
             }
@@ -184,7 +184,7 @@ where
                 if used.contains(&v) {
                     continue;
                 }
-                heap.push(std::cmp::Reverse((w, v)));
+                heap.push((std::cmp::Reverse(w), v));
             }
         }
         res
@@ -201,16 +201,16 @@ where
         let mut heap = std::collections::BinaryHeap::new();
 
         cost_list[start] = Cost::zero();
-        heap.push(std::cmp::Reverse((Cost::zero(), start)));
+        heap.push((std::cmp::Reverse(Cost::zero()), start));
 
-        while let Some(std::cmp::Reverse((cost, u))) = heap.pop() {
+        while let Some((std::cmp::Reverse(cost), u)) = heap.pop() {
             if cost > cost_list[u] {
                 continue;
             }
             for &(v, w) in &self.graph[u] {
                 let new_cost = cost + w;
                 if new_cost < cost_list[v] {
-                    heap.push(std::cmp::Reverse((new_cost, v)));
+                    heap.push((std::cmp::Reverse(new_cost), v));
                     cost_list[v] = new_cost;
                 }
             }
@@ -543,10 +543,7 @@ mod tests {
 
         #[test]
         fn test_new_noweight() {
-            let edges = vec![
-                (0, 1),
-                (1, 2)
-            ];
+            let edges = vec![(0, 1), (1, 2)];
             let graph = Graph::new_undirected(edges, 3, 1_i64 << 60);
             // コスト0で生成されていることを確認する
             let d = graph.shortest_path(0);
@@ -674,7 +671,7 @@ mod tests {
             // ref. https://atcoder.jp/contests/abc180/tasks/abc180_e
             let n = 3;
             let vertexes: Vec<(i64, i64, i64)> = vec![(0, 0, 0), (1, 1, 1), (-1, -1, -1)];
-            let mut graph = Graph::new_empty( 3, 1_i64 << 60);
+            let mut graph = Graph::new_empty(3, 1_i64 << 60);
             for u in 0..n {
                 for v in 0..n {
                     if u == v {
@@ -692,7 +689,7 @@ mod tests {
 
         #[test]
         fn test_vertex_count() {
-            let graph = Graph::new_empty( 5, 1_i64 << 60);
+            let graph = Graph::new_empty(5, 1_i64 << 60);
             assert_eq!(graph.vertex_count(), 5);
         }
 
