@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [[i64]; n]
     };
+
+    let mut set = HashSet::new();
+    for a in av {
+        set.insert(a);
+    }
+    let res = set.len();
+    println!("{}", res);
 }
 
 fn main() {
