@@ -135,165 +135,68 @@ impl num::One for ModInt {
     }
 }
 
-#[derive(Clone)]
-pub struct Graph<Cost>
-where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
-{
-    graph: Vec<Vec<(usize, Cost)>>,
-    vc: usize,
-    inf: Cost,
+pub struct UnionFind {
+    n: usize,
+    root: Vec<usize>,
+    rank: Vec<usize>,
+    size: Vec<usize>,
 }
-#[derive(Clone)]
-pub struct Edge<Cost>
-where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
-{
-    from: usize,
-    to: usize,
-    cost: Cost,
-}
-impl<Cost> From<(usize, usize, Cost)> for Edge<Cost>
-where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
-{
-    fn from(e: (usize, usize, Cost)) -> Edge<Cost> {
-        Edge {
-            from: e.0,
-            to: e.1,
-            cost: e.2,
+impl UnionFind {
+    pub fn new(n: usize) -> Self {
+        let root = (0..n).collect();
+        let rank = vec![0; n];
+        let size = vec![1; n];
+        Self {
+            n,
+            root,
+            rank,
+            size,
         }
     }
-}
-impl<Cost> From<(usize, usize)> for Edge<Cost>
-where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
-{
-    fn from(e: (usize, usize)) -> Edge<Cost> {
-        Edge {
-            from: e.0,
-            to: e.1,
-            cost: Cost::one(),
+    pub fn find(&mut self, x: usize) -> usize {
+        assert!(x < self.n);
+        if self.root[x] == x {
+            x
+        } else {
+            let root = self.find(self.root[x]);
+            self.root[x] = root;
+            root
         }
     }
-}
-impl<Cost> Graph<Cost>
-where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
-{
-    pub fn new_undirected(edges: Vec<impl Into<Edge<Cost>>>, vc: usize, inf: Cost) -> Self {
-        let mut graph = vec![Vec::new(); vc];
-        for e in edges {
-            let e = e.into();
-            graph[e.from].push((e.to, e.cost));
-            graph[e.to].push((e.from, e.cost));
+    pub fn unite(&mut self, x: usize, y: usize) {
+        assert!(x < self.n && y < self.n);
+        let x_root = self.find(x);
+        let y_root = self.find(y);
+        if x_root == y_root {
+            return;
         }
-        Self { graph, vc, inf }
-    }
-    pub fn new_directed(edges: Vec<impl Into<Edge<Cost>>>, vc: usize, inf: Cost) -> Self {
-        let mut graph = vec![Vec::new(); vc];
-        for e in edges {
-            let e = e.into();
-            graph[e.from].push((e.to, e.cost));
-        }
-        Self { graph, vc, inf }
-    }
-    pub fn new_empty(vc: usize, inf: Cost) -> Self {
-        let graph = vec![Vec::new(); vc];
-        Self { graph, vc, inf }
-    }
-    pub fn add_undirected_edge(&mut self, e: impl Into<Edge<Cost>>) {
-        let e = e.into();
-        self.graph[e.from].push((e.to, e.cost));
-        self.graph[e.to].push((e.from, e.cost));
-    }
-    pub fn add_directed_edge(&mut self, e: impl Into<Edge<Cost>>) {
-        let e = e.into();
-        self.graph[e.from].push((e.to, e.cost));
-    }
-    pub fn rev(&self) -> Graph<Cost> {
-        let mut edges: Vec<Edge<Cost>> = Vec::new();
-        for u in 0..self.vc {
-            for &(v, w) in &self.graph[u] {
-                edges.push((v, u, w).into());
+        if self.rank[x_root] < self.rank[y_root] {
+            self.root[x_root] = y_root;
+            self.size[y_root] += self.size[x_root];
+        } else {
+            self.root[y_root] = x_root;
+            self.size[x_root] += self.size[y_root];
+            if self.rank[x_root] == self.rank[y_root] {
+                self.rank[x_root] += 1;
             }
         }
-        Self::new_directed(edges, self.vc, self.inf)
     }
-    pub fn reachable_vertexes(&self, s: usize) -> std::collections::HashSet<usize> {
-        let mut visited = std::collections::HashSet::new();
-        let mut queue = std::collections::VecDeque::new();
-        visited.insert(s);
-        queue.push_back(s);
-        while let Some(u) = queue.pop_front() {
-            for &(v, _) in &self.graph[u] {
-                if visited.contains(&v) {
-                    continue;
-                }
-                visited.insert(v);
-                queue.push_back(v);
-            }
+    pub fn size(&mut self, x: usize) -> usize {
+        assert!(x < self.n);
+        let x_root = self.find(x);
+        self.size[x_root]
+    }
+    pub fn is_same(&mut self, x: usize, y: usize) -> bool {
+        assert!(x < self.n && y < self.n);
+        self.find(x) == self.find(y)
+    }
+    pub fn groups(&mut self) -> Vec<Vec<usize>> {
+        let mut groups = std::collections::HashMap::new();
+        for x in 0..self.n {
+            let k = self.find(x);
+            groups.entry(k).or_insert(Vec::new()).push(x);
         }
-        visited
-    }
-    pub fn edges<'a>(&self, u: usize) -> &Vec<(usize, Cost)> {
-        &self.graph[u]
-    }
-    pub fn vertex_count(&self) -> usize {
-        self.vc
-    }
-}
-
-impl<Cost> Graph<Cost>
-where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
-{
-    pub fn scc(&self) -> Vec<Vec<usize>> {
-        let vc = self.vc;
-        let mut id = 0;
-        let mut ids = vec![0; vc];
-        let mut used = vec![false; vc];
-        for u in 0..vc {
-            if used[u] {
-                continue;
-            }
-            self.scc_dfs1(u, &mut id, &mut ids, &mut used);
-        }
-        let mut u_with_id = ids.into_iter().enumerate().collect::<Vec<_>>();
-        u_with_id.sort_by_key(|(_, id)| -(*id as isize));
-        let rev_graph = self.rev();
-        let mut groups = Vec::new();
-        let mut used = vec![false; vc];
-        for (u, _) in u_with_id {
-            if used[u] {
-                continue;
-            }
-            let mut group = Vec::new();
-            rev_graph.scc_dfs2(u, &mut group, &mut used);
-            groups.push(group);
-        }
-        groups
-    }
-    fn scc_dfs1(&self, u: usize, id: &mut usize, ids: &mut Vec<usize>, used: &mut Vec<bool>) {
-        used[u] = true;
-        for &(v, _) in &self.graph[u] {
-            if used[v] {
-                continue;
-            }
-            self.scc_dfs1(v, id, ids, used);
-        }
-        *id += 1;
-        ids[u] = *id;
-    }
-    fn scc_dfs2(&self, u: usize, group: &mut Vec<usize>, used: &mut Vec<bool>) {
-        group.push(u);
-        used[u] = true;
-        for &(v, _) in &self.graph[u] {
-            if used[v] {
-                continue;
-            }
-            self.scc_dfs2(v, group, used);
-        }
+        groups.values().cloned().collect::<Vec<_>>()
     }
 }
 
@@ -303,33 +206,33 @@ fn solve() {
         edges: [(Usize1, Usize1); m]
     };
 
-    let graph = Graph::new_undirected(edges, n, 1_i64 << 60);
-    let scc = graph.scc();
-    let filters = scc
-        .into_iter()
-        .filter(|s| {
-            if s.len() <= 2 {
-                return false;
-            }
-            let vset = s.into_iter().copied().collect::<HashSet<_>>();
-            let mut edge_set = HashSet::new();
-            for &u in s {
-                for (v, _) in &graph.graph[u] {
-                    if !vset.contains(v) {
-                        continue;
-                    }
-                    edge_set.insert((u.min(*v), u.max(*v)));
-                }
-            }
-            edge_set.len() == s.len()
-        })
-        .collect::<Vec<_>>();
-    if filters.is_empty() {
-        println!("0");
-        return;
+    let mut graph = vec![Vec::new(); n];
+    let mut uf = UnionFind::new(n);
+    for (u, v) in edges {
+        uf.unite(u, v);
+        graph[u].push(v);
+        graph[v].push(u);
     }
 
-    let res = ModInt::from(2).pow(filters.len());
+    let group_size = uf.groups().len();
+    for g in uf.groups() {
+        let graph_size = g.len();
+        let vset = g.iter().copied().collect::<HashSet<_>>();
+        let mut edge_set = HashSet::new();
+        for u in g {
+            for &v in &graph[u] {
+                if !vset.contains(&v) {
+                    continue;
+                }
+                edge_set.insert((u.min(v), u.max(v)));
+            }
+        }
+        if edge_set.len() != graph_size {
+            println!("0");
+            return;
+        }
+    }
+    let res = ModInt::from(2).pow(group_size as u32);
     println!("{}", res);
 }
 
