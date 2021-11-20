@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: i64, t: i64, x: i64
     };
+
+    let res = if (s <= x && x < t) || (s <= x && t < s) || (x < t && t < s) {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", res);
 }
 
 fn main() {
