@@ -10,7 +10,30 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        grid: [Chars; 2]
     };
+
+    for i in 0..2 {
+        for j in 0..2 {
+            if grid[i][j] == '#' {
+                if i == 0 && grid[i + 1][j] == '#' {
+                    continue;
+                }
+                if i == 1 && grid[i - 1][j] == '#' {
+                    continue;
+                }
+                if j == 0 && grid[i][j + 1] == '#' {
+                    continue;
+                }
+                if j == 1 && grid[i][j - 1] == '#' {
+                    continue;
+                }
+                println!("No");
+                return;
+            }
+        }
+    }
+    println!("Yes");
 }
 
 fn main() {
