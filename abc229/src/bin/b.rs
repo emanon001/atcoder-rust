@@ -10,7 +10,22 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        mut a: Chars,
+        mut b: Chars,
     };
+
+    a.reverse();
+    b.reverse();
+
+    for i in 0..(a.len().min(b.len())) {
+        let x = a[i].to_digit(10).unwrap();
+        let y = b[i].to_digit(10).unwrap();
+        if x + y >= 10 {
+            println!("Hard");
+            return;
+        }
+    }
+    println!("Easy");
 }
 
 fn main() {
