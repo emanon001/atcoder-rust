@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
     };
+
+    let x = if n >= 42 { n + 1 } else { n };
+    println!("AGC{0: >03}", x);
 }
 
 fn main() {
