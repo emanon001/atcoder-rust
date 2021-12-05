@@ -10,7 +10,22 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, d: i64,
+        mut lrv: [(i64, i64); n]
     };
+
+    lrv.sort_by_key(|&(_, r)| r);
+
+    let mut res = 0;
+    let mut pos = -1;
+    for (l, r) in lrv {
+        if l <= pos {
+            continue;
+        }
+        res += 1;
+        pos = r + d - 1;
+    }
+    println!("{}", res);
 }
 
 fn main() {
