@@ -10,7 +10,23 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        sv: [String; n]
     };
+
+    let mut map = HashMap::new();
+    for s in sv {
+        *map.entry(s).or_insert(0_i32) += 1;
+    }
+    let mut res = "".to_string();
+    let mut count = 0;
+    for (s, c) in map {
+        if c >= count {
+            count = c;
+            res = s;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
