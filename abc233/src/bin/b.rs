@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        l: Usize1, r: Usize1,
+        s: Chars,
     };
+
+    let res = (&s[..l])
+        .into_iter()
+        .chain((&s[l..=r]).into_iter().rev())
+        .chain((&s[r + 1..]).into_iter());
+    println!("{}", res.into_iter().join(""));
 }
 
 fn main() {
