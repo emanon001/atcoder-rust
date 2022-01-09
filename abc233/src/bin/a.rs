@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        x: i64, y: i64
     };
+
+    if x >= y {
+        println!("0");
+    } else {
+        println!("{}", (y - x + 9) / 10);
+    }
 }
 
 fn main() {
