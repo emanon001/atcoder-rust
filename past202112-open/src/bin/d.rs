@@ -5,12 +5,24 @@ use num::*;
 use proconio::input;
 #[allow(unused_imports)]
 use proconio::marker::*;
+use std::cmp::Reverse;
 #[allow(unused_imports)]
 use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [i64; n],
+        bv: [i64; n],
     };
+
+    let mut points = av
+        .into_iter()
+        .zip(bv.into_iter())
+        .enumerate()
+        .collect::<Vec<_>>();
+    points.sort_by_key(|(i, (a, b))| (Reverse(*a + *b), Reverse(*a), *i));
+    println!("{}", points.into_iter().map(|(i, _)| i + 1).join(" "));
 }
 
 fn main() {
