@@ -8,7 +8,7 @@ cd tools
 cargo build --release --bin tester
 mkdir -p out
 echo -n > out/score.txt
-for in in $(seq -f "%04g" -w 0 99); do
-  ../../target/release/tester in/${in}.txt ../../target/release/a 1> out/${in}.txt 2>>out/score.txt
+for in in $(seq -f "%04g" -w 0 0); do
+  ../../target/release/tester ../../target/release/a < in/${in}.txt 1> out/${in}.txt 2>>out/score.txt
 done
 ruby -e 'puts 100.times.map { gets.split("= ")[1].to_i }.sum' < out/score.txt
