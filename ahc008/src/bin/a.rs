@@ -152,8 +152,7 @@ impl Solver {
         if done_move {
             self.done_move_to_initial_positon = true;
         }
-        self.move_humans_by_actions(&actions);
-        actions
+        self.apply_humans_actions(&actions)
     }
 
     fn move_and_block_cells(&mut self) -> Vec<char> {
@@ -175,7 +174,7 @@ impl Solver {
             };
             actions.push(act);
         }
-        self.move_humans_by_actions(&actions);
+        let actions = self.apply_humans_actions(&actions);
         let mut done = true;
         for i in 0..self.m {
             let human = &self.humans[i];
@@ -214,10 +213,10 @@ impl Solver {
             self.humans = bk_humans;
             self.cells = bk_cells;
         }
-        self.move_humans_by_actions(&best_actions)
+        self.apply_humans_actions(&best_actions)
     }
 
-    fn move_humans_by_actions(&mut self, actions: &Vec<char>) -> Vec<char> {
+    fn apply_humans_actions(&mut self, actions: &Vec<char>) -> Vec<char> {
         let mut fixed_actions = Vec::new();
         for i in 0..self.m {
             let act = if self.can_action(&self.humans[i], actions[i]) {
