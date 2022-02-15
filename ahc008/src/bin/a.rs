@@ -160,6 +160,10 @@ impl Solver {
         let mut actions = Vec::new();
         for i in 0..self.m {
             let human = &self.humans[i];
+            if human.j < 3 || self.h_size - human.j < 3 {
+                actions.push('.');
+                continue;
+            }
             let act = match self.cells[human.i][human.j - 1] {
                 CellType::Blocked if human.i < self.v_size - 1 => 'D',
                 CellType::None
@@ -174,8 +178,11 @@ impl Solver {
         self.move_humans_by_actions(&actions);
         let mut done = true;
         for i in 0..self.m {
-            let h = &self.humans[i];
-            if h.i < self.v_size - 1 {
+            let human = &self.humans[i];
+            if human.j < 3 || self.h_size - human.j < 3 {
+                continue;
+            }
+            if human.i < self.v_size - 1 {
                 done = false;
             }
         }
@@ -192,8 +199,12 @@ impl Solver {
         let action_list = vec!['l', '.'];
         for _ in 0..50 {
             let mut actions = Vec::new();
-            for _ in 0..self.m {
-                actions.push(action_list[self.rng.gen::<usize>() % action_list.len()]);
+            for i in 0..self.m {
+                if self.humans[i].j < 3 || self.h_size - self.humans[i].j < 3 {
+                    actions.push('.');
+                } else {
+                    actions.push(action_list[self.rng.gen::<usize>() % action_list.len()]);
+                }
             }
             let (score, bk_humans, bk_cells) = self.calc_score(&actions);
             if score > best_score {
