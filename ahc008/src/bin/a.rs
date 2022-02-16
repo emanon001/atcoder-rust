@@ -38,7 +38,7 @@ enum PetType {
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
-enum CellType {
+enum Cell {
     None,
     Blocked,
     HumanOrPet(usize, usize),
@@ -68,18 +68,18 @@ struct Solver {
     done_move_and_block_cells: bool,
     h_size: usize,
     v_size: usize,
-    cells: Vec<Vec<CellType>>,
+    cells: Vec<Vec<Cell>>,
     rng: ThreadRng,
 }
 
 impl Solver {
     fn new(pets: Vec<(usize, usize, usize)>, humans: Vec<(usize, usize)>) -> Self {
-        let mut cells = vec![vec![CellType::None; 30]; 30];
+        let mut cells = vec![vec![Cell::None; 30]; 30];
         for pet in &pets {
-            cells[pet.0][pet.1] = CellType::HumanOrPet(0, 1);
+            cells[pet.0][pet.1] = Cell::HumanOrPet(0, 1);
         }
         for human in &humans {
-            cells[human.0][human.1] = CellType::HumanOrPet(1, 0);
+            cells[human.0][human.1] = Cell::HumanOrPet(1, 0);
         }
         Solver {
             n: pets.len(),
@@ -164,8 +164,8 @@ impl Solver {
                 continue;
             }
             let act = match self.cells[human.i][human.j - 1] {
-                CellType::Blocked if human.i < self.v_size - 1 => 'D',
-                CellType::None
+                Cell::Blocked if human.i < self.v_size - 1 => 'D',
+                Cell::None
                     if human.i < self.v_size - 1 && self.can_block_cell(human.i, human.j - 1) =>
                 {
                     'l'
@@ -239,26 +239,26 @@ impl Solver {
             'D' => new_i += 1,
             'L' => new_j -= 1,
             'R' => new_j += 1,
-            'u' => self.cells[human.i - 1][human.j] = CellType::Blocked,
-            'd' => self.cells[human.i + 1][human.j] = CellType::Blocked,
-            'l' => self.cells[human.i][human.j - 1] = CellType::Blocked,
-            'r' => self.cells[human.i][human.j + 1] = CellType::Blocked,
+            'u' => self.cells[human.i - 1][human.j] = Cell::Blocked,
+            'd' => self.cells[human.i + 1][human.j] = Cell::Blocked,
+            'l' => self.cells[human.i][human.j - 1] = Cell::Blocked,
+            'r' => self.cells[human.i][human.j + 1] = Cell::Blocked,
             _ => {}
         }
 
         // セルの状態更新
-        if let CellType::HumanOrPet(c, c2) = self.cells[human.i][human.j] {
+        if let Cell::HumanOrPet(c, c2) = self.cells[human.i][human.j] {
             // 移動元
             if c == 1 && c2 == 0 {
-                self.cells[human.i][human.j] = CellType::None;
+                self.cells[human.i][human.j] = Cell::None;
             } else {
-                self.cells[human.i][human.j] = CellType::HumanOrPet(c - 1, c2);
+                self.cells[human.i][human.j] = Cell::HumanOrPet(c - 1, c2);
             }
             // 移動先
-            if let CellType::HumanOrPet(c, c2) = self.cells[new_i][new_j] {
-                self.cells[new_i][new_j] = CellType::HumanOrPet(c + 1, c2);
+            if let Cell::HumanOrPet(c, c2) = self.cells[new_i][new_j] {
+                self.cells[new_i][new_j] = Cell::HumanOrPet(c + 1, c2);
             } else {
-                self.cells[new_i][new_j] = CellType::HumanOrPet(1, 0);
+                self.cells[new_i][new_j] = Cell::HumanOrPet(1, 0);
             }
         } else {
             unreachable!();
@@ -283,18 +283,18 @@ impl Solver {
                     _ => {}
                 };
             }
-            if let CellType::HumanOrPet(c, c2) = self.cells[pet.i][pet.j] {
+            if let Cell::HumanOrPet(c, c2) = self.cells[pet.i][pet.j] {
                 // 移動元
                 if c == 0 && c2 == 1 {
-                    self.cells[pet.i][pet.j] = CellType::None;
+                    self.cells[pet.i][pet.j] = Cell::None;
                 } else {
-                    self.cells[pet.i][pet.j] = CellType::HumanOrPet(c, c2 - 1);
+                    self.cells[pet.i][pet.j] = Cell::HumanOrPet(c, c2 - 1);
                 }
                 // 移動先
-                if let CellType::HumanOrPet(c, c2) = self.cells[new_i][new_j] {
-                    self.cells[new_i][new_j] = CellType::HumanOrPet(c, c2 + 1);
+                if let Cell::HumanOrPet(c, c2) = self.cells[new_i][new_j] {
+                    self.cells[new_i][new_j] = Cell::HumanOrPet(c, c2 + 1);
                 } else {
-                    self.cells[new_i][new_j] = CellType::HumanOrPet(0, 1);
+                    self.cells[new_i][new_j] = Cell::HumanOrPet(0, 1);
                 }
             } else {
                 unreachable!();
@@ -321,22 +321,22 @@ impl Solver {
 
     fn can_move(&self, i: usize, j: usize) -> bool {
         match self.cells[i][j] {
-            CellType::None | CellType::HumanOrPet(_, _) => true,
+            Cell::None | Cell::HumanOrPet(_, _) => true,
             _ => false,
         }
     }
 
     fn can_block_cell(&self, i: usize, j: usize) -> bool {
         let cell = &self.cells[i][j];
-        if cell != &CellType::None && cell != &CellType::Blocked {
+        if cell != &Cell::None && cell != &Cell::Blocked {
             return false;
         }
         // U
         if i > 0 {
             let cell = &self.cells[i - 1][j];
             let ok = match cell {
-                CellType::None | CellType::Blocked => true,
-                CellType::HumanOrPet(_, c) => c == &0,
+                Cell::None | Cell::Blocked => true,
+                Cell::HumanOrPet(_, c) => c == &0,
             };
             if !ok {
                 return false;
@@ -346,8 +346,8 @@ impl Solver {
         if i < self.v_size - 1 {
             let cell = &self.cells[i + 1][j];
             let ok = match cell {
-                CellType::None | CellType::Blocked => true,
-                CellType::HumanOrPet(_, c) => c == &0,
+                Cell::None | Cell::Blocked => true,
+                Cell::HumanOrPet(_, c) => c == &0,
             };
             if !ok {
                 return false;
@@ -357,8 +357,8 @@ impl Solver {
         if j > 0 {
             let cell = &self.cells[i][j - 1];
             let ok = match cell {
-                CellType::None | CellType::Blocked => true,
-                CellType::HumanOrPet(_, c) => c == &0,
+                Cell::None | Cell::Blocked => true,
+                Cell::HumanOrPet(_, c) => c == &0,
             };
             if !ok {
                 return false;
@@ -368,8 +368,8 @@ impl Solver {
         if j < self.h_size - 1 {
             let cell = &self.cells[i][j + 1];
             let ok = match cell {
-                CellType::None | CellType::Blocked => true,
-                CellType::HumanOrPet(_, c) => c == &0,
+                Cell::None | Cell::Blocked => true,
+                Cell::HumanOrPet(_, c) => c == &0,
             };
             if !ok {
                 return false;
@@ -378,7 +378,7 @@ impl Solver {
         true
     }
 
-    fn calc_score(&mut self, actions: &Vec<char>) -> (f64, Vec<Human>, Vec<Vec<CellType>>) {
+    fn calc_score(&mut self, actions: &Vec<char>) -> (f64, Vec<Human>, Vec<Vec<Cell>>) {
         let bk_humans = self.humans.clone();
         let bk_cells = self.cells.clone();
         for i in 0..actions.len() {
@@ -407,7 +407,7 @@ impl Solver {
                 // 人間と動物の数を加算
                 cell_count += 1;
                 match self.cells[i][j] {
-                    CellType::HumanOrPet(hc, pc) => {
+                    Cell::HumanOrPet(hc, pc) => {
                         human_count += hc;
                         pet_count += pc;
                     }
@@ -433,10 +433,10 @@ impl Solver {
                     }
                     visited.insert((new_i, new_j));
                     match self.cells[new_i][new_j] {
-                        CellType::None => {
+                        Cell::None => {
                             que.push_back((new_i, new_j));
                         }
-                        CellType::HumanOrPet(_, _) => {
+                        Cell::HumanOrPet(_, _) => {
                             que.push_back((new_i, new_j));
                         }
                         _ => {}
