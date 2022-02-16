@@ -152,7 +152,8 @@ impl Solver {
         if done_move {
             self.done_move_to_initial_positon = true;
         }
-        self.apply_humans_actions(&actions)
+        self.apply_humans_actions(&actions);
+        actions
     }
 
     fn move_and_block_cells(&mut self) -> Vec<char> {
@@ -166,7 +167,8 @@ impl Solver {
             let act = match self.cells[human.i][human.j - 1] {
                 Cell::Blocked if human.i < self.v_size - 1 => 'D',
                 Cell::None
-                    if human.i < self.v_size - 1 && self.can_block_cell(human.i, human.j - 1) =>
+                    if human.i < self.v_size - 1
+                        && self.can_block_cell(human.i, human.j - 1, &self.cells) =>
                 {
                     'l'
                 }
@@ -174,7 +176,7 @@ impl Solver {
             };
             actions.push(act);
         }
-        let actions = self.apply_humans_actions(&actions);
+        self.apply_humans_actions(&actions);
         let mut done = true;
         for i in 0..self.m {
             let human = &self.humans[i];
@@ -195,7 +197,7 @@ impl Solver {
         let mut best_actions = vec!['.'; self.m];
         let mut best_score = 0_f64;
         // let action_list = vec!['U', 'D', 'L', 'R', 'u', 'd', 'l', 'r', '.'];
-        let action_list = vec!['l', '.'];
+        let action_list = vec!['L', 'R', 'u', 'l', 'r', '.'];
         for _ in 0..50 {
             let mut actions = Vec::new();
             for i in 0..self.m {
@@ -205,7 +207,7 @@ impl Solver {
                     actions.push(action_list[self.rng.gen::<usize>() % action_list.len()]);
                 }
             }
-            let (score, bk_humans, bk_cells) = self.calc_score(&actions);
+            let (score, actions, bk_humans, bk_cells) = self.calc_score(&actions);
             if score > best_score {
                 best_score = score;
                 best_actions = actions;
@@ -213,21 +215,14 @@ impl Solver {
             self.humans = bk_humans;
             self.cells = bk_cells;
         }
-        self.apply_humans_actions(&best_actions)
+        self.apply_humans_actions(&best_actions);
+        best_actions
     }
 
-    fn apply_humans_actions(&mut self, actions: &Vec<char>) -> Vec<char> {
-        let mut fixed_actions = Vec::new();
+    fn apply_humans_actions(&mut self, actions: &Vec<char>) {
         for i in 0..self.m {
-            let act = if self.can_action(&self.humans[i], actions[i]) {
-                actions[i]
-            } else {
-                '.'
-            };
-            fixed_actions.push(act);
-            self.move_human_by_action(i, act);
+            self.move_human_by_action(i, actions[i]);
         }
-        fixed_actions
     }
 
     fn move_human_by_action(&mut self, h_i: usize, action: char) {
@@ -305,35 +300,35 @@ impl Solver {
         }
     }
 
-    fn can_action(&self, h: &Human, act: char) -> bool {
+    fn can_action(&self, h: &Human, act: char, cells: &Vec<Vec<Cell>>) -> bool {
         match act {
-            'U' => h.i > 0 && self.can_move(h.i - 1, h.j),
-            'D' => h.i < self.v_size - 1 && self.can_move(h.i + 1, h.j),
-            'L' => h.j > 0 && self.can_move(h.i, h.j - 1),
-            'R' => h.j < self.h_size - 1 && self.can_move(h.i, h.j + 1),
-            'u' => h.i > 0 && self.can_block_cell(h.i - 1, h.j),
-            'd' => h.i < self.v_size - 1 && self.can_block_cell(h.i + 1, h.j),
-            'l' => h.j > 0 && self.can_block_cell(h.i, h.j - 1),
-            'r' => h.j < self.h_size - 1 && self.can_block_cell(h.i, h.j + 1),
+            'U' => h.i > 0 && self.can_move(h.i - 1, h.j, cells),
+            'D' => h.i < self.v_size - 1 && self.can_move(h.i + 1, h.j, cells),
+            'L' => h.j > 0 && self.can_move(h.i, h.j - 1, cells),
+            'R' => h.j < self.h_size - 1 && self.can_move(h.i, h.j + 1, cells),
+            'u' => h.i > 0 && self.can_block_cell(h.i - 1, h.j, cells),
+            'd' => h.i < self.v_size - 1 && self.can_block_cell(h.i + 1, h.j, cells),
+            'l' => h.j > 0 && self.can_block_cell(h.i, h.j - 1, cells),
+            'r' => h.j < self.h_size - 1 && self.can_block_cell(h.i, h.j + 1, cells),
             _ => false,
         }
     }
 
-    fn can_move(&self, i: usize, j: usize) -> bool {
-        match self.cells[i][j] {
+    fn can_move(&self, i: usize, j: usize, cells: &Vec<Vec<Cell>>) -> bool {
+        match cells[i][j] {
             Cell::None | Cell::HumanOrPet(_, _) => true,
             _ => false,
         }
     }
 
-    fn can_block_cell(&self, i: usize, j: usize) -> bool {
-        let cell = &self.cells[i][j];
+    fn can_block_cell(&self, i: usize, j: usize, cells: &Vec<Vec<Cell>>) -> bool {
+        let cell = &cells[i][j];
         if cell != &Cell::None && cell != &Cell::Blocked {
             return false;
         }
         // U
         if i > 0 {
-            let cell = &self.cells[i - 1][j];
+            let cell = &cells[i - 1][j];
             let ok = match cell {
                 Cell::None | Cell::Blocked => true,
                 Cell::HumanOrPet(_, c) => c == &0,
@@ -344,7 +339,7 @@ impl Solver {
         }
         // D
         if i < self.v_size - 1 {
-            let cell = &self.cells[i + 1][j];
+            let cell = &cells[i + 1][j];
             let ok = match cell {
                 Cell::None | Cell::Blocked => true,
                 Cell::HumanOrPet(_, c) => c == &0,
@@ -355,7 +350,7 @@ impl Solver {
         }
         // L
         if j > 0 {
-            let cell = &self.cells[i][j - 1];
+            let cell = &cells[i][j - 1];
             let ok = match cell {
                 Cell::None | Cell::Blocked => true,
                 Cell::HumanOrPet(_, c) => c == &0,
@@ -366,7 +361,7 @@ impl Solver {
         }
         // R
         if j < self.h_size - 1 {
-            let cell = &self.cells[i][j + 1];
+            let cell = &cells[i][j + 1];
             let ok = match cell {
                 Cell::None | Cell::Blocked => true,
                 Cell::HumanOrPet(_, c) => c == &0,
@@ -378,16 +373,20 @@ impl Solver {
         true
     }
 
-    fn calc_score(&mut self, actions: &Vec<char>) -> (f64, Vec<Human>, Vec<Vec<Cell>>) {
+    fn calc_score(&mut self, actions: &Vec<char>) -> (f64, Vec<char>, Vec<Human>, Vec<Vec<Cell>>) {
         let bk_humans = self.humans.clone();
         let bk_cells = self.cells.clone();
+        let mut fixed_actions = Vec::new();
         for i in 0..actions.len() {
             let act = actions[i];
-            let act = if self.can_action(&self.humans[i], act) {
+            let act = if self.can_action(&self.humans[i], act, &bk_cells)
+                && self.can_action(&self.humans[i], act, &self.cells)
+            {
                 act
             } else {
                 '.'
             };
+            fixed_actions.push(act);
             self.move_human_by_action(i, act);
         }
 
@@ -448,7 +447,7 @@ impl Solver {
                 * human_count as f64;
         }
         score = 10.pow(8) as f64 * (1.0 as f64 / self.m as f64) * score;
-        (score, bk_humans, bk_cells)
+        (score, fixed_actions, bk_humans, bk_cells)
     }
 }
 
