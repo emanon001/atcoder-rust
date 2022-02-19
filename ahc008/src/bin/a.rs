@@ -199,12 +199,12 @@ impl Solver {
 
     fn random_actions(&mut self) -> Vec<char> {
         self.random_turn_cout += 1;
-        let depth = 5;
+        let depth = 4;
         let best_actions = vec!['.'; self.m];
         let (mut best_score, mut best_actions, bk_humans, bk_cells) =
             self.calc_score(&best_actions);
         let action_list = vec!['L', 'R', 'u', 'l', 'r', '.'];
-        for _ in 0..300 {
+        for _ in 0..400 {
             let mut first_actions = Vec::new();
             for _ in 0..self.m {
                 first_actions.push(action_list[self.rng.gen::<usize>() % action_list.len()]);
