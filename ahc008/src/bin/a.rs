@@ -66,6 +66,7 @@ struct Solver {
     cur_turn: usize,
     done_move_to_initial_positon: bool,
     done_move_and_block_cells: bool,
+    random_turn_cout: usize,
     h_size: usize,
     v_size: usize,
     cells: Vec<Vec<Cell>>,
@@ -100,6 +101,7 @@ impl Solver {
             cur_turn: 1,
             done_move_to_initial_positon: false,
             done_move_and_block_cells: false,
+            random_turn_cout: 0,
             h_size: 30,
             v_size: 30,
             cells,
@@ -115,8 +117,10 @@ impl Solver {
                 self.move_to_initial_position()
             } else if !self.done_move_and_block_cells {
                 self.move_and_block_cells()
-            } else {
+            } else if self.random_turn_cout < 10 {
                 self.random_actions()
+            } else {
+                vec!['.'; self.m]
             };
             println!("{}", human_actions.iter().join(""));
             let pet_actions: Vec<Vec<char>> = read_line()
@@ -194,26 +198,38 @@ impl Solver {
     }
 
     fn random_actions(&mut self) -> Vec<char> {
-        let mut best_actions = vec!['.'; self.m];
-        let mut best_score = 0_f64;
-        // let action_list = vec!['U', 'D', 'L', 'R', 'u', 'd', 'l', 'r', '.'];
+        self.random_turn_cout += 1;
+        let depth = 5;
+        let best_actions = vec!['.'; self.m];
+        let (mut best_score, mut best_actions, bk_humans, bk_cells) =
+            self.calc_score(&best_actions);
         let action_list = vec!['L', 'R', 'u', 'l', 'r', '.'];
-        for _ in 0..50 {
-            let mut actions = Vec::new();
-            for i in 0..self.m {
-                if self.humans[i].j < 3 || self.h_size - self.humans[i].j < 3 {
-                    actions.push('.');
-                } else {
+        for _ in 0..300 {
+            let mut first_actions = Vec::new();
+            for _ in 0..self.m {
+                first_actions.push(action_list[self.rng.gen::<usize>() % action_list.len()]);
+            }
+            let mut bscore = 0_f64;
+            let (score, first_actions, _, _) = self.calc_score(&first_actions);
+            if score > bscore {
+                bscore = score;
+            }
+            for _ in 0..depth - 1 {
+                let mut actions = Vec::new();
+                for _ in 0..self.m {
                     actions.push(action_list[self.rng.gen::<usize>() % action_list.len()]);
                 }
+                let (score, _actions, _, _) = self.calc_score(&actions);
+                if score > bscore {
+                    bscore = score;
+                }
             }
-            let (score, actions, bk_humans, bk_cells) = self.calc_score(&actions);
-            if score > best_score {
-                best_score = score;
-                best_actions = actions;
+            if bscore > best_score {
+                best_score = bscore;
+                best_actions = first_actions;
             }
-            self.humans = bk_humans;
-            self.cells = bk_cells;
+            self.humans = bk_humans.clone();
+            self.cells = bk_cells.clone();
         }
         self.apply_humans_actions(&best_actions);
         best_actions
