@@ -129,10 +129,7 @@ impl Solver {
                 self.move_and_block_cells()
             } else if self.random_turn_cout < self.max_random_turn {
                 if self.random_turn_cout == 0 {
-                    self.random_start_time = Instant::now();
-                    let duration =
-                        self.start_time + Duration::from_millis(2850) - self.random_start_time;
-                    self.random_duration_per_turn = duration / self.max_random_turn as u32;
+                    self.init_random_actions();
                 }
                 self.random_actions()
             } else {
@@ -213,9 +210,15 @@ impl Solver {
         actions
     }
 
+    fn init_random_actions(&mut self) {
+        self.random_start_time = Instant::now();
+        let duration = self.start_time + Duration::from_millis(2900) - self.random_start_time;
+        self.random_duration_per_turn = duration / self.max_random_turn as u32;
+    }
+
     fn random_actions(&mut self) -> Vec<char> {
         self.random_turn_cout += 1;
-        let depth = 4;
+        let depth = (self.max_random_turn - self.random_turn_cout + 1).min(4);
         let best_actions = vec!['.'; self.m];
         let (mut best_score, mut best_actions, bk_humans, bk_cells) =
             self.calc_score(&best_actions);
