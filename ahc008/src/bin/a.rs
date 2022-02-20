@@ -7,6 +7,7 @@ use proconio::marker::*;
 use rand::prelude::*;
 #[allow(unused_imports)]
 use std::collections::*;
+use std::time::{Duration, Instant};
 use whiteread::parse_line;
 
 pub fn read_line() -> String {
@@ -71,6 +72,10 @@ struct Solver {
     v_size: usize,
     cells: Vec<Vec<Cell>>,
     rng: ThreadRng,
+    start_time: Instant,
+    random_start_time: Instant,
+    random_duration_per_turn: Duration,
+    max_random_turn: usize,
 }
 
 impl Solver {
@@ -82,6 +87,7 @@ impl Solver {
         for human in &humans {
             cells[human.0][human.1] = Cell::HumanOrPet(1, 0);
         }
+        let start_time = Instant::now();
         Solver {
             n: pets.len(),
             pets: pets
@@ -106,6 +112,10 @@ impl Solver {
             v_size: 30,
             cells,
             rng: rand::thread_rng(),
+            start_time,
+            random_start_time: Instant::now(),
+            random_duration_per_turn: Duration::from_millis(0),
+            max_random_turn: 10,
         }
     }
 
@@ -117,7 +127,13 @@ impl Solver {
                 self.move_to_initial_position()
             } else if !self.done_move_and_block_cells {
                 self.move_and_block_cells()
-            } else if self.random_turn_cout < 10 {
+            } else if self.random_turn_cout < self.max_random_turn {
+                if self.random_turn_cout == 0 {
+                    self.random_start_time = Instant::now();
+                    let duration =
+                        self.start_time + Duration::from_millis(2850) - self.random_start_time;
+                    self.random_duration_per_turn = duration / self.max_random_turn as u32;
+                }
                 self.random_actions()
             } else {
                 vec!['.'; self.m]
@@ -204,7 +220,12 @@ impl Solver {
         let (mut best_score, mut best_actions, bk_humans, bk_cells) =
             self.calc_score(&best_actions);
         let action_list = vec!['L', 'R', 'u', 'l', 'r', '.'];
-        for _ in 0..400 {
+        let mut trial_count = 0;
+        let mut now = Instant::now();
+        let end_time =
+            self.random_start_time + self.random_duration_per_turn * self.random_turn_cout as u32;
+        while now < end_time {
+            trial_count += 1;
             let mut first_actions = Vec::new();
             for _ in 0..self.m {
                 first_actions.push(action_list[self.rng.gen::<usize>() % action_list.len()]);
@@ -230,6 +251,9 @@ impl Solver {
             }
             self.humans = bk_humans.clone();
             self.cells = bk_cells.clone();
+            if trial_count % 50 == 0 {
+                now = Instant::now();
+            }
         }
         self.apply_humans_actions(&best_actions);
         best_actions
