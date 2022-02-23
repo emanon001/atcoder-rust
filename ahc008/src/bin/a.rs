@@ -212,7 +212,7 @@ impl Solver {
 
     fn init_random_actions(&mut self) {
         self.random_start_time = Instant::now();
-        let duration = self.start_time + Duration::from_millis(2900) - self.random_start_time;
+        let duration = self.start_time + Duration::from_millis(2950) - self.random_start_time;
         self.random_duration_per_turn = duration / self.max_random_turn as u32;
     }
 
