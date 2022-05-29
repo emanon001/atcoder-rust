@@ -16,6 +16,6 @@ for in in $(seq -f "%04g" -w 0 99); do
   n=$(expr ${in} + 1)
   mod=$(($n % 10))
   if [[ $mod -eq 0 ]]; then
-    ruby -e "n=${n}; puts n.times.map { gets.split('= ')[1].to_i }.sum * 100 / n" < out/score.txt
+    ruby -e "n=${n}; puts n.times.map { gets.split('= ')[1].to_i }.sum * 100 / n / 2" < out/score.txt
   fi
 done

@@ -152,6 +152,17 @@ impl Solver {
             &mut operations,
             &mut max_operations,
             &mut max_score,
+            12,
+        );
+        let depth = operations.len();
+        self.solve_dfs(
+            &mut count,
+            0,
+            self.empty_tile_pos,
+            &mut operations,
+            &mut max_operations,
+            &mut max_score,
+            self.t - depth,
         );
         println!("{}", max_operations.iter().join(""));
     }
@@ -164,8 +175,9 @@ impl Solver {
         operations: &mut Vec<char>,
         max_operations: &mut Vec<char>,
         max_score: &mut f64,
+        max_depth: usize,
     ) {
-        if depth >= 19 {
+        if depth >= max_depth {
             return;
         }
         let dirs = vec!['U', 'D', 'L', 'R'];
@@ -203,6 +215,7 @@ impl Solver {
             };
             self.board[ei][ej] = self.board[new_i][new_j];
             self.board[new_i][new_j] = 0;
+            self.empty_tile_pos = (new_i, new_j);
             let new_score = self.calc_score(&self.board, operations.len());
             if &new_score > max_score {
                 *max_score = new_score;
@@ -215,10 +228,12 @@ impl Solver {
                 operations,
                 max_operations,
                 max_score,
+                max_depth,
             );
             operations.pop();
             self.board[new_i][new_j] = self.board[ei][ej];
             self.board[ei][ej] = 0;
+            self.empty_tile_pos = (ei, ej);
         }
     }
 
