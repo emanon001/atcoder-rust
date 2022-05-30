@@ -101,11 +101,138 @@ impl TreeChecker {
     }
 }
 
+#[derive(Clone)]
+struct Board {
+    board: Vec<Vec<usize>>,
+    n: usize,
+    empty_tile_pos: (usize, usize),
+}
+
+impl Board {
+    const OPERATIONS: [char; 4] = ['U', 'D', 'L', 'R'];
+    fn new(board: Vec<Vec<usize>>, n: usize) -> Self {
+        let mut empty_tile_pos = (0, 0);
+        'outer: for i in 0..n {
+            for j in 0..n {
+                if board[i][j] == 0 {
+                    empty_tile_pos = (i, j);
+                    break 'outer;
+                }
+            }
+        }
+        Self {
+            board,
+            n,
+            empty_tile_pos,
+        }
+    }
+
+    fn from_operations(initial_board: &Board, operations: &Vec<char>) -> Self {
+        let mut new_board = initial_board.clone();
+        for op in operations {
+            new_board.move_tile(*op);
+        }
+        new_board
+    }
+
+    fn move_tile(&mut self, op: char) {
+        let (ei, ej) = self.empty_tile_pos;
+        let (new_i, new_j) = match op {
+            'U' => (ei - 1, ej),
+            'D' => (ei + 1, ej),
+            'L' => (ei, ej - 1),
+            'R' => (ei, ej + 1),
+            _ => unreachable!(),
+        };
+        self.board[ei][ej] = self.board[new_i][new_j];
+        self.board[new_i][new_j] = 0;
+        self.empty_tile_pos = (new_i, new_j);
+    }
+
+    fn rev_op(op: char) -> char {
+        match op {
+            'U' => 'D',
+            'D' => 'U',
+            'L' => 'R',
+            'R' => 'L',
+            _ => unreachable!(),
+        }
+    }
+
+    fn is_rev_op(prev_op: char, op: char) -> bool {
+        prev_op == Self::rev_op(op)
+    }
+
+    fn can_move_tile(&self, op: char) -> bool {
+        let (ei, ej) = self.empty_tile_pos;
+        let invalid = op == 'U' && ei == 0
+            || op == 'D' && ei == self.n - 1
+            || op == 'L' && ej == 0
+            || op == 'R' && ej == self.n - 1;
+        !invalid
+    }
+
+    fn get_tile(&self, i: usize, j: usize) -> usize {
+        self.board[i][j]
+    }
+}
+
+struct Scores {
+    operation_map: HashMap<String, Vec<char>>,
+    score_map: HashMap<String, f64>,
+}
+
+impl Scores {
+    fn new(initial_score: f64) -> Self {
+        let mut operation_map: HashMap<String, Vec<char>> = HashMap::new();
+        operation_map.insert("".into(), vec![]);
+        let mut score_map: HashMap<String, f64> = HashMap::new();
+        score_map.insert("".into(), initial_score);
+        Self {
+            operation_map,
+            score_map,
+        }
+    }
+
+    fn update_if_needed(&mut self, operations: &Vec<char>, score: f64) {
+        let key = Self::get_key(&operations);
+        let max_score = self.score_map.entry(key).or_insert(0.0);
+        if &score > max_score {
+            *max_score = score;
+            let key = Self::get_key(&operations);
+            self.operation_map.insert(key, operations.clone());
+        }
+    }
+
+    fn get_key(operations: &Vec<char>) -> String {
+        format!("{}{}{}", operations[0], operations[1], operations[2])
+    }
+
+    fn max_operations(&self) -> Vec<char> {
+        let mut max_score = -1.0;
+        let mut max_operations = &Vec::new();
+        for (k, score) in &self.score_map {
+            if score > &max_score {
+                max_score = *score;
+                max_operations = &self.operation_map[k];
+            }
+        }
+        max_operations.clone()
+    }
+
+    fn operations(&self) -> Vec<Vec<char>> {
+        let mut res = Vec::new();
+        for v in self.operation_map.values() {
+            res.push(v.clone());
+        }
+        res
+    }
+}
+
 struct Solver {
     n: usize,
     t: usize,
-    board: Vec<Vec<usize>>,
-    empty_tile_pos: (usize, usize),
+    initial_board: Board,
     rng: ThreadRng,
     start_time: Instant,
 }
@@ -120,121 +247,77 @@ impl Solver {
                     .collect::<Vec<_>>()
             })
             .collect::<Vec<_>>();
-        let mut empty_tile_pos = (0, 0);
-        'outer: for i in 0..n {
-            for j in 0..n {
-                if board[i][j] == 0 {
-                    empty_tile_pos = (i, j);
-                    break 'outer;
-                }
-            }
-        }
+        let initial_board = Board::new(board, n);
         let start_time = Instant::now();
         Solver {
             n,
             t,
-            board,
-            empty_tile_pos,
+            initial_board,
             rng: rand::thread_rng(),
             start_time,
         }
     }
 
     pub fn solve(&mut self) {
-        let mut max_score = self.calc_score(&self.board, 0);
-        let mut max_operations: Vec<char> = vec![];
+        let mut board = self.initial_board.clone();
+        let initial_score = self.calc_score(&board, 0);
+        let mut scores = Scores::new(initial_score);
         let mut operations: Vec<char> = vec![];
         let mut count: usize = 0;
-        self.solve_dfs(
-            &mut count,
-            0,
-            self.empty_tile_pos,
-            &mut operations,
-            &mut max_operations,
-            &mut max_score,
-            12,
-        );
-        let depth = operations.len();
-        self.solve_dfs(
-            &mut count,
-            0,
-            self.empty_tile_pos,
-            &mut operations,
-            &mut max_operations,
-            &mut max_score,
-            self.t - depth,
-        );
-        println!("{}", max_operations.iter().join(""));
+        self.solve_dfs(&mut count, 0, &mut board, &mut operations, &mut scores, 8);
+        'outer: loop {
+            for ops in scores.operations() {
+                let mut ops = ops;
+                let mut board = Board::from_operations(&self.initial_board, &ops);
+                let can_continue =
+                    self.solve_dfs(&mut count, 0, &mut board, &mut ops, &mut scores, 8);
+                if !can_continue {
+                    break 'outer;
+                }
+            }
+        }
+
+        println!("{}", scores.max_operations().iter().join(""));
     }
 
     pub fn solve_dfs(
         &mut self,
         c: &mut usize,
         depth: usize,
-        empty_tile_pos: (usize, usize),
+        board: &mut Board,
         operations: &mut Vec<char>,
-        max_operations: &mut Vec<char>,
-        max_score: &mut f64,
+        scores: &mut Scores,
         max_depth: usize,
-    ) {
+    ) -> bool {
         if depth >= max_depth {
-            return;
+            return true;
         }
-        let dirs = vec!['U', 'D', 'L', 'R'];
-        for &d in &dirs {
+        for &op in &Board::OPERATIONS {
             // 時間をチェック
-            if *c % 50 == 0 && !self.check_time_limit() {
-                break;
+            if *c % 100 == 0 && !self.check_time_limit() {
+                return false;
             }
             // 元の状態に戻らないようチェック
-            if let Some(last_op) = operations.last() {
-                if last_op == &'D' && d == 'U'
-                    || last_op == &'U' && d == 'D'
-                    || last_op == &'R' && d == 'L'
-                    || last_op == &'L' && d == 'R'
-                {
+            if let Some(prev_op) = operations.last() {
+                if Board::is_rev_op(*prev_op, op) {
                     continue;
                 }
             }
-            let (ei, ej) = empty_tile_pos;
-            if d == 'U' && ei == 0
-                || d == 'D' && ei == self.n - 1
-                || d == 'L' && ej == 0
-                || d == 'R' && ej == self.n - 1
-            {
+            if !board.can_move_tile(op) {
                 continue;
             }
             *c += 1;
-            operations.push(d);
-            let (new_i, new_j) = match d {
-                'U' => (ei - 1, ej),
-                'D' => (ei + 1, ej),
-                'L' => (ei, ej - 1),
-                'R' => (ei, ej + 1),
-                _ => unreachable!(),
-            };
-            self.board[ei][ej] = self.board[new_i][new_j];
-            self.board[new_i][new_j] = 0;
-            self.empty_tile_pos = (new_i, new_j);
-            let new_score = self.calc_score(&self.board, operations.len());
-            if &new_score > max_score {
-                *max_score = new_score;
-                *max_operations = operations.clone();
+            operations.push(op);
+            board.move_tile(op);
+            if operations.len() >= 3 {
+                let new_score = self.calc_score(&board, operations.len());
+                scores.update_if_needed(&operations, new_score);
             }
-            self.solve_dfs(
-                c,
-                depth + 1,
-                (new_i, new_j),
-                operations,
-                max_operations,
-                max_score,
-                max_depth,
-            );
+            self.solve_dfs(c, depth + 1, board, operations, scores, max_depth);
             operations.pop();
-            self.board[new_i][new_j] = self.board[ei][ej];
-            self.board[ei][ej] = 0;
-            self.empty_tile_pos = (ei, ej);
+            board.move_tile(Board::rev_op(op));
         }
+        true
     }
 
     fn check_time_limit(&self) -> bool {
@@ -243,17 +326,17 @@ impl Solver {
         now < limit
     }
 
-    fn calc_score(&self, board: &Vec<Vec<usize>>, move_count: usize) -> f64 {
+    fn calc_score(&self, board: &Board, move_count: usize) -> f64 {
         let n = self.n;
         let mut tc = TreeChecker::new(n * n);
         for i in 0..n - 1 {
             for j in 0..n - 1 {
                 // 下方向に連結可能か
-                if (board[i][j] & 8 != 0) && (board[i + 1][j] & 2 != 0) {
+                if (board.get_tile(i, j) & 8 != 0) && (board.get_tile(i + 1, j) & 2 != 0) {
                     tc.unite(i * n + j, (i + 1) * n + j);
                 }
                 // 右方向に連結可能か
-                if (board[i][j] & 4 != 0) && (board[i][j + 1] & 1 != 0) {
+                if (board.get_tile(i, j) & 4 != 0) && (board.get_tile(i, j + 1) & 1 != 0) {
                     tc.unite(i * n + j, i * n + j + 1);
                 }
             }

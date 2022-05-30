@@ -3,3 +3,4 @@ target/
 /past*/
 !/past*-open/
 /competitive/competitive.code-snippets
+.DS_Store
