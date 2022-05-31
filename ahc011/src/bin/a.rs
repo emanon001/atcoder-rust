@@ -222,16 +222,16 @@ impl Scores {
         for (_, ops) in self.operation_map.clone() {
             let board = Board::from_operations(&self.initial_board, &ops);
             let score = self.calc_score(&board, ops.len(), self.max_move_count);
-            self.update_if_needed(&ops, score);
+            self.update_if_needed(&board, &ops, score);
         }
     }
 
-    fn update_if_needed(&mut self, operations: &Vec<char>, score: f64) {
-        let key = Self::get_key(&operations);
+    fn update_if_needed(&mut self, board: &Board, operations: &Vec<char>, score: f64) {
+        let key = Self::get_key(board, &operations);
         let max_score = self.get_score_map_mut().entry(key).or_insert(-1.0);
         if &score > max_score {
             *max_score = score;
-            let key = Self::get_key(&operations);
+            let key = Self::get_key(board, &operations);
             self.operation_map.insert(key, operations.clone());
         }
     }
@@ -250,8 +250,8 @@ impl Scores {
         }
     }
 
-    fn get_key(operations: &Vec<char>) -> String {
-        operations.iter().take(3).collect::<String>()
+    fn get_key(board: &Board, operations: &Vec<char>) -> String {
+        operations.iter().take(2).collect::<String>()
     }
 
     fn get_max_score(&self) -> f64 {
@@ -346,66 +346,59 @@ impl Scores {
                 if tile & 8 != 0 && i == n - 1 {
                     score -= 10.0;
                 }
+
+                // if tile == 0x1 && j == 0 {
+                //     score -= 10.0;
+                // }
+                // if tile == 0x2 && i == 0 {
+                //     score -= 10.0;
+                // }
+                // if tile == 0x3 && i == 0 && j == 0 {
+                //     score -= 10.0;
+                // }
+                // if tile == 0x4 && j == n - 1 {
+                //     score -= 10.0;
+                // }
+                // // if tile == 0x5 &&  {
+                // //     score -= 10.0;
+                // // }
+                // if tile == 0x6 && i == 0 && j == n - 1 {
+                //     score -= 10.0;
+                // }
+                // // if tile == 0x7 {
+                // //     score -= 10.0;
+                // // }
+                // if tile == 0x8 && i == n - 1 {
+                //     score -= 10.0;
+                // }
+                // if tile == 0x9 && i == n - 1 && j == 0 {
+                //     score -= 10.0;
+                // }
+                // // if tile == 0xa {
+                // //     score -= 10.0;
+                // // }
+                // // if tile == 0xb {
+                // //     score -= 10.0;
+                // // }
+                // if tile == 0xc && i == n - 1 && j == n - 1 {
+                //     score -= 10.0;
+                // }
+                // // if tile == 0xd {
+                // //     score -= 10.0;
+                // // }
+                // // if tile == 0xe {
+                // //     score -= 10.0;
+                // // }
+                // // if tile == 0xf {
+                // //     score -= 10.0;
+                // // }
             }
         }
         score
     }
 
-    fn calc_shape_score(board: &Board) -> f64 {
-        let n = board.n;
-        let mut score = 0_f64;
-        // for i in 0..n {
-        //     for j in 0..n {
-        //         let tile = board.get_tile(i, j);
-        //         // 左との接続
-        //         if tile & 1 != 0 {
-        //             // 右側に配置されているほど評価が高い
-        //             score += (j + 1) as f64 / n as f64;
-        //         }
-        //         // 上との接続
-        //         if tile & 2 != 0 {
-        //             // 下側に配置されているほど評価が高い
-        //             score += (i + 1) as f64 / n as f64;
-        //         }
-        //         // 右との接続
-        //         if tile & 4 != 0 {
-        //             // 左側に配置されているほど評価が高い
-        //             score += (n - j) as f64 / n as f64;
-        //         }
-        //         // 下との接続
-        //         if tile & 8 != 0 {
-        //             // 上側に配置されているほど評価が高い
-        //             score += (n - i) as f64 / n as f64;
-        //         }
-        //     }
-        // }
-        // let mut tc = Self::create_tree_checker(board);
-        // let group_sizes = tc.tree_sizes();
-        // for (size, is_tree) in group_sizes {
-        //     score += size.pow(2) as f64 * if is_tree { 1 } else { -1 } as f64;
-        // }
-        for i in 0..n {
-            for j in 0..n {
-                let tile = board.get_tile(i, j);
-                // 左
-                if tile & 1 != 0 && j == 0 {
-                    score -= 1.0;
-                }
-                // 上
-                if tile & 2 != 0 && i == 0 {
-                    score -= 1.0;
-                }
-                // 右
-                if tile & 4 != 0 && j == n - 1 {
-                    score -= 1.0;
-                }
-                // 下
-                if tile & 8 != 0 && i == n - 1 {
-                    score -= 1.0;
-                }
-            }
-        }
-        score
+    fn calc_shape_score(_board: &Board) -> f64 {
+        unimplemented!()
     }
 }
 
@@ -441,7 +434,7 @@ impl Solver {
         let mut operations: Vec<char> = vec![];
         let mut scores = Scores::new(ScoreMode::Real, initial_board.clone(), self.t);
         let initial_score = scores.calc_score(&initial_board, 0, self.t);
-        scores.update_if_needed(&operations, initial_score);
+        scores.update_if_needed(&initial_board, &operations, initial_score);
         let mut count: usize = 0;
         self.solve_dfs(
             &mut count,
@@ -504,7 +497,7 @@ impl Solver {
             operations.push(op);
             board.move_tile(op);
             let new_score = scores.calc_score(&board, operations.len(), self.t);
-            scores.update_if_needed(&operations, new_score);
+            scores.update_if_needed(board, &operations, new_score);
             self.solve_dfs(c, depth + 1, board, operations, scores, max_depth);
             operations.pop();
             board.move_tile(Board::rev_op(op));
