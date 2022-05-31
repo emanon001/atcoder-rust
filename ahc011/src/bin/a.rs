@@ -61,18 +61,20 @@ impl TreeChecker {
         let y_root = self.find(y);
         if x_root == y_root {
             self.is_tree[x_root] = false;
-            self.is_tree[y_root] = false;
             return;
         }
+        let is_tree = self.is_tree[x_root] && self.is_tree[y_root];
         if self.rank[x_root] < self.rank[y_root] {
             self.root[x_root] = y_root;
             self.size[y_root] += self.size[x_root];
+            self.is_tree[y_root] = is_tree;
         } else {
             self.root[y_root] = x_root;
             self.size[x_root] += self.size[y_root];
             if self.rank[x_root] == self.rank[y_root] {
                 self.rank[x_root] += 1;
             }
+            self.is_tree[x_root] = is_tree;
         }
     }
     pub fn size(&mut self, x: usize) -> usize {
@@ -97,6 +99,16 @@ impl TreeChecker {
     pub fn is_same(&mut self, x: usize, y: usize) -> bool {
         assert!(x < self.n && y < self.n);
         self.find(x) == self.find(y)
+    }
+    pub fn tree_sizes(&mut self) -> Vec<(usize, bool)> {
+        let mut set = HashSet::new();
+        for x in 0..self.n {
+            let k = self.find(x);
+            set.insert(k);
+        }
+        set.into_iter()
+            .map(|x| (self.size(x), self.is_tree(x)))
+            .collect()
     }
 }
 
@@ -176,26 +188,47 @@ impl Board {
     }
 }
 
+enum ScoreMode {
+    Real,
+    Shape,
+}
+
 struct Scores {
     operation_map: HashMap<String, Vec<char>>,
-    score_map: HashMap<String, f64>,
+    real_score_map: HashMap<String, f64>,
+    shape_score_map: HashMap<String, f64>,
+    mode: ScoreMode,
+    max_move_count: usize,
+    initial_board: Board,
 }
 
 impl Scores {
-    fn new(initial_score: f64) -> Self {
-        let mut operation_map: HashMap<String, Vec<char>> = HashMap::new();
-        operation_map.insert("".into(), vec![]);
-        let mut score_map: HashMap<String, f64> = HashMap::new();
-        score_map.insert("".into(), initial_score);
+    fn new(mode: ScoreMode, initial_board: Board, max_move_count: usize) -> Self {
+        let operation_map: HashMap<String, Vec<char>> = HashMap::new();
+        let real_score_map: HashMap<String, f64> = HashMap::new();
+        let shape_score_map: HashMap<String, f64> = HashMap::new();
         Self {
             operation_map,
-            score_map,
+            real_score_map,
+            shape_score_map,
+            mode,
+            max_move_count,
+            initial_board,
+        }
+    }
+
+    fn set_score_mode(&mut self, mode: ScoreMode) {
+        self.mode = mode;
+        for (_, ops) in self.operation_map.clone() {
+            let board = Board::from_operations(&self.initial_board, &ops);
+            let score = self.calc_score(&board, ops.len(), self.max_move_count);
+            self.update_if_needed(&ops, score);
         }
     }
 
     fn update_if_needed(&mut self, operations: &Vec<char>, score: f64) {
         let key = Self::get_key(&operations);
-        let max_score = self.score_map.entry(key).or_insert(0.0);
+        let max_score = self.get_score_map_mut().entry(key).or_insert(-1.0);
         if &score > max_score {
             *max_score = score;
             let key = Self::get_key(&operations);
@@ -203,20 +236,44 @@ impl Scores {
         }
     }
 
+    fn get_score_map(&self) -> &HashMap<String, f64> {
+        match self.mode {
+            ScoreMode::Real => &self.real_score_map,
+            ScoreMode::Shape => &self.shape_score_map,
+        }
+    }
+
+    fn get_score_map_mut(&mut self) -> &mut HashMap<String, f64> {
+        match self.mode {
+            ScoreMode::Real => &mut self.real_score_map,
+            ScoreMode::Shape => &mut self.shape_score_map,
+        }
+    }
+
     fn get_key(operations: &Vec<char>) -> String {
         operations.iter().take(3).collect::<String>()
     }
 
-    fn max_operations(&self) -> Vec<char> {
-        let mut max_score = -1.0;
-        let mut max_operations = &Vec::new();
-        for (k, score) in &self.score_map {
-            if score > &max_score {
+    fn get_max_score(&self) -> f64 {
+        let mut max_score: f64 = -1.0;
+        for (_, score) in self.get_score_map() {
+            if *score > max_score {
                 max_score = *score;
-                max_operations = &self.operation_map[k];
             }
         }
-        max_operations.clone()
+        max_score
+    }
+
+    fn max_operations(&self) -> Vec<char> {
+        let mut max_score: f64 = -1.0;
+        let mut key = "";
+        for (k, score) in self.get_score_map() {
+            if *score > max_score {
+                max_score = *score;
+                key = k;
+            }
+        }
+        self.operation_map.get(key).unwrap().clone()
     }
 
     fn operations(&self) -> Vec<Vec<char>> {
@@ -227,8 +284,71 @@ impl Scores {
         res
     }
 
-    fn calc_score(board: &Board, move_count: usize, max_move_count: usize) -> f64 {
+    fn calc_score(&self, board: &Board, move_count: usize, max_move_count: usize) -> f64 {
+        match self.mode {
+            ScoreMode::Real => Self::calc_real_score(board, move_count, max_move_count),
+            ScoreMode::Shape => Self::calc_shape_score(board),
+        }
+    }
+
+    fn calc_real_score(board: &Board, move_count: usize, max_move_count: usize) -> f64 {
         let n = board.n;
+        let mut tc = TreeChecker::new(n * n);
+        for i in 0..n {
+            for j in 0..n {
+                // 下方向に連結可能か
+                if i < n - 1
+                    && (board.get_tile(i, j) & 8 != 0)
+                    && (board.get_tile(i + 1, j) & 2 != 0)
+                {
+                    tc.unite(i * n + j, (i + 1) * n + j);
+                }
+                // 右方向に連結可能か
+                if j < n - 1
+                    && (board.get_tile(i, j) & 4 != 0)
+                    && (board.get_tile(i, j + 1) & 1 != 0)
+                {
+                    tc.unite(i * n + j, i * n + j + 1);
+                }
+            }
+        }
+        let max_size = tc.max_size();
+        if max_size < n * n - 1 {
+            500000.0 as f64 * (max_size as f64 / (n as f64 * n as f64 - 1.0))
+        } else {
+            500000.0 as f64
+                * (max_size as f64 / (2.0 - (move_count as f64 / max_move_count as f64)))
+        }
+    }
+
+    fn calc_shape_score(board: &Board) -> f64 {
+        let n = board.n;
+        let mut score = 0_f64;
+        // for i in 0..n {
+        //     for j in 0..n {
+        //         let tile = board.get_tile(i, j);
+        //         // 左との接続
+        //         if tile & 1 != 0 {
+        //             // 右側に配置されているほど評価が高い
+        //             score += (j + 1) as f64 / n as f64;
+        //         }
+        //         // 上との接続
+        //         if tile & 2 != 0 {
+        //             // 下側に配置されているほど評価が高い
+        //             score += (i + 1) as f64 / n as f64;
+        //         }
+        //         // 右との接続
+        //         if tile & 4 != 0 {
+        //             // 左側に配置されているほど評価が高い
+        //             score += (n - j) as f64 / n as f64;
+        //         }
+        //         // 下との接続
+        //         if tile & 8 != 0 {
+        //             // 上側に配置されているほど評価が高い
+        //             score += (n - i) as f64 / n as f64;
+        //         }
+        //     }
+        // }
         let mut tc = TreeChecker::new(n * n);
         for i in 0..n - 1 {
             for j in 0..n - 1 {
@@ -242,13 +362,11 @@ impl Scores {
                 }
             }
         }
-        let max_size = tc.max_size();
-        if max_size < n * n - 1 {
-            500000.0 as f64 * (max_size as f64 / (n as f64 * n as f64 - 1.0))
-        } else {
-            500000.0 as f64
-                * (max_size as f64 / (2.0 - (move_count as f64 / max_move_count as f64)))
+        let group_sizes = tc.tree_sizes();
+        for (size, is_tree) in group_sizes {
+            score += size.pow(2) as f64 * if is_tree { 1 } else { -1 } as f64;
         }
+        score
     }
 }
 
@@ -280,13 +398,27 @@ impl Solver {
     }
 
     pub fn solve(&mut self) {
-        let mut board = self.initial_board.clone();
-        let initial_score = Scores::calc_score(&board, 0, self.t);
-        let mut scores = Scores::new(initial_score);
+        let mut initial_board = self.initial_board.clone();
         let mut operations: Vec<char> = vec![];
+        let mut scores = Scores::new(ScoreMode::Real, initial_board.clone(), self.t);
+        let initial_score = scores.calc_score(&initial_board, 0, self.t);
+        scores.update_if_needed(&operations, initial_score);
         let mut count: usize = 0;
-        self.solve_dfs(&mut count, 0, &mut board, &mut operations, &mut scores, 8);
+        self.solve_dfs(
+            &mut count,
+            0,
+            &mut initial_board,
+            &mut operations,
+            &mut scores,
+            8,
+        );
         'outer: loop {
+            // if !self.check_shape_score_time_limit() {
+            //     scores.set_score_mode(ScoreMode::Real, &board);
+            // }
+            if !self.check_time_limit() {
+                break;
+            }
             for ops in scores.operations() {
                 let mut ops = ops;
                 let mut board = Board::from_operations(&self.initial_board, &ops);
@@ -299,6 +431,7 @@ impl Solver {
             }
         }
 
+        // eprintln!("{}", scores.get_max_score());
         println!("{}", scores.max_operations().iter().join(""));
     }
 
@@ -331,7 +464,7 @@ impl Solver {
             *c += 1;
             operations.push(op);
             board.move_tile(op);
-            let new_score = Scores::calc_score(&board, operations.len(), self.t);
+            let new_score = scores.calc_score(&board, operations.len(), self.t);
             scores.update_if_needed(&operations, new_score);
             self.solve_dfs(c, depth + 1, board, operations, scores, max_depth);
             operations.pop();
@@ -343,6 +476,12 @@ impl Solver {
     fn check_time_limit(&self) -> bool {
         let now = Instant::now();
         let limit = self.start_time + Duration::from_millis(2950);
+        now < limit
+    }
+
+    fn check_shape_score_time_limit(&self) -> bool {
+        let now = Instant::now();
+        let limit = self.start_time + Duration::from_millis(1000);
         now < limit
     }
 }
