@@ -226,6 +226,30 @@ impl Scores {
         }
         res
     }
+
+    fn calc_score(board: &Board, move_count: usize, max_move_count: usize) -> f64 {
+        let n = board.n;
+        let mut tc = TreeChecker::new(n * n);
+        for i in 0..n - 1 {
+            for j in 0..n - 1 {
+                // 下方向に連結可能か
+                if (board.get_tile(i, j) & 8 != 0) && (board.get_tile(i + 1, j) & 2 != 0) {
+                    tc.unite(i * n + j, (i + 1) * n + j);
+                }
+                // 右方向に連結可能か
+                if (board.get_tile(i, j) & 4 != 0) && (board.get_tile(i, j + 1) & 1 != 0) {
+                    tc.unite(i * n + j, i * n + j + 1);
+                }
+            }
+        }
+        let max_size = tc.max_size();
+        if max_size < n * n - 1 {
+            500000.0 as f64 * (max_size as f64 / (n as f64 * n as f64 - 1.0))
+        } else {
+            500000.0 as f64
+                * (max_size as f64 / (2.0 - (move_count as f64 / max_move_count as f64)))
+        }
+    }
 }
 
 struct Solver {
@@ -257,7 +281,7 @@ impl Solver {
 
     pub fn solve(&mut self) {
         let mut board = self.initial_board.clone();
-        let initial_score = self.calc_score(&board, 0);
+        let initial_score = Scores::calc_score(&board, 0, self.t);
         let mut scores = Scores::new(initial_score);
         let mut operations: Vec<char> = vec![];
         let mut count: usize = 0;
@@ -307,7 +331,7 @@ impl Solver {
             *c += 1;
             operations.push(op);
             board.move_tile(op);
-            let new_score = self.calc_score(&board, operations.len());
+            let new_score = Scores::calc_score(&board, operations.len(), self.t);
             scores.update_if_needed(&operations, new_score);
             self.solve_dfs(c, depth + 1, board, operations, scores, max_depth);
             operations.pop();
@@ -320,29 +344,6 @@ impl Solver {
         let now = Instant::now();
         let limit = self.start_time + Duration::from_millis(2950);
         now < limit
-    }
-
-    fn calc_score(&self, board: &Board, move_count: usize) -> f64 {
-        let n = self.n;
-        let mut tc = TreeChecker::new(n * n);
-        for i in 0..n - 1 {
-            for j in 0..n - 1 {
-                // 下方向に連結可能か
-                if (board.get_tile(i, j) & 8 != 0) && (board.get_tile(i + 1, j) & 2 != 0) {
-                    tc.unite(i * n + j, (i + 1) * n + j);
-                }
-                // 右方向に連結可能か
-                if (board.get_tile(i, j) & 4 != 0) && (board.get_tile(i, j + 1) & 1 != 0) {
-                    tc.unite(i * n + j, i * n + j + 1);
-                }
-            }
-        }
-        let max_size = tc.max_size();
-        if max_size < n * n - 1 {
-            500000.0 as f64 * (max_size as f64 / (n as f64 * n as f64 - 1.0))
-        } else {
-            500000.0 as f64 * (max_size as f64 / (2.0 - (move_count as f64 / self.t as f64)))
-        }
     }
 }
 
