@@ -204,7 +204,7 @@ impl Scores {
     }
 
     fn get_key(operations: &Vec<char>) -> String {
-        operations.iter().take(2).collect::<String>()
+        operations.iter().take(3).collect::<String>()
     }
 
     fn max_operations(&self) -> Vec<char> {
