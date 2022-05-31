@@ -227,11 +227,11 @@ impl Scores {
     }
 
     fn update_if_needed(&mut self, board: &Board, operations: &Vec<char>, score: f64) {
-        let key = Self::get_key(board, &operations);
+        let key = self.get_key(board, &operations);
         let max_score = self.get_score_map_mut().entry(key).or_insert(-1.0);
         if &score > max_score {
             *max_score = score;
-            let key = Self::get_key(board, &operations);
+            let key = self.get_key(board, &operations);
             self.operation_map.insert(key, operations.clone());
         }
     }
@@ -250,8 +250,13 @@ impl Scores {
         }
     }
 
-    fn get_key(board: &Board, operations: &Vec<char>) -> String {
-        operations.iter().take(2).collect::<String>()
+    fn get_key(&self, board: &Board, operations: &Vec<char>) -> String {
+        let (i, j) = self.initial_board.empty_tile_pos;
+        let mut len = 2;
+        if i == 0 || i == board.n - 1 || j == 0 || j == board.n - 1 {
+            len += 1;
+        }
+        operations.iter().take(len).collect::<String>()
     }
 
     fn get_max_score(&self) -> f64 {
