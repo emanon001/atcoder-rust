@@ -291,7 +291,7 @@ impl Scores {
         }
     }
 
-    fn calc_real_score(board: &Board, move_count: usize, max_move_count: usize) -> f64 {
+    fn create_tree_checker(board: &Board) -> TreeChecker {
         let n = board.n;
         let mut tc = TreeChecker::new(n * n);
         for i in 0..n {
@@ -312,13 +312,43 @@ impl Scores {
                 }
             }
         }
+        tc
+    }
+
+    fn calc_real_score(board: &Board, move_count: usize, max_move_count: usize) -> f64 {
+        let n = board.n;
+        let mut tc = Self::create_tree_checker(board);
         let max_size = tc.max_size();
-        if max_size < n * n - 1 {
+        let mut score = if max_size < n * n - 1 {
             500000.0 as f64 * (max_size as f64 / (n as f64 * n as f64 - 1.0))
         } else {
             500000.0 as f64
                 * (max_size as f64 / (2.0 - (move_count as f64 / max_move_count as f64)))
+        };
+
+        // 愚形を避ける
+        for i in 0..n {
+            for j in 0..n {
+                let tile = board.get_tile(i, j);
+                // 左
+                if tile & 1 != 0 && j == 0 {
+                    score -= 10.0;
+                }
+                // 上
+                if tile & 2 != 0 && i == 0 {
+                    score -= 10.0;
+                }
+                // 右
+                if tile & 4 != 0 && j == n - 1 {
+                    score -= 10.0;
+                }
+                // 下
+                if tile & 8 != 0 && i == n - 1 {
+                    score -= 10.0;
+                }
+            }
         }
+        score
     }
 
     fn calc_shape_score(board: &Board) -> f64 {
@@ -349,22 +379,31 @@ impl Scores {
         //         }
         //     }
         // }
-        let mut tc = TreeChecker::new(n * n);
-        for i in 0..n - 1 {
-            for j in 0..n - 1 {
-                // 下方向に連結可能か
-                if (board.get_tile(i, j) & 8 != 0) && (board.get_tile(i + 1, j) & 2 != 0) {
-                    tc.unite(i * n + j, (i + 1) * n + j);
+        // let mut tc = Self::create_tree_checker(board);
+        // let group_sizes = tc.tree_sizes();
+        // for (size, is_tree) in group_sizes {
+        //     score += size.pow(2) as f64 * if is_tree { 1 } else { -1 } as f64;
+        // }
+        for i in 0..n {
+            for j in 0..n {
+                let tile = board.get_tile(i, j);
+                // 左
+                if tile & 1 != 0 && j == 0 {
+                    score -= 1.0;
                 }
-                // 右方向に連結可能か
-                if (board.get_tile(i, j) & 4 != 0) && (board.get_tile(i, j + 1) & 1 != 0) {
-                    tc.unite(i * n + j, i * n + j + 1);
+                // 上
+                if tile & 2 != 0 && i == 0 {
+                    score -= 1.0;
+                }
+                // 右
+                if tile & 4 != 0 && j == n - 1 {
+                    score -= 1.0;
+                }
+                // 下
+                if tile & 8 != 0 && i == n - 1 {
+                    score -= 1.0;
                 }
             }
-        }
-        let group_sizes = tc.tree_sizes();
-        for (size, is_tree) in group_sizes {
-            score += size.pow(2) as f64 * if is_tree { 1 } else { -1 } as f64;
         }
         score
     }
@@ -414,7 +453,7 @@ impl Solver {
         );
         'outer: loop {
             // if !self.check_shape_score_time_limit() {
-            //     scores.set_score_mode(ScoreMode::Real, &board);
+            //     scores.set_score_mode(ScoreMode::Real);
             // }
             if !self.check_time_limit() {
                 break;
