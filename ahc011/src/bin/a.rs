@@ -481,7 +481,7 @@ impl Solver {
         }
         for &op in &Board::OPERATIONS {
             // 時間をチェック
-            if *c % 100 == 0 && !self.check_time_limit() {
+            if *c % 200 == 0 && !self.check_time_limit() {
                 return false;
             }
             // 元の状態に戻らないようチェック
