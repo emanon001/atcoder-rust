@@ -5,7 +5,6 @@ use num::*;
 use proconio::input;
 #[allow(unused_imports)]
 use proconio::marker::*;
-use rand::prelude::*;
 #[allow(unused_imports)]
 use std::collections::*;
 use std::time::{Duration, Instant};
@@ -205,7 +204,7 @@ impl Scores {
     }
 
     fn get_key(operations: &Vec<char>) -> String {
-        format!("{}{}{}", operations[0], operations[1], operations[2])
+        operations.iter().take(2).collect::<String>()
     }
 
     fn max_operations(&self) -> Vec<char> {
@@ -233,7 +232,6 @@ struct Solver {
     n: usize,
     t: usize,
     initial_board: Board,
-    rng: ThreadRng,
     start_time: Instant,
 }
 
@@ -253,7 +251,6 @@ impl Solver {
             n,
             t,
             initial_board,
-            rng: rand::thread_rng(),
             start_time,
         }
     }
@@ -310,10 +307,8 @@ impl Solver {
             *c += 1;
             operations.push(op);
             board.move_tile(op);
-            if operations.len() >= 3 {
-                let new_score = self.calc_score(&board, operations.len());
-                scores.update_if_needed(&operations, new_score);
-            }
+            let new_score = self.calc_score(&board, operations.len());
+            scores.update_if_needed(&operations, new_score);
             self.solve_dfs(c, depth + 1, board, operations, scores, max_depth);
             operations.pop();
             board.move_tile(Board::rev_op(op));
