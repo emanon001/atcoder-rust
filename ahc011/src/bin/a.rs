@@ -330,20 +330,11 @@ impl Scores {
         for i in 0..n {
             for j in 0..n {
                 let tile = board.get_tile(i, j);
-                // 左
-                if tile & 1 != 0 && j == 0 {
-                    score -= 10.0;
-                }
-                // 上
-                if tile & 2 != 0 && i == 0 {
-                    score -= 10.0;
-                }
-                // 右
-                if tile & 4 != 0 && j == n - 1 {
-                    score -= 10.0;
-                }
-                // 下
-                if tile & 8 != 0 && i == n - 1 {
+                if (tile & 1 != 0 && j == 0)
+                    || (tile & 2 != 0 && i == 0)
+                    || (tile & 4 != 0 && j == n - 1)
+                    || (tile & 8 != 0 && i == n - 1)
+                {
                     score -= 10.0;
                 }
 
