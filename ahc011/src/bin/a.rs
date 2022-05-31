@@ -269,8 +269,9 @@ impl Solver {
             for ops in scores.operations() {
                 let mut ops = ops;
                 let mut board = Board::from_operations(&self.initial_board, &ops);
+                let max_depth = (self.t - ops.len()).min(8);
                 let can_continue =
-                    self.solve_dfs(&mut count, 0, &mut board, &mut ops, &mut scores, 8);
+                    self.solve_dfs(&mut count, 0, &mut board, &mut ops, &mut scores, max_depth);
                 if !can_continue {
                     break 'outer;
                 }
