@@ -207,23 +207,31 @@ impl Scores {
         }
     }
 
-    fn update_if_needed(&mut self, board: &Board, operations: &Vec<char>, score: f64) {
-        let key = self.get_key(board, &operations);
+    fn update_if_needed(&mut self, operations: &Vec<char>, score: f64) {
+        let key = self.get_key(&operations);
         let max_score = self.score_map.entry(key).or_insert(-1.0);
         if &score > max_score {
             *max_score = score;
-            let key = self.get_key(board, &operations);
+            let key = self.get_key(&operations);
             self.operation_map.insert(key, operations.clone());
         }
     }
 
-    fn get_key(&self, board: &Board, operations: &Vec<char>) -> String {
+    fn get_max_key_size(&self) -> usize {
+        let mut size = 2;
         let (i, j) = self.initial_board.empty_tile_pos;
-        let mut len = 2;
-        if i == 0 || i == board.n - 1 || j == 0 || j == board.n - 1 {
-            len += 1;
+        let n = self.initial_board.n;
+        if i == 0 || i == n - 1 || j == 0 || j == n - 1 {
+            size += 1;
         }
-        operations.iter().take(len).collect::<String>()
+        size
+    }
+
+    fn get_key(&self, operations: &Vec<char>) -> String {
+        operations
+            .iter()
+            .take(self.get_max_key_size())
+            .collect::<String>()
     }
 
     fn get_max_score(&self) -> f64 {
@@ -248,10 +256,10 @@ impl Scores {
         self.operation_map.get(key).unwrap().clone()
     }
 
-    fn operations(&self) -> Vec<Vec<char>> {
+    fn get_operations(&self) -> Vec<(String, Vec<char>)> {
         let mut res = Vec::new();
-        for v in self.operation_map.values() {
-            res.push(v.clone());
+        for (k, ops) in &self.operation_map {
+            res.push((k.clone(), ops.clone()));
         }
         res
     }
@@ -295,56 +303,71 @@ impl Scores {
         for i in 0..n {
             for j in 0..n {
                 let tile = board.get_tile(i, j);
-                if (tile & 1 != 0 && j == 0)
-                    || (tile & 2 != 0 && i == 0)
-                    || (tile & 4 != 0 && j == n - 1)
-                    || (tile & 8 != 0 && i == n - 1)
+                if ((tile & 1) != 0 && j == 0)
+                    || ((tile & 2) != 0 && i == 0)
+                    || ((tile & 4) != 0 && j == n - 1)
+                    || ((tile & 8) != 0 && i == n - 1)
                 {
                     score -= 10.0;
                 }
 
+                //// ←
                 // if tile == 0x1 && j == 0 {
                 //     score -= 10.0;
                 // }
+                //// ↑
                 // if tile == 0x2 && i == 0 {
                 //     score -= 10.0;
                 // }
+                //// ←↑
                 // if tile == 0x3 && i == 0 && j == 0 {
                 //     score -= 10.0;
                 // }
+                //// →
                 // if tile == 0x4 && j == n - 1 {
                 //     score -= 10.0;
                 // }
+                //// ←→
                 // // if tile == 0x5 &&  {
                 // //     score -= 10.0;
                 // // }
+                //// ↑→
                 // if tile == 0x6 && i == 0 && j == n - 1 {
                 //     score -= 10.0;
                 // }
+                //// ←↑→
                 // // if tile == 0x7 {
                 // //     score -= 10.0;
                 // // }
+                //// ↓
                 // if tile == 0x8 && i == n - 1 {
                 //     score -= 10.0;
                 // }
+                //// ←↓
                 // if tile == 0x9 && i == n - 1 && j == 0 {
                 //     score -= 10.0;
                 // }
+                //// ↑↓
                 // // if tile == 0xa {
                 // //     score -= 10.0;
                 // // }
+                //// ←↑↓
                 // // if tile == 0xb {
                 // //     score -= 10.0;
                 // // }
+                //// ↓→
                 // if tile == 0xc && i == n - 1 && j == n - 1 {
                 //     score -= 10.0;
                 // }
+                // // ←→↓
                 // // if tile == 0xd {
                 // //     score -= 10.0;
                 // // }
+                // // ↑↓→
                 // // if tile == 0xe {
                 // //     score -= 10.0;
                 // // }
+                // // ←↑→↓
                 // // if tile == 0xf {
                 // //     score -= 10.0;
                 // // }
@@ -386,7 +409,7 @@ impl Solver {
         let mut operations: Vec<char> = vec![];
         let mut scores = Scores::new(initial_board.clone(), self.t);
         let initial_score = Scores::calc_score(&initial_board, 0, self.t);
-        scores.update_if_needed(&initial_board, &operations, initial_score);
+        scores.update_if_needed(&operations, initial_score);
         let mut count: usize = 0;
         self.solve_dfs(
             &mut count,
@@ -403,7 +426,10 @@ impl Solver {
             if !self.check_time_limit() {
                 break;
             }
-            for ops in scores.operations() {
+            for (key, ops) in scores.get_operations() {
+                if key.len() < scores.get_max_key_size() {
+                    continue;
+                }
                 let mut ops = ops;
                 let mut board = Board::from_operations(&self.initial_board, &ops);
                 let max_depth = (self.t - ops.len()).min(8);
@@ -449,7 +475,7 @@ impl Solver {
             operations.push(op);
             board.move_tile(op);
             let new_score = Scores::calc_score(&board, operations.len(), self.t);
-            scores.update_if_needed(board, &operations, new_score);
+            scores.update_if_needed(&operations, new_score);
             self.solve_dfs(c, depth + 1, board, operations, scores, max_depth);
             operations.pop();
             board.move_tile(Board::rev_op(op));
