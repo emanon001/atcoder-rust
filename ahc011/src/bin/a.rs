@@ -2,6 +2,7 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
+use ordered_float::NotNan;
 use proconio::input;
 #[allow(unused_imports)]
 use proconio::marker::*;
@@ -189,77 +190,57 @@ impl Board {
 }
 
 struct Scores {
-    operation_map: HashMap<String, Vec<char>>,
-    score_map: HashMap<String, f64>,
+    score_map: BTreeMap<NotNan<f64>, Vec<char>>,
     max_move_count: usize,
     initial_board: Board,
+    max_size: usize,
 }
 
 impl Scores {
     fn new(initial_board: Board, max_move_count: usize) -> Self {
         let operation_map: HashMap<String, Vec<char>> = HashMap::new();
-        let score_map: HashMap<String, f64> = HashMap::new();
+        let score_map: BTreeMap<NotNan<f64>, Vec<char>> = BTreeMap::new();
         Self {
-            operation_map,
             score_map,
             max_move_count,
             initial_board,
+            max_size: 10,
         }
     }
 
     fn update_if_needed(&mut self, operations: &Vec<char>, score: f64) {
-        let key = self.get_key(&operations);
-        let max_score = self.score_map.entry(key).or_insert(-1.0);
-        if &score > max_score {
-            *max_score = score;
-            let key = self.get_key(&operations);
-            self.operation_map.insert(key, operations.clone());
+        let key = NotNan::new(score).unwrap();
+        let mut remove_key: Option<f64> = None;
+        if let Some((s, _)) = self.score_map.iter().next() {
+            if self.score_map.len() >= self.max_size {
+                if score < s.into_inner() {
+                    return;
+                }
+                remove_key = Some(s.into_inner());
+            }
         }
-    }
-
-    fn get_max_key_size(&self) -> usize {
-        let mut size = 2;
-        let (i, j) = self.initial_board.empty_tile_pos;
-        let n = self.initial_board.n;
-        if i == 0 || i == n - 1 || j == 0 || j == n - 1 {
-            size += 1;
+        if let Some(key) = remove_key {
+            self.score_map.remove(&NotNan::new(key).unwrap());
         }
-        size
-    }
-
-    fn get_key(&self, operations: &Vec<char>) -> String {
-        operations
-            .iter()
-            .take(self.get_max_key_size())
-            .collect::<String>()
+        self.score_map.insert(key, operations.clone());
     }
 
     fn get_max_score(&self) -> f64 {
-        let mut max_score: f64 = -1.0;
-        for (_, score) in &self.score_map {
-            if *score > max_score {
-                max_score = *score;
-            }
+        if let Some(v) = self.score_map.iter().next_back() {
+            v.0.into_inner()
+        } else {
+            0.0
         }
-        max_score
     }
 
-    fn max_operations(&self) -> Vec<char> {
-        let mut max_score: f64 = -1.0;
-        let mut key = "";
-        for (k, score) in &self.score_map {
-            if *score > max_score {
-                max_score = *score;
-                key = k;
-            }
-        }
-        self.operation_map.get(key).unwrap().clone()
+    fn get_max_operations(&self) -> Vec<char> {
+        self.score_map.iter().next_back().unwrap().1.clone()
     }
 
-    fn get_operations(&self) -> Vec<(String, Vec<char>)> {
+    fn get_operations(&self) -> Vec<Vec<char>> {
         let mut res = Vec::new();
-        for (k, ops) in &self.operation_map {
-            res.push((k.clone(), ops.clone()));
+        for v in self.score_map.iter().rev() {
+            res.push(v.1.clone());
         }
         res
     }
@@ -451,10 +432,7 @@ impl Solver {
             if !self.check_time_limit() {
                 break;
             }
-            for (key, ops) in scores.get_operations() {
-                if key.len() < scores.get_max_key_size() {
-                    continue;
-                }
+            for ops in scores.get_operations() {
                 let mut ops = ops;
                 let mut board = Board::from_operations(&self.initial_board, &ops);
                 let max_depth = (self.t - ops.len()).min(8);
@@ -464,7 +442,7 @@ impl Solver {
 
         // eprintln!("{}", loop_count);
         // eprintln!("{}", scores.get_max_score());
-        println!("{}", scores.max_operations().iter().join(""));
+        println!("{}", scores.get_max_operations().iter().join(""));
     }
 
     pub fn solve_dfs(
