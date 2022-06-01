@@ -311,38 +311,43 @@ impl Scores {
                     score -= 10.0;
                 }
 
-                let minus_score = 10.0;
-                // ←
-                if tile == 0x1 {
-                    if j > 0 && board.get_tile(i, j - 1) == 0x4 {
-                        score -= minus_score;
-                    }
-                    if j < n - 1 && tile == board.get_tile(i, j + 1) {
-                        score -= minus_score;
-                    }
-                }
-                // ↑
-                if tile == 0x2 {
-                    if i > 0 && board.get_tile(i - 1, j) == 0x8 {
-                        score -= minus_score;
-                    }
-                    if i < n - 1 && tile == board.get_tile(i + 1, j) {
-                        score -= minus_score;
-                    }
-                }
-                //// ←↑
-                // if tile == 0x3 && i == 0 && j == 0 {
-                //     score -= 10.0;
+                // let minus_score = 10.0;
+                // // ←
+                // if tile == 0x1 {
+                //     if j > 0 && board.get_tile(i, j - 1) == 0x4 {
+                //         score -= minus_score;
+                //     }
+                //     if j < n - 1 && tile == board.get_tile(i, j + 1) {
+                //         score -= minus_score;
+                //     }
                 // }
-                // →
-                if tile == 0x4 {
-                    if j < n - 1 && board.get_tile(i, j + 1) == 0x1 {
-                        score -= minus_score;
-                    }
-                    if j < n - 1 && tile == board.get_tile(i, j + 1) {
-                        score -= minus_score;
-                    }
-                }
+                // // ↑
+                // if tile == 0x2 {
+                //     if i > 0 && board.get_tile(i - 1, j) == 0x8 {
+                //         score -= minus_score;
+                //     }
+                //     if i < n - 1 && tile == board.get_tile(i + 1, j) {
+                //         score -= minus_score;
+                //     }
+                // }
+                // // ←↑
+                // if tile == 0x3 {
+                //     if i < n - 1 && tile == board.get_tile(i + 1, j) {
+                //         score -= minus_score;
+                //     }
+                //     if j < n - 1 && tile == board.get_tile(i, j + 1) {
+                //         score -= minus_score;
+                //     }
+                // }
+                // // →
+                // if tile == 0x4 {
+                //     if j < n - 1 && board.get_tile(i, j + 1) == 0x1 {
+                //         score -= minus_score;
+                //     }
+                //     if j < n - 1 && tile == board.get_tile(i, j + 1) {
+                //         score -= minus_score;
+                //     }
+                // }
                 //// ←→
                 // // if tile == 0x5 &&  {
                 // //     score -= 10.0;
@@ -355,15 +360,15 @@ impl Scores {
                 // // if tile == 0x7 {
                 // //     score -= 10.0;
                 // // }
-                // ↓
-                if tile == 0x8 {
-                    if i < n - 1 && board.get_tile(i + 1, j) == 0x2 {
-                        score -= minus_score;
-                    }
-                    if i < n - 1 && tile == board.get_tile(i + 1, j) {
-                        score -= minus_score;
-                    }
-                }
+                // // ↓
+                // if tile == 0x8 {
+                //     if i < n - 1 && board.get_tile(i + 1, j) == 0x2 {
+                //         score -= minus_score;
+                //     }
+                //     if i < n - 1 && tile == board.get_tile(i + 1, j) {
+                //         score -= minus_score;
+                //     }
+                // }
                 //// ←↓
                 // if tile == 0x9 && i == n - 1 && j == 0 {
                 //     score -= 10.0;
