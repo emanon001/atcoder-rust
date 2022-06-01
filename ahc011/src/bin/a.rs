@@ -100,7 +100,7 @@ impl TreeChecker {
         assert!(x < self.n && y < self.n);
         self.find(x) == self.find(y)
     }
-    pub fn tree_sizes(&mut self) -> Vec<(usize, bool)> {
+    pub fn get_tree_sizes(&mut self) -> Vec<(usize, bool)> {
         let mut set = HashSet::new();
         for x in 0..self.n {
             let k = self.find(x);
@@ -311,22 +311,38 @@ impl Scores {
                     score -= 10.0;
                 }
 
-                //// ←
-                // if tile == 0x1 && j == 0 {
-                //     score -= 10.0;
-                // }
-                //// ↑
-                // if tile == 0x2 && i == 0 {
-                //     score -= 10.0;
-                // }
+                let minus_score = 10.0;
+                // ←
+                if tile == 0x1 {
+                    if j > 0 && board.get_tile(i, j - 1) == 0x4 {
+                        score -= minus_score;
+                    }
+                    if j < n - 1 && tile == board.get_tile(i, j + 1) {
+                        score -= minus_score;
+                    }
+                }
+                // ↑
+                if tile == 0x2 {
+                    if i > 0 && board.get_tile(i - 1, j) == 0x8 {
+                        score -= minus_score;
+                    }
+                    if i < n - 1 && tile == board.get_tile(i + 1, j) {
+                        score -= minus_score;
+                    }
+                }
                 //// ←↑
                 // if tile == 0x3 && i == 0 && j == 0 {
                 //     score -= 10.0;
                 // }
-                //// →
-                // if tile == 0x4 && j == n - 1 {
-                //     score -= 10.0;
-                // }
+                // →
+                if tile == 0x4 {
+                    if j < n - 1 && board.get_tile(i, j + 1) == 0x1 {
+                        score -= minus_score;
+                    }
+                    if j < n - 1 && tile == board.get_tile(i, j + 1) {
+                        score -= minus_score;
+                    }
+                }
                 //// ←→
                 // // if tile == 0x5 &&  {
                 // //     score -= 10.0;
@@ -339,10 +355,15 @@ impl Scores {
                 // // if tile == 0x7 {
                 // //     score -= 10.0;
                 // // }
-                //// ↓
-                // if tile == 0x8 && i == n - 1 {
-                //     score -= 10.0;
-                // }
+                // ↓
+                if tile == 0x8 {
+                    if i < n - 1 && board.get_tile(i + 1, j) == 0x2 {
+                        score -= minus_score;
+                    }
+                    if i < n - 1 && tile == board.get_tile(i + 1, j) {
+                        score -= minus_score;
+                    }
+                }
                 //// ←↓
                 // if tile == 0x9 && i == n - 1 && j == 0 {
                 //     score -= 10.0;
@@ -419,10 +440,9 @@ impl Solver {
             &mut scores,
             8,
         );
-        'outer: loop {
-            // if !self.check_shape_score_time_limit() {
-            //     scores.set_score_mode(ScoreMode::Real);
-            // }
+        let mut _loop_count = 0;
+        loop {
+            _loop_count += 1;
             if !self.check_time_limit() {
                 break;
             }
@@ -433,14 +453,11 @@ impl Solver {
                 let mut ops = ops;
                 let mut board = Board::from_operations(&self.initial_board, &ops);
                 let max_depth = (self.t - ops.len()).min(8);
-                let can_continue =
-                    self.solve_dfs(&mut count, 0, &mut board, &mut ops, &mut scores, max_depth);
-                if !can_continue {
-                    break 'outer;
-                }
+                self.solve_dfs(&mut count, 0, &mut board, &mut ops, &mut scores, max_depth);
             }
         }
 
+        // eprintln!("{}", loop_count);
         // eprintln!("{}", scores.get_max_score());
         println!("{}", scores.max_operations().iter().join(""));
     }
@@ -453,14 +470,14 @@ impl Solver {
         operations: &mut Vec<char>,
         scores: &mut Scores,
         max_depth: usize,
-    ) -> bool {
+    ) {
         if depth >= max_depth {
-            return true;
+            return;
         }
         for &op in &Board::OPERATIONS {
             // 時間をチェック
             if *c % 200 == 0 && !self.check_time_limit() {
-                return false;
+                return;
             }
             // 元の状態に戻らないようチェック
             if let Some(prev_op) = operations.last() {
@@ -480,7 +497,6 @@ impl Solver {
             operations.pop();
             board.move_tile(Board::rev_op(op));
         }
-        true
     }
 
     fn check_time_limit(&self) -> bool {
