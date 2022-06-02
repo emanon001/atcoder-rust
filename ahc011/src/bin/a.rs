@@ -184,6 +184,14 @@ impl Board {
         !invalid
     }
 
+    fn connected_bottom(&self, i: usize, j: usize) -> bool {
+        i < self.n - 1 && (self.board[i][j] & 8 != 0) && (self.board[i + 1][j] & 2 != 0)
+    }
+
+    fn connected_right(&self, i: usize, j: usize) -> bool {
+        j < self.n - 1 && (self.board[i][j] & 4 != 0) && (self.board[i][j + 1] & 1 != 0)
+    }
+
     fn get_tile(&self, i: usize, j: usize) -> usize {
         self.board[i][j]
     }
@@ -245,18 +253,13 @@ impl Scores {
         let mut tc = TreeChecker::new(n * n);
         for i in 0..n {
             for j in 0..n {
+                let tile = board.get_tile(i, j);
                 // 下方向に連結可能か
-                if i < n - 1
-                    && (board.get_tile(i, j) & 8 != 0)
-                    && (board.get_tile(i + 1, j) & 2 != 0)
-                {
+                if board.connected_bottom(i, j) {
                     tc.unite(i * n + j, (i + 1) * n + j);
                 }
                 // 右方向に連結可能か
-                if j < n - 1
-                    && (board.get_tile(i, j) & 4 != 0)
-                    && (board.get_tile(i, j + 1) & 1 != 0)
-                {
+                if board.connected_right(i, j) {
                     tc.unite(i * n + j, i * n + j + 1);
                 }
             }
