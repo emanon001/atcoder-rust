@@ -195,9 +195,8 @@ struct Scores {
 }
 
 impl Scores {
-    fn new() -> Self {
+    fn new(max_size: usize) -> Self {
         let score_map: BTreeMap<NotNan<f64>, Vec<char>> = BTreeMap::new();
-        let max_size = 10;
         Self {
             score_map,
             max_size,
@@ -410,7 +409,7 @@ impl Solver {
     pub fn solve(&mut self) {
         let mut initial_board = self.initial_board.clone();
         let mut operations: Vec<char> = vec![];
-        let mut scores = Scores::new();
+        let mut scores = Scores::new(10);
         let initial_score = Scores::calc_score(&initial_board, 0, self.t);
         scores.update_if_needed(&operations, initial_score);
         let mut count: usize = 0;
