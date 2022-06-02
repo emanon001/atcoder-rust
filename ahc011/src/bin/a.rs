@@ -191,20 +191,16 @@ impl Board {
 
 struct Scores {
     score_map: BTreeMap<NotNan<f64>, Vec<char>>,
-    max_move_count: usize,
-    initial_board: Board,
     max_size: usize,
 }
 
 impl Scores {
-    fn new(initial_board: Board, max_move_count: usize) -> Self {
-        let operation_map: HashMap<String, Vec<char>> = HashMap::new();
+    fn new() -> Self {
         let score_map: BTreeMap<NotNan<f64>, Vec<char>> = BTreeMap::new();
+        let max_size = 10;
         Self {
             score_map,
-            max_move_count,
-            initial_board,
-            max_size: 10,
+            max_size,
         }
     }
 
@@ -414,7 +410,7 @@ impl Solver {
     pub fn solve(&mut self) {
         let mut initial_board = self.initial_board.clone();
         let mut operations: Vec<char> = vec![];
-        let mut scores = Scores::new(initial_board.clone(), self.t);
+        let mut scores = Scores::new();
         let initial_score = Scores::calc_score(&initial_board, 0, self.t);
         scores.update_if_needed(&operations, initial_score);
         let mut count: usize = 0;
