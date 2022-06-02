@@ -147,7 +147,7 @@ impl Board {
         new_board
     }
 
-    fn move_tile(&mut self, op: char) {
+    fn move_tile(&mut self, op: char) -> bool {
         let (ei, ej) = self.empty_tile_pos;
         let (new_i, new_j) = match op {
             'U' => (ei - 1, ej),
@@ -159,6 +159,7 @@ impl Board {
         self.board[ei][ej] = self.board[new_i][new_j];
         self.board[new_i][new_j] = 0;
         self.empty_tile_pos = (new_i, new_j);
+        self.connected(ei, ej) || self.connected(new_i, new_j)
     }
 
     fn rev_op(op: char) -> char {
@@ -184,8 +185,23 @@ impl Board {
         !invalid
     }
 
+    fn connected(&self, i: usize, j: usize) -> bool {
+        self.connected_top(i, j)
+            || self.connected_bottom(i, j)
+            || self.connected_left(i, j)
+            || self.connected_right(i, j)
+    }
+
+    fn connected_top(&self, i: usize, j: usize) -> bool {
+        i > 0 && (self.board[i][j] & 2 != 0) && (self.board[i - 1][j] & 8 != 0)
+    }
+
     fn connected_bottom(&self, i: usize, j: usize) -> bool {
         i < self.n - 1 && (self.board[i][j] & 8 != 0) && (self.board[i + 1][j] & 2 != 0)
+    }
+
+    fn connected_left(&self, i: usize, j: usize) -> bool {
+        j > 0 && (self.board[i][j] & 1 != 0) && (self.board[i][j - 1] & 4 != 0)
     }
 
     fn connected_right(&self, i: usize, j: usize) -> bool {
@@ -482,7 +498,7 @@ impl Solver {
             }
             *c += 1;
             operations.push(op);
-            board.move_tile(op);
+            let _connected = board.move_tile(op);
             let new_score = Scores::calc_score(&board, operations.len(), self.t);
             scores.update_if_needed(&operations, new_score);
             self.solve_dfs(c, depth + 1, board, operations, scores, max_depth);
