@@ -286,6 +286,18 @@ impl Scores {
                 {
                     score -= 10.0;
                 }
+                // ←
+                // if (tile & 1) != 0 {
+                // }
+                // ↑
+                // if (tile & 2) != 0 {
+                // }
+                // →
+                // if (tile & 4) != 0 {
+                // }
+                // ↓
+                // if (tile & 8) != 0 {
+                // }
 
                 // let minus_score = 10.0;
                 // // ←
@@ -346,7 +358,7 @@ impl Scores {
                 //     }
                 // }
                 //// ←↓
-                // if tile == 0x9 && i == n - 1 && j == 0 {
+                // if tile == 0x9 {
                 //     score -= 10.0;
                 // }
                 //// ↑↓
@@ -358,7 +370,7 @@ impl Scores {
                 // //     score -= 10.0;
                 // // }
                 //// ↓→
-                // if tile == 0xc && i == n - 1 && j == n - 1 {
+                // if tile == 0xc {
                 //     score -= 10.0;
                 // }
                 // // ←→↓
@@ -369,10 +381,9 @@ impl Scores {
                 // // if tile == 0xe {
                 // //     score -= 10.0;
                 // // }
-                // // ←↑→↓
-                // // if tile == 0xf {
-                // //     score -= 10.0;
-                // // }
+                // ←↑→↓
+                // if tile == 0xf {
+                // }
             }
         }
         score
