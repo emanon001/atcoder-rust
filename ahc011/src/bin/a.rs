@@ -442,24 +442,12 @@ impl Solver {
     }
 
     pub fn solve(&mut self) {
-        let mut initial_board = self.initial_board.clone();
-        let mut operations: Vec<char> = vec![];
+        let initial_board = self.initial_board.clone();
         let mut scores = Scores::new(10);
         let initial_score = Scores::calc_score(&initial_board, 0, self.t, true, None);
-        scores.update_if_needed(&operations, initial_score);
+        scores.update_if_needed(&vec![], initial_score);
         let mut count: usize = 0;
-        self.solve_dfs(
-            &mut count,
-            0,
-            &mut initial_board,
-            &mut operations,
-            &mut scores,
-            8,
-            &initial_score,
-        );
-        let mut _loop_count = 0;
         loop {
-            _loop_count += 1;
             if !self.check_time_limit() {
                 break;
             }
