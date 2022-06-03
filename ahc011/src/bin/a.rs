@@ -263,7 +263,6 @@ impl Scores {
         let mut tc = TreeChecker::new(n * n);
         for i in 0..n {
             for j in 0..n {
-                let tile = board.get_tile(i, j);
                 // 下方向に連結可能か
                 if board.connected_bottom(i, j) {
                     tc.unite(i * n + j, (i + 1) * n + j);
