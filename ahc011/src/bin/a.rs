@@ -521,8 +521,9 @@ impl Solver {
 
         let mut count: usize = 0;
         loop {
+            let now = Instant::now();
             let limit = self.start_time + Duration::from_millis(2950);
-            if !self.check_time_limit(&limit) {
+            if now >= limit {
                 break;
             }
             let tmp_scores = scores.get_scores();
@@ -534,7 +535,12 @@ impl Solver {
 
                 let mut ops = ops;
                 let mut board = Board::from_operations(&self.initial_board, &ops);
-                let max_depth = (self.t - ops.len()).min(8);
+                let max_depth = if now >= self.start_time + Duration::from_millis(2000) {
+                    8
+                } else {
+                    7
+                };
+                let max_depth = (self.t - ops.len()).min(max_depth);
                 self.solve_dfs(
                     &mut count,
                     0,
@@ -569,8 +575,11 @@ impl Solver {
         }
         for &op in &Board::OPERATIONS {
             // 時間をチェック
-            if *c % 200 == 0 && !self.check_time_limit(limit) {
-                return;
+            if *c % 200 == 0 {
+                let now = Instant::now();
+                if &now >= limit {
+                    return;
+                }
             }
             // 元の状態に戻らないようチェック
             if let Some(prev_op) = operations.last() {
@@ -605,11 +614,6 @@ impl Solver {
             operations.pop();
             board.move_tile(Board::rev_op(op));
         }
-    }
-
-    fn check_time_limit(&self, limit: &Instant) -> bool {
-        let now = Instant::now();
-        &now < limit
     }
 }
 
