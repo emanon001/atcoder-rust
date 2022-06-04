@@ -569,16 +569,16 @@ impl Solver {
         max_depth: usize,
         prev_score: &Score,
         limit: &Instant,
-    ) {
+    ) -> bool {
         if depth >= max_depth {
-            return;
+            return true;
         }
         for &op in &Board::OPERATIONS {
             // 時間をチェック
             if *c % 200 == 0 {
                 let now = Instant::now();
                 if &now >= limit {
-                    return;
+                    return false;
                 }
             }
             // 元の状態に戻らないようチェック
@@ -601,7 +601,7 @@ impl Solver {
                 Some(&prev_score),
             );
             scores.update_if_needed(&operations, new_score);
-            self.solve_dfs(
+            let can_continue = self.solve_dfs(
                 c,
                 depth + 1,
                 board,
@@ -613,7 +613,11 @@ impl Solver {
             );
             operations.pop();
             board.move_tile(Board::rev_op(op));
+            if !can_continue {
+                return false;
+            }
         }
+        true
     }
 }
 
