@@ -215,13 +215,22 @@ impl Board {
 }
 
 type Score = (NotNan<f64>, NotNan<f64>);
+type Operations = Vec<char>;
 
-struct Scores {
+trait ScoreStorage {
+    fn update_if_needed(&mut self, operations: &Operations, score: Score);
+
+    fn get_max_operations(&self) -> Operations;
+
+    fn get_scores(&self) -> Vec<(Score, Operations)>;
+}
+
+struct OrderedScores {
     score_map: BTreeMap<Score, Vec<char>>,
     max_size: usize,
 }
 
-impl Scores {
+impl OrderedScores {
     fn new(max_size: usize) -> Self {
         let score_map: BTreeMap<Score, Vec<char>> = BTreeMap::new();
         Self {
@@ -229,7 +238,9 @@ impl Scores {
             max_size,
         }
     }
+}
 
+impl ScoreStorage for OrderedScores {
     fn update_if_needed(&mut self, operations: &Vec<char>, score: Score) {
         let mut remove_key: Option<Score> = None;
         if let Some((s, _)) = self.score_map.iter().next() {
@@ -257,26 +268,66 @@ impl Scores {
         }
         res
     }
+}
 
-    fn create_tree_checker(board: &Board) -> TreeChecker {
-        let n = board.n;
-        let mut tc = TreeChecker::new(n * n);
-        for i in 0..n {
-            for j in 0..n {
-                // 下方向に連結可能か
-                if board.connected_bottom(i, j) {
-                    tc.unite(i * n + j, (i + 1) * n + j);
-                }
-                // 右方向に連結可能か
-                if board.connected_right(i, j) {
-                    tc.unite(i * n + j, i * n + j + 1);
-                }
-            }
+struct OpsScores {
+    score_map: HashMap<String, (Score, Vec<char>)>,
+    max_key_size: usize,
+}
+
+impl OpsScores {
+    fn new(initial_board: &Board) -> Self {
+        let score_map: HashMap<String, (Score, Vec<char>)> = HashMap::new();
+        let mut max_key_size = 2;
+        let (i, j) = initial_board.empty_tile_pos;
+        let n = initial_board.n;
+        if i == 0 || i == n - 1 || j == 0 || j == n - 1 {
+            max_key_size += 1;
         }
-        tc
+        Self {
+            score_map,
+            max_key_size,
+        }
     }
 
-    fn calc_score(
+    fn get_key(&self, operations: &Vec<char>) -> String {
+        operations
+            .iter()
+            .take(self.max_key_size)
+            .collect::<String>()
+    }
+}
+
+impl ScoreStorage for OpsScores {
+    fn update_if_needed(&mut self, operations: &Vec<char>, score: Score) {
+        let key = self.get_key(&operations);
+        let max_score = self
+            .score_map
+            .entry(key)
+            .or_insert((((-1.0).into(), 0.0.into()), vec![]));
+        if &score > &max_score.0 {
+            max_score.0 = score;
+            max_score.1 = operations.clone();
+        }
+    }
+
+    fn get_max_operations(&self) -> Vec<char> {
+        unimplemented!();
+    }
+
+    fn get_scores(&self) -> Vec<(Score, Vec<char>)> {
+        let mut res = Vec::new();
+        for (k, s) in self.score_map.iter() {
+            res.push(s.clone())
+        }
+        res
+    }
+}
+
+struct ScoreCalculator {}
+
+impl ScoreCalculator {
+    pub fn calculate(
         board: &Board,
         move_count: usize,
         max_move_count: usize,
@@ -412,6 +463,24 @@ impl Scores {
         }
         ((real_score + addtional_score).into(), real_score.into())
     }
+
+    fn create_tree_checker(board: &Board) -> TreeChecker {
+        let n = board.n;
+        let mut tc = TreeChecker::new(n * n);
+        for i in 0..n {
+            for j in 0..n {
+                // 下方向に連結可能か
+                if board.connected_bottom(i, j) {
+                    tc.unite(i * n + j, (i + 1) * n + j);
+                }
+                // 右方向に連結可能か
+                if board.connected_right(i, j) {
+                    tc.unite(i * n + j, i * n + j + 1);
+                }
+            }
+        }
+        tc
+    }
 }
 
 struct Solver {
@@ -442,13 +511,68 @@ impl Solver {
     }
 
     pub fn solve(&mut self) {
+        // let initial_board = self.initial_board.clone();
+        // let mut scores = OpsScores::new(&initial_board);
+        // let initial_score = ScoreCalculator::calculate(&initial_board, 0, self.t, true, None);
+        // scores.update_if_needed(&vec![], initial_score);
+        // let mut count: usize = 0;
+        // loop {
+        //     let limit = self.start_time + Duration::from_millis(1000);
+        //     if !self.check_time_limit(&limit) {
+        //         break;
+        //     }
+        //     for (s, ops) in scores.get_scores() {
+        //         let mut ops = ops;
+        //         let mut board = Board::from_operations(&self.initial_board, &ops);
+        //         let max_depth = (self.t - ops.len()).min(8);
+        //         self.solve_dfs(
+        //             &mut count,
+        //             0,
+        //             &mut board,
+        //             &mut ops,
+        //             &mut scores,
+        //             max_depth,
+        //             &s,
+        //             &limit,
+        //         );
+        //     }
+        // }
+
+        // let mut scores2 = OrderedScores::new(10);
+        // for (s, ops) in scores.get_scores() {
+        //     scores2.update_if_needed(&ops, s);
+        // }
+
+        // loop {
+        //     let limit = self.start_time + Duration::from_millis(2950);
+        //     if !self.check_time_limit(&limit) {
+        //         break;
+        //     }
+        //     for (s, ops) in scores2.get_scores() {
+        //         let mut ops = ops;
+        //         let mut board = Board::from_operations(&self.initial_board, &ops);
+        //         let max_depth = (self.t - ops.len()).min(8);
+        //         self.solve_dfs(
+        //             &mut count,
+        //             0,
+        //             &mut board,
+        //             &mut ops,
+        //             &mut scores2,
+        //             max_depth,
+        //             &s,
+        //             &limit,
+        //         );
+        //     }
+        // }
+
         let initial_board = self.initial_board.clone();
-        let mut scores = Scores::new(10);
-        let initial_score = Scores::calc_score(&initial_board, 0, self.t, true, None);
+        let mut scores = OrderedScores::new(10);
+        let initial_score = ScoreCalculator::calculate(&initial_board, 0, self.t, true, None);
         scores.update_if_needed(&vec![], initial_score);
         let mut count: usize = 0;
         loop {
-            if !self.check_time_limit() {
+            let limit = self.start_time + Duration::from_millis(2950);
+            if !self.check_time_limit(&limit) {
                 break;
             }
             for (s, ops) in scores.get_scores() {
@@ -463,6 +587,7 @@ impl Solver {
                     &mut scores,
                     max_depth,
                     &s,
+                    &limit,
                 );
             }
         }
@@ -472,22 +597,23 @@ impl Solver {
         println!("{}", scores.get_max_operations().iter().join(""));
     }
 
-    pub fn solve_dfs(
+    pub fn solve_dfs<T: ScoreStorage>(
         &mut self,
         c: &mut usize,
         depth: usize,
         board: &mut Board,
         operations: &mut Vec<char>,
-        scores: &mut Scores,
+        scores: &mut T,
         max_depth: usize,
         prev_score: &Score,
+        limit: &Instant,
     ) {
         if depth >= max_depth {
             return;
         }
         for &op in &Board::OPERATIONS {
             // 時間をチェック
-            if *c % 200 == 0 && !self.check_time_limit() {
+            if *c % 200 == 0 && !self.check_time_limit(limit) {
                 return;
             }
             // 元の状態に戻らないようチェック
@@ -502,7 +628,7 @@ impl Solver {
             *c += 1;
             operations.push(op);
             let effected_tree = board.move_tile(op);
-            let new_score = Scores::calc_score(
+            let new_score = ScoreCalculator::calculate(
                 &board,
                 operations.len(),
                 self.t,
@@ -518,16 +644,16 @@ impl Solver {
                 scores,
                 max_depth,
                 &new_score,
+                limit,
             );
             operations.pop();
             board.move_tile(Board::rev_op(op));
         }
     }
 
-    fn check_time_limit(&self) -> bool {
+    fn check_time_limit(&self, limit: &Instant) -> bool {
         let now = Instant::now();
-        let limit = self.start_time + Duration::from_millis(2950);
-        now < limit
+        &now < limit
     }
 }
 
