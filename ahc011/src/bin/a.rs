@@ -512,60 +512,6 @@ impl Solver {
     }
 
     pub fn solve(&mut self) {
-        // let initial_board = self.initial_board.clone();
-        // let mut scores = OpsScores::new(&initial_board);
-        // let initial_score = ScoreCalculator::calculate(&initial_board, 0, self.t, true, None);
-        // scores.update_if_needed(&vec![], initial_score);
-        // let mut count: usize = 0;
-        // loop {
-        //     let limit = self.start_time + Duration::from_millis(1000);
-        //     if !self.check_time_limit(&limit) {
-        //         break;
-        //     }
-        //     for (s, ops) in scores.get_scores() {
-        //         let mut ops = ops;
-        //         let mut board = Board::from_operations(&self.initial_board, &ops);
-        //         let max_depth = (self.t - ops.len()).min(8);
-        //         self.solve_dfs(
-        //             &mut count,
-        //             0,
-        //             &mut board,
-        //             &mut ops,
-        //             &mut scores,
-        //             max_depth,
-        //             &s,
-        //             &limit,
-        //         );
-        //     }
-        // }
-
-        // let mut scores2 = OrderedScores::new(10);
-        // for (s, ops) in scores.get_scores() {
-        //     scores2.update_if_needed(&ops, s);
-        // }
-
-        // loop {
-        //     let limit = self.start_time + Duration::from_millis(2950);
-        //     if !self.check_time_limit(&limit) {
-        //         break;
-        //     }
-        //     for (s, ops) in scores2.get_scores() {
-        //         let mut ops = ops;
-        //         let mut board = Board::from_operations(&self.initial_board, &ops);
-        //         let max_depth = (self.t - ops.len()).min(8);
-        //         self.solve_dfs(
-        //             &mut count,
-        //             0,
-        //             &mut board,
-        //             &mut ops,
-        //             &mut scores2,
-        //             max_depth,
-        //             &s,
-        //             &limit,
-        //         );
-        //     }
-        // }
-
         let initial_board = self.initial_board.clone();
         let mut scores = OrderedScores::new(10);
         let initial_score = ScoreCalculator::calculate(&initial_board, 0, self.t, true, None);
