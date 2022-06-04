@@ -535,12 +535,7 @@ impl Solver {
 
                 let mut ops = ops;
                 let mut board = Board::from_operations(&self.initial_board, &ops);
-                let max_depth = if now >= self.start_time + Duration::from_millis(2000) {
-                    8
-                } else {
-                    7
-                };
-                let max_depth = (self.t - ops.len()).min(max_depth);
+                let max_depth = (self.t - ops.len()).min(7);
                 self.solve_dfs(
                     &mut count,
                     0,
