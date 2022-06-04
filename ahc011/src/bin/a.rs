@@ -317,7 +317,7 @@ impl ScoreStorage for OpsScores {
 
     fn get_scores(&self) -> Vec<(Score, Vec<char>)> {
         let mut res = Vec::new();
-        for (k, s) in self.score_map.iter() {
+        for (_, s) in self.score_map.iter() {
             res.push(s.clone())
         }
         res
@@ -335,7 +335,7 @@ impl ScoreCalculator {
         prev_score: Option<&Score>,
     ) -> Score {
         let n = board.n;
-        let real_score = if needs_calc_tree {
+        let score1 = if needs_calc_tree {
             let n = board.n;
             let mut tc = Self::create_tree_checker(board);
             let max_size = tc.max_size();
@@ -349,7 +349,8 @@ impl ScoreCalculator {
             prev_score.unwrap().1.into_inner()
         };
 
-        let mut addtional_score = 0.0;
+        let mut score2 = 0.0;
+
         // 愚形を避ける
         for i in 0..n {
             for j in 0..n {
@@ -359,7 +360,7 @@ impl ScoreCalculator {
                     || ((tile & 4) != 0 && j == n - 1)
                     || ((tile & 8) != 0 && i == n - 1)
                 {
-                    addtional_score -= 10.0;
+                    score2 -= 10.0;
                 }
                 // ←
                 // if (tile & 1) != 0 {
@@ -461,7 +462,7 @@ impl ScoreCalculator {
                 // }
             }
         }
-        ((real_score + addtional_score).into(), real_score.into())
+        ((score1 + score2).into(), score1.into())
     }
 
     fn create_tree_checker(board: &Board) -> TreeChecker {
@@ -569,13 +570,22 @@ impl Solver {
         let mut scores = OrderedScores::new(10);
         let initial_score = ScoreCalculator::calculate(&initial_board, 0, self.t, true, None);
         scores.update_if_needed(&vec![], initial_score);
+
+        let mut max_score = (initial_score, vec![]);
+
         let mut count: usize = 0;
         loop {
             let limit = self.start_time + Duration::from_millis(2950);
             if !self.check_time_limit(&limit) {
                 break;
             }
-            for (s, ops) in scores.get_scores() {
+            let tmp_scores = scores.get_scores();
+            scores = OrderedScores::new(10);
+            for (s, ops) in tmp_scores {
+                if s > max_score.0 {
+                    max_score = (s, ops.clone());
+                }
+
                 let mut ops = ops;
                 let mut board = Board::from_operations(&self.initial_board, &ops);
                 let max_depth = (self.t - ops.len()).min(8);
@@ -594,7 +604,7 @@ impl Solver {
 
         // eprintln!("{}", loop_count);
         // eprintln!("{}", scores.get_max_score());
-        println!("{}", scores.get_max_operations().iter().join(""));
+        println!("{}", max_score.1.iter().join(""));
     }
 
     pub fn solve_dfs<T: ScoreStorage>(
