@@ -270,60 +270,6 @@ impl ScoreStorage for OrderedScores {
     }
 }
 
-struct OpsScores {
-    score_map: HashMap<String, (Score, Vec<char>)>,
-    max_key_size: usize,
-}
-
-impl OpsScores {
-    fn new(initial_board: &Board) -> Self {
-        let score_map: HashMap<String, (Score, Vec<char>)> = HashMap::new();
-        let mut max_key_size = 2;
-        let (i, j) = initial_board.empty_tile_pos;
-        let n = initial_board.n;
-        if i == 0 || i == n - 1 || j == 0 || j == n - 1 {
-            max_key_size += 1;
-        }
-        Self {
-            score_map,
-            max_key_size,
-        }
-    }
-
-    fn get_key(&self, operations: &Vec<char>) -> String {
-        operations
-            .iter()
-            .take(self.max_key_size)
-            .collect::<String>()
-    }
-}
-
-impl ScoreStorage for OpsScores {
-    fn update_if_needed(&mut self, operations: &Vec<char>, score: Score) {
-        let key = self.get_key(&operations);
-        let max_score = self
-            .score_map
-            .entry(key)
-            .or_insert((((-1.0).into(), 0.0.into()), vec![]));
-        if &score > &max_score.0 {
-            max_score.0 = score;
-            max_score.1 = operations.clone();
-        }
-    }
-
-    fn get_max_operations(&self) -> Vec<char> {
-        unimplemented!();
-    }
-
-    fn get_scores(&self) -> Vec<(Score, Vec<char>)> {
-        let mut res = Vec::new();
-        for (_, s) in self.score_map.iter() {
-            res.push(s.clone())
-        }
-        res
-    }
-}
-
 struct ScoreCalculator {}
 
 impl ScoreCalculator {
