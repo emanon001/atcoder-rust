@@ -6,6 +6,7 @@ use ordered_float::NotNan;
 use proconio::input;
 #[allow(unused_imports)]
 use proconio::marker::*;
+use rand::prelude::*;
 #[allow(unused_imports)]
 use std::collections::*;
 use std::time::{Duration, Instant};
@@ -238,6 +239,10 @@ impl OrderedScores {
             max_size,
         }
     }
+    fn update_max_size(&mut self, max_size: usize) {
+        assert!(max_size >= self.max_size);
+        self.max_size = max_size;
+    }
 }
 
 impl ScoreStorage for OrderedScores {
@@ -435,6 +440,7 @@ struct Solver {
     t: usize,
     initial_board: Board,
     start_time: Instant,
+    rng: ThreadRng,
 }
 
 impl Solver {
@@ -454,26 +460,58 @@ impl Solver {
             t,
             initial_board,
             start_time,
+            rng: rand::thread_rng(),
         }
     }
 
     pub fn solve(&mut self) {
         let initial_board = self.initial_board.clone();
+
+        // 初期盤面を登録
         let mut scores = OrderedScores::new(10);
         let initial_score = ScoreCalculator::calculate(&initial_board, 0, self.t, true, None);
         scores.update_if_needed(&vec![], initial_score);
 
         let mut max_score = (initial_score, vec![]);
 
+        // スコアの高い盤面に更新する
+        let mut loop_count = 0;
         let mut count: usize = 0;
+        let depth = 7;
         loop {
+            loop_count += 1;
+
+            // 時間を確認
             let now = Instant::now();
             let limit = self.start_time + Duration::from_millis(2950);
             if now >= limit {
                 break;
             }
+
             let tmp_scores = scores.get_scores();
-            scores = OrderedScores::new(10);
+
+            if loop_count == 2 {
+                // ランダム盤面を作成
+                scores = OrderedScores::new(20);
+                for _ in 0..100 {
+                    let (random_board, random_ops) = self.gen_random_board(
+                        &initial_board,
+                        ((loop_count - 1) * depth + 1)..(loop_count * depth + 1),
+                    );
+                    let random_score = ScoreCalculator::calculate(
+                        &random_board,
+                        random_ops.len(),
+                        self.t,
+                        true,
+                        None,
+                    );
+                    scores.update_if_needed(&random_ops, random_score);
+                }
+                scores.update_max_size(30);
+            } else {
+                scores = OrderedScores::new(10);
+            }
+
             for (s, ops) in tmp_scores {
                 if s > max_score.0 {
                     max_score = (s, ops.clone());
@@ -481,7 +519,7 @@ impl Solver {
 
                 let mut ops = ops;
                 let mut board = Board::from_operations(&self.initial_board, &ops);
-                let max_depth = (self.t - ops.len()).min(7);
+                let max_depth = (self.t - ops.len()).min(depth);
                 self.solve_dfs(
                     &mut count,
                     0,
@@ -559,6 +597,36 @@ impl Solver {
             }
         }
         true
+    }
+
+    fn gen_random_board(
+        &mut self,
+        initial_board: &Board,
+        move_count_range: std::ops::Range<usize>,
+    ) -> (Board, Vec<char>) {
+        let mut board = initial_board.clone();
+        let mut ops = Vec::new();
+        for _ in 0..self
+            .rng
+            .gen_range(move_count_range.start, move_count_range.end)
+        {
+            loop {
+                let i = self.rng.gen::<usize>() % Board::OPERATIONS.len();
+                let op = Board::OPERATIONS[i];
+                if let Some(prev_op) = ops.last() {
+                    if Board::is_rev_op(*prev_op, op) {
+                        continue;
+                    }
+                }
+                if !board.can_move_tile(op) {
+                    continue;
+                }
+                ops.push(op);
+                board.move_tile(op);
+                break;
+            }
+        }
+        (board, ops)
     }
 }
 
