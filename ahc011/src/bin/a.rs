@@ -210,6 +210,13 @@ impl Board {
         j < self.n - 1 && (self.board[i][j] & 4 != 0) && (self.board[i][j + 1] & 1 != 0)
     }
 
+    fn can_connect(&self, i: usize, j: usize, i2: usize, j2: usize) -> bool {
+        ((self.board[i][j] & 2 != 0) && (self.board[i2][j2] & 8 != 0))
+            || ((self.board[i][j] & 8 != 0) && (self.board[i2][j2] & 2 != 0))
+            || ((self.board[i][j] & 1 != 0) && (self.board[i2][j2] & 4 != 0))
+            || ((self.board[i][j] & 4 != 0) && (self.board[i2][j2] & 1 != 0))
+    }
+
     fn get_tile(&self, i: usize, j: usize) -> usize {
         self.board[i][j]
     }
@@ -326,14 +333,29 @@ impl ScoreCalculator {
                 // if (tile & 8) != 0 {
                 // }
 
-                // let minus_score = 10.0;
-                // // ←
-                // if tile == 0x1 {
-                //     if j > 0 && board.get_tile(i, j - 1) == 0x4 {
-                //         score -= minus_score;
-                //     }
-                //     if j < n - 1 && tile == board.get_tile(i, j + 1) {
-                //         score -= minus_score;
+                // if !board.connected(i, j) {
+                //     let dirs = vec![
+                //         (-2, 0),
+                //         (-1, 1),
+                //         (0, 2),
+                //         (1, 1),
+                //         (2, 0),
+                //         (-1, 1),
+                //         (-2, 0),
+                //         (-1, -1),
+                //         (-2, 0),
+                //     ];
+                //     for d in &dirs {
+                //         let i2 = i as isize + d.0;
+                //         let j2 = j as isize + d.1;
+                //         if i2 < 0 || i2 >= n as isize || j2 < 0 || j2 >= n as isize {
+                //             continue;
+                //         }
+                //         let i2 = i2 as usize;
+                //         let j2 = j2 as usize;
+                //         if board.can_connect(i, j, i2, j2) {
+                //             score2 += 1.0;
+                //         }
                 //     }
                 // }
                 // // ↑
