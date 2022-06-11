@@ -9,13 +9,6 @@ cargo build --release --bin gen
 cargo build --release --bin vis
 mkdir -p out
 echo -n > out/score.txt
-for in in $(seq -f "%04g" -w 0 99); do
-  echo "testing ${in}.txt..."
-  ../../target/release/a < in/${in}.txt 1> out/${in}.txt
-  ../../target/release/vis in/${in}.txt out/${in}.txt >>out/score.txt
-  n=$(expr ${in} + 1)
-  mod=$(($n % 10))
-  if [[ $mod -eq 0 ]]; then
-    ruby -e "n=${n}; puts n.times.map { gets.split('= ')[1].to_i }.sum * 100 / n / 2" < out/score.txt
-  fi
-done
+seq -f "%04g" -w 0 99 \
+  | xargs -P8 -I{} bash -c '../../target/release/a < in/{}.txt 1> out/{}.txt && ../../target/release/vis in/{}.txt out/{}.txt >>out/score.txt'
+ruby -e "n = 100; puts n.times.map { gets.split('= ')[1].to_i }.sum / 2" < out/score.txt
