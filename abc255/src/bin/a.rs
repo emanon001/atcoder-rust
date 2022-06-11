@@ -9,7 +9,11 @@ use proconio::marker::*;
 use std::collections::*;
 
 fn solve() {
-    input! {};
+    input! {
+        r: Usize1, c: Usize1,
+        grid: [[usize; 2]; 2],
+    };
+    println!("{}", grid[r][c]);
 }
 
 fn main() {
