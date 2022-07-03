@@ -64,10 +64,10 @@ impl ScoreCalculator {
             {
                 let x1 = *compressed_zahyo_vertical.get(x1).unwrap();
                 let x2 = *compressed_zahyo_vertical.get(x2).unwrap();
-                let c = strawberry_cusum[y2 + 1][x2 + 1]
-                    - strawberry_cusum[y2 + 1][x1]
-                    - strawberry_cusum[y1][x2 + 1]
-                    + strawberry_cusum[y1][x1];
+                let c = strawberry_cusum[y2][x2]
+                    - strawberry_cusum[y2][x1 + 1]
+                    - strawberry_cusum[y1 + 1][x2]
+                    + strawberry_cusum[y1 + 1][x1 + 1];
                 if c < counts.len() {
                     counts[c] += 1;
                 }
@@ -172,7 +172,7 @@ impl Solver {
         for (x, y) in &xyv {
             let i = *compressed_horizontal.get(y).unwrap();
             let j = *compressed_vertical.get(x).unwrap();
-            counts[i - 1][j - 1] += 1;
+            counts[i][j] += 1;
         }
         let mut cusum = vec![vec![0; vertical_points.len() + 1]; horizontal_points.len() + 1];
         for i in 0..horizontal_points.len() {
@@ -263,6 +263,7 @@ impl Solver {
         for l in vertical {
             println!("{} {} {} {}", l, -edge, l, edge);
         }
+        eprintln!("{}", _score);
 
         if Instant::now() - self.start_time >= Duration::from_millis(3000) {
             panic!("overtime");
