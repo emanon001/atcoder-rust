@@ -39,7 +39,6 @@ impl ScoreCalculator {
         compressed_zahyo_vertical: &HashMap<i64, usize>,
         horizontal_lines: &BTreeSet<Line>,
         vertical_lines: &BTreeSet<Line>,
-        debug: bool,
     ) -> Score {
         if horizontal_lines.len() + vertical_lines.len() > K {
             panic!("line count > k");
@@ -74,10 +73,6 @@ impl ScoreCalculator {
             }
         }
 
-        if debug {
-            eprintln!("{:?}", counts);
-        }
-
         // スコア計算
         let mut a = 0_usize;
         let mut b = 0_usize;
@@ -86,55 +81,6 @@ impl ScoreCalculator {
             b += av[d];
         }
         (10.pow(6) as f64 * (a as f64 / b as f64)).round() as u64
-    }
-}
-
-struct Scores {
-    max_size: usize,
-    score_map: BTreeMap<Score, (BTreeSet<Line>, BTreeSet<Line>)>,
-}
-
-impl Scores {
-    fn new(max_size: usize) -> Self {
-        let score_map = BTreeMap::new();
-        Self {
-            score_map,
-            max_size,
-        }
-    }
-    fn update_max_size(&mut self, max_size: usize) {
-        assert!(max_size >= self.max_size);
-        self.max_size = max_size;
-    }
-
-    fn update_if_needed(
-        &mut self,
-        score: Score,
-        horizontal_lines: &BTreeSet<Line>,
-        vertical_lines: &BTreeSet<Line>,
-    ) {
-        let mut remove_key: Option<Score> = None;
-        if let Some((s, _)) = self.score_map.iter().next() {
-            if self.score_map.len() >= self.max_size {
-                if &score < s {
-                    return;
-                }
-                remove_key = Some(s.clone());
-            }
-        }
-        if let Some(key) = remove_key {
-            self.score_map.remove(&key);
-        }
-        self.score_map
-            .insert(score, (horizontal_lines.clone(), vertical_lines.clone()));
-    }
-
-    fn get_scores(&self) -> Vec<(Score, (BTreeSet<Line>, BTreeSet<Line>))> {
-        let mut res = Vec::new();
-        for v in self.score_map.iter().rev() {
-            res.push((v.0.clone(), v.1.clone()));
-        }
-        res
     }
 }
 
@@ -195,29 +141,10 @@ impl Solver {
     }
 
     pub fn solve(&mut self) {
-        // 初期盤面を登録
-        let mut scores = Scores::new(10);
+        let mut max_score = 0_u64;
         let mut horizontal_lines = vec![].into_iter().collect::<BTreeSet<_>>();
         let mut vertical_lines = vec![].into_iter().collect::<BTreeSet<_>>();
-        let initial_score = ScoreCalculator::calculate(
-            &self.av,
-            &self.strawberry_cusum,
-            &self.compressed_strawberry_horizontal,
-            &self.compressed_strawberry_vertical,
-            &mut horizontal_lines,
-            &mut vertical_lines,
-            false,
-        );
-        scores.update_if_needed(0, &horizontal_lines, &vertical_lines);
 
-        let mut max_score = (
-            initial_score,
-            (horizontal_lines.clone(), vertical_lines.clone()),
-        );
-
-        // スコアの高い盤面に更新する
-        let mut count: usize = 0;
-        let depth = 3;
         loop {
             // 時間を確認
             let now = Instant::now();
@@ -226,140 +153,105 @@ impl Solver {
                 break;
             }
 
-            let tmp_scores = scores.get_scores();
-            scores = Scores::new(10);
-            for (s, (mut horizontal, mut vertical)) in tmp_scores {
-                if s > max_score.0 {
-                    max_score = (s, (horizontal.clone(), vertical.clone()));
-                }
-
-                let max_depth = (K - horizontal.len() - vertical.len()).min(depth);
-                self.solve_dfs(
-                    &mut count,
-                    0,
-                    &mut scores,
-                    &mut horizontal,
-                    &mut vertical,
-                    max_depth,
-                    &limit,
-                );
+            let (score, (h, v)) = self.try_solve(&limit);
+            if score > max_score {
+                max_score = score;
+                horizontal_lines = h;
+                vertical_lines = v;
             }
         }
 
-        let (_score, (horizontal, vertical)) = max_score;
-        // ScoreCalculator::calculate(
-        //     &self.av,
-        //     &self.strawberry_cusum,
-        //     &self.compressed_strawberry,
-        //     &horizontal,
-        //     &vertical,
-        //     true,
-        // );
-        println!("{}", horizontal.len() + vertical.len());
+        // eprintln!("{}", max_score);
+
+        println!("{}", horizontal_lines.len() + vertical_lines.len());
         let edge = 10.pow(9);
-        for l in horizontal {
+        for l in horizontal_lines {
             println!("{} {} {} {}", -edge, l, edge, l);
         }
-        for l in vertical {
+        for l in vertical_lines {
             println!("{} {} {} {}", l, -edge, l, edge);
         }
-        eprintln!("{}", _score);
 
         if Instant::now() - self.start_time >= Duration::from_millis(3000) {
             panic!("overtime");
         }
     }
 
-    pub fn solve_dfs(
-        &mut self,
-        c: &mut usize,
-        depth: usize,
-        scores: &mut Scores,
-        horizontal_line: &mut BTreeSet<Line>,
-        vertical_line: &mut BTreeSet<Line>,
-        max_depth: usize,
-        limit: &Instant,
-    ) -> bool {
-        if depth >= max_depth {
-            return true;
-        }
+    pub fn try_solve(&mut self, limit: &Instant) -> (Score, (BTreeSet<Line>, BTreeSet<Line>)) {
+        let mut count = 0;
+        let mut max_score = 0_u64;
+        let mut horizontal_line = BTreeSet::new();
+        let mut vertical_line = BTreeSet::new();
+        loop {
+            count += 1;
 
-        // 時間をチェック
-        if *c % 200 == 0 {
-            let now = Instant::now();
-            if &now >= limit {
-                return false;
+            if horizontal_line.len() + vertical_line.len() == K {
+                return (max_score, (horizontal_line, vertical_line));
             }
-        }
 
-        // 線をランダムに決める
-        let mut try_count = 0;
-        let mut add_line: Option<(bool, i64)> = None;
-        'outer: loop {
-            try_count += 1;
-            let si = self.rng.gen::<usize>() % self.strawberry_list.len();
-            let s = self.strawberry_list[si];
-            let dir = self.rng.gen::<usize>() % 2;
-            match dir {
-                0 => {
-                    let new_line = s.1;
-                    if !horizontal_line.contains(&new_line) {
-                        horizontal_line.insert(new_line);
-                        add_line = Some((true, new_line));
-                        break 'outer;
-                    }
+            // 時間をチェック
+            if count % 200 == 0 {
+                let now = Instant::now();
+                if &now >= limit {
+                    return (max_score, (horizontal_line, vertical_line));
                 }
-                1 => {
-                    let new_line = s.0;
-                    if !vertical_line.contains(&new_line) {
-                        vertical_line.insert(new_line);
-                        add_line = Some((false, new_line));
-                        break 'outer;
+            }
+
+            // 線をランダムに決める
+            let mut add_line: Option<(bool, i64)> = None;
+            let mut try_count = 0;
+            loop {
+                try_count += 1;
+                let si = self.rng.gen::<usize>() % self.strawberry_list.len();
+                let s = self.strawberry_list[si];
+                let dir = self.rng.gen::<usize>() % 2;
+                match dir {
+                    0 => {
+                        let new_line = s.1;
+                        if !horizontal_line.contains(&new_line) {
+                            horizontal_line.insert(new_line);
+                            add_line = Some((true, new_line));
+                            break;
+                        }
                     }
+                    1 => {
+                        let new_line = s.0;
+                        if !vertical_line.contains(&new_line) {
+                            vertical_line.insert(new_line);
+                            add_line = Some((false, new_line));
+                            break;
+                        }
+                    }
+                    _ => unreachable!(),
                 }
-                _ => unreachable!(),
+                if add_line.is_none() && try_count > 10 {
+                    return (max_score, (horizontal_line, vertical_line));
+                }
             }
-            if try_count > 10 {
-                return true;
+
+            let new_score = ScoreCalculator::calculate(
+                &self.av,
+                &self.strawberry_cusum,
+                &self.compressed_strawberry_horizontal,
+                &self.compressed_strawberry_vertical,
+                &horizontal_line,
+                &vertical_line,
+            );
+
+            if new_score > max_score {
+                max_score = new_score;
+            } else {
+                match add_line {
+                    Some((true, l)) => {
+                        horizontal_line.remove(&l);
+                    }
+                    Some((false, l)) => {
+                        vertical_line.remove(&l);
+                    }
+                    _ => unreachable!(),
+                }
             }
         }
-
-        *c += 1;
-        let new_score = ScoreCalculator::calculate(
-            &self.av,
-            &self.strawberry_cusum,
-            &self.compressed_strawberry_horizontal,
-            &self.compressed_strawberry_vertical,
-            horizontal_line,
-            vertical_line,
-            false,
-        );
-
-        scores.update_if_needed(new_score, &horizontal_line, &vertical_line);
-        let can_continue = self.solve_dfs(
-            c,
-            depth + 1,
-            scores,
-            horizontal_line,
-            vertical_line,
-            max_depth,
-            limit,
-        );
-
-        match add_line {
-            Some((true, l)) => {
-                horizontal_line.remove(&l);
-            }
-            Some((false, l)) => {
-                vertical_line.remove(&l);
-            }
-            _ => unreachable!(),
-        }
-
-        if !can_continue {
-            return false;
-        }
-        true
     }
 }
 
