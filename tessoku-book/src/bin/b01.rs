@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: i32, b: i32
     };
+
+    let res = a + b;
+    println!("{}", res);
 }
 
 fn main() {
