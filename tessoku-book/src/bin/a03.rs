@@ -10,7 +10,21 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, k: u32,
+        pv: [u32; n],
+        qv: [u32; n],
     };
+
+    for p in &pv {
+        for q in &qv {
+            let sum = p + q;
+            if sum == k {
+                println!("Yes");
+                return;
+            }
+        }
+    }
+    println!("No");
 }
 
 fn main() {
