@@ -1,3 +1,4 @@
+use itertools::any;
 #[allow(unused_imports)]
 use itertools::Itertools;
 #[allow(unused_imports)]
@@ -10,7 +11,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: u32, b: u32
     };
+
+    let res = if (a..=b).into_iter().any(|x| 100 % x == 0) {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", res);
 }
 
 fn main() {
