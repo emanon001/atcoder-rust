@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: u32
     };
+
+    let res = n * n;
+    println!("{}", res);
 }
 
 fn main() {
