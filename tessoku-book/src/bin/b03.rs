@@ -10,7 +10,22 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [u32; n]
     };
+
+    for i in 0..n {
+        for j in i + 1..n {
+            for k in j + 1..n {
+                let sum = av[i] + av[j] + av[k];
+                if sum == 1000 {
+                    println!("Yes");
+                    return;
+                }
+            }
+        }
+    }
+    println!("No");
 }
 
 fn main() {
