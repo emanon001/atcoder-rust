@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: u32, x: u32,
+        av: [u32; n]
     };
+
+    let res = if av.contains(&x) { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {
