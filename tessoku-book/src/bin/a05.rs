@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: i32, k: i32,
     };
+
+    let mut res = 0;
+    for a in 1..=n {
+        for b in 1..=n {
+            let rest = k - (a + b);
+            if (1..=n).contains(&rest) {
+                res += 1;
+            }
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
