@@ -10,7 +10,20 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, q: usize,
+        av: [i64; n],
+        lrv: [(usize, usize); q]
     };
+
+    let mut cusum = vec![0; n + 1];
+    for i in 0..n {
+        cusum[i + 1] = cusum[i] + av[i];
+    }
+
+    for (l, r) in lrv {
+        let res = cusum[r] - cusum[l - 1];
+        println!("{}", res);
+    }
 }
 
 fn main() {
