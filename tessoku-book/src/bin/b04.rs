@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: String,
     };
+
+    let res = i32::from_str_radix(&n, 2).unwrap();
+    println!("{}", res);
 }
 
 fn main() {
