@@ -13,7 +13,7 @@ fn solve() {
         h: usize, w: usize,
         board: [[i32; w]; h],
         q: usize,
-        points: [(usize, usize, usize, usize); q]
+        rectangles: [(usize, usize, usize, usize); q]
     };
 
     // build cusum
@@ -35,7 +35,7 @@ fn solve() {
     }
 
     // solve query
-    for (a, b, c, d) in points {
+    for (a, b, c, d) in rectangles {
         let res = cusum[c][d] - cusum[c][b - 1] - cusum[a - 1][d] + cusum[a - 1][b - 1];
         println!("{}", res);
     }
