@@ -8,7 +8,51 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+pub fn bsearch<F>(ok: i64, ng: i64, pred: F) -> Option<i64>
+where
+    F: Fn(i64) -> bool,
+{
+    let orig_ok = ok;
+    let mut ok = ok;
+    let mut ng = ng;
+    while (ok - ng).abs() > 1 {
+        let mid = (ok + ng) / 2;
+        if pred(mid) {
+            ok = mid;
+        } else {
+            ng = mid;
+        }
+    }
+    if ok == orig_ok {
+        None
+    } else {
+        Some(ok)
+    }
+}
+
 fn solve() {
+    input! {
+        n: usize, k: i64,
+        av: [i64; n]
+    };
+
+    let mut cusum = vec![0; n + 1];
+    for i in 0..n {
+        cusum[i + 1] += cusum[i] + av[i];
+    }
+    let mut res = 0;
+    for i in 0..n {
+        let j = bsearch(i as i64, cusum.len() as i64, |x| {
+            let j = x as usize;
+            cusum[j] - cusum[i] <= k
+        })
+        .unwrap_or(i as i64) as usize;
+        res += j - i;
+    }
+    println!("{}", res);
+}
+
+fn solve2() {
     input! {
         n: usize, k: i64,
         av: [i64; n]
