@@ -8,9 +8,46 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[macro_export]
+macro_rules! chmin {
+    ($ min : expr , $ v : expr ) => {
+        if $min > $v {
+            $min = $v;
+            true
+        } else {
+            false
+        }
+    };
+}
+
 fn solve() {
     input! {
+        n: usize,
+        hv: [i64; n]
     };
+
+    let mut prev = vec![None; n];
+    let mut dp = vec![1_i64 << 60; n];
+    dp[0] = 0;
+    for i in 0..n {
+        if i + 1 < n {
+            if chmin!(dp[i + 1], dp[i] + (hv[i] - hv[i + 1]).abs()) {
+                prev[i + 1] = i.into();
+            }
+        }
+        if i + 2 < n {
+            if chmin!(dp[i + 2], dp[i] + (hv[i] - hv[i + 2]).abs()) {
+                prev[i + 2] = i.into();
+            }
+        }
+    }
+    let mut res = VecDeque::new();
+    res.push_front(n);
+    while let Some(p) = prev[*res.front().unwrap() - 1] {
+        res.push_front(p + 1);
+    }
+    println!("{}", res.len());
+    println!("{}", res.iter().join(" "));
 }
 
 fn main() {
