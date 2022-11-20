@@ -20,7 +20,7 @@ fn solve() {
     for i in 0..n {
         let a = av[i];
         for j in 0..=s {
-            dp[i + 1][j] |= dp[i][j];
+            dp[i + 1][j] = dp[i][j];
         }
         for j in 0..=s {
             if j + a <= s && dp[i][j] && !dp[i + 1][j + a] {
