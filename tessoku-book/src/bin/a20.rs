@@ -31,18 +31,12 @@ fn dfs(i: usize, j: usize, s: &[char], t: &[char], dp: &mut Vec<Vec<Option<usize
         return res;
     }
 
-    let res = if s[i - 1] == t[j - 1] {
-        dfs(i - 1, j - 1, s, t, dp) + 1
-    } else {
-        let mut res = 0;
-        if i > 0 {
-            chmax!(res, dfs(i - 1, j, s, t, dp));
-        }
-        if j > 0 {
-            chmax!(res, dfs(i, j - 1, s, t, dp));
-        }
-        res
-    };
+    let mut res = 0;
+    if s[i - 1] == t[j - 1] {
+        chmax!(res, dfs(i - 1, j - 1, s, t, dp) + 1);
+    }
+    chmax!(res, dfs(i - 1, j, s, t, dp));
+    chmax!(res, dfs(i, j - 1, s, t, dp));
     dp[i][j] = res.into();
     res
 }
