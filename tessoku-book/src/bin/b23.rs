@@ -1,9 +1,7 @@
 #[allow(unused_imports)]
 use itertools::Itertools;
-use num::traits::Pow;
 #[allow(unused_imports)]
 use num::*;
-use ordered_float::NotNaN;
 use proconio::input;
 #[allow(unused_imports)]
 use proconio::marker::*;
