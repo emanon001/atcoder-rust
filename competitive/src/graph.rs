@@ -6,7 +6,7 @@ use cargo_snippet::snippet;
 #[derive(Clone)]
 pub struct Graph<Cost>
 where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+    Cost: PartialOrd + Copy + num::traits::NumAssign,
 {
     graph: Vec<Vec<(usize, Cost)>>,
     vc: usize,
@@ -17,7 +17,7 @@ where
 #[derive(Clone)]
 pub struct Edge<Cost>
 where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+    Cost: PartialOrd + Copy + num::traits::NumAssign,
 {
     from: usize,
     to: usize,
@@ -27,7 +27,7 @@ where
 #[snippet("graph")]
 impl<Cost> From<(usize, usize, Cost)> for Edge<Cost>
 where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+    Cost: PartialOrd + Copy + num::traits::NumAssign,
 {
     fn from(e: (usize, usize, Cost)) -> Edge<Cost> {
         Edge {
@@ -41,7 +41,7 @@ where
 #[snippet("graph")]
 impl<Cost> From<(usize, usize)> for Edge<Cost>
 where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+    Cost: PartialOrd + Copy + num::traits::NumAssign,
 {
     fn from(e: (usize, usize)) -> Edge<Cost> {
         Edge {
@@ -55,7 +55,7 @@ where
 #[snippet("graph")]
 impl<Cost> Graph<Cost>
 where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+    Cost: PartialOrd + Copy + num::traits::NumAssign,
 {
     pub fn new_undirected(edges: Vec<impl Into<Edge<Cost>>>, vc: usize, inf: Cost) -> Self {
         let mut graph = vec![Vec::new(); vc];
@@ -137,7 +137,7 @@ where
 #[snippet("bellman_ford")]
 impl<Cost> Graph<Cost>
 where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+    Cost: PartialOrd + Copy + num::traits::NumAssign,
 {
     pub fn bellman_ford(&self, s: usize) -> Option<Vec<Option<Cost>>> {
         let vc = self.vc;
@@ -222,7 +222,7 @@ where
 #[snippet("shortest_path1")]
 impl<Cost> Graph<Cost>
 where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+    Cost: PartialOrd + Copy + num::traits::NumAssign,
 {
     pub fn shortest_path_1(&self, start: usize) -> Vec<Option<Cost>> {
         let mut cost_list = vec![None; self.vc];
@@ -249,7 +249,7 @@ where
 #[snippet("shortest_path01")]
 impl<Cost> Graph<Cost>
 where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+    Cost: PartialOrd + Copy + num::traits::NumAssign,
 {
     pub fn shortest_path_01(&self, start: usize) -> Vec<Option<Cost>> {
         let mut cost_list = vec![self.inf; self.vc];
@@ -284,7 +284,7 @@ where
 #[snippet("traveling_salesman")]
 impl<Cost> Graph<Cost>
 where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+    Cost: PartialOrd + Copy + num::traits::NumAssign,
 {
     pub fn traveling_salesman(&self, start: usize) -> Cost {
         let mut dp = vec![vec![None; self.vc]; 1 << self.vc];
@@ -312,8 +312,10 @@ where
         for &(v, cost) in &self.graph[u] {
             let new_state = state | (1 << v);
             if new_state != state {
-                let cost = self.traveling_salesman_impl(new_state, v, dp, start, fin) + cost;
-                res = res.min(cost);
+                let new_cost = self.traveling_salesman_impl(new_state, v, dp, start, fin) + cost;
+                if new_cost < res {
+                    res = new_cost;
+                }
             }
         }
         dp[state][u] = Some(res);
@@ -324,7 +326,7 @@ where
 #[snippet("warshall_floyd")]
 impl<Cost> Graph<Cost>
 where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+    Cost: PartialOrd + Copy + num::traits::NumAssign,
 {
     pub fn warshall_floyd(&self) -> Vec<Vec<Option<Cost>>> {
         let vc = self.vc;
@@ -340,8 +342,10 @@ where
         for k in 0..vc {
             for i in 0..vc {
                 for j in 0..vc {
-                    cost_list[i][j] =
-                        std::cmp::min(cost_list[i][j], cost_list[i][k] + cost_list[k][j]);
+                    let new_cost = cost_list[i][k] + cost_list[k][j];
+                    if new_cost < cost_list[i][j] {
+                        cost_list[i][j] = new_cost;
+                    }
                 }
             }
         }
@@ -355,7 +359,7 @@ where
 #[snippet("scc")]
 impl<Cost> Graph<Cost>
 where
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+    Cost: PartialOrd + Copy + num::traits::NumAssign,
 {
     pub fn scc(&self) -> Vec<Vec<usize>> {
         let vc = self.vc;
@@ -439,7 +443,7 @@ where
 
     pub fn to_graph<Cost, F>(&self, inf: Cost, generator: F) -> Graph<Cost>
     where
-        Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+        Cost: PartialOrd + Copy + num::traits::NumAssign,
         F: Fn(&Grid<T>, usize, usize) -> Vec<GridDestination<Cost>>,
     {
         let mut edges: Vec<Edge<Cost>> = Vec::new();
@@ -513,7 +517,7 @@ pub fn gen_grid_destinations<T, Cost>(
 ) -> Vec<GridDestination<Cost>>
 where
     T: PartialEq + Eq + Copy,
-    Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
+    Cost: PartialOrd + Copy + num::traits::NumAssign,
 {
     let mut dest = Vec::new();
     if grid.ng().is_some() && grid.cell(i, j) == grid.ng().unwrap() {
