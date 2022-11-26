@@ -39,11 +39,10 @@ fn solve() {
     let inf = 1 << 30;
     let mut dp = vec![inf; n];
     for &a in &av {
-        let pos = bsearch(-1, n as i64, |x| {
+        let pos = bsearch(n as i64, -1, |x| {
             let i = x as usize;
-            dp[i] < a
+            a <= dp[i]
         })
-        .map(|i| i + 1)
         .unwrap_or(0) as usize;
         dp[pos] = a;
     }
