@@ -10,7 +10,25 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        tav: [(char, i64); n]
     };
+
+    let m = 10000;
+    let mut v = 0;
+    for (t, a) in tav {
+        match t {
+            '+' => v += a,
+            '-' => v -= a,
+            '*' => v *= a,
+            _ => unreachable!(),
+        }
+        v %= m;
+        if v < 0 {
+            v += m;
+        }
+        println!("{}", v);
+    }
 }
 
 fn main() {
