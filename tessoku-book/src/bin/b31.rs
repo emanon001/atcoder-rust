@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: i64
     };
+
+    let res = (n / 3) + (n / 5) + (n / 7) - (n / (3 * 5)) - (n / (3 * 7)) - (n / (5 * 7))
+        + (n / (3 * 5 * 7));
+    println!("{}", res);
 }
 
 fn main() {
