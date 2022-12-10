@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, _: usize, _: usize,
+        abv: [(usize, usize); n]
     };
+
+    let nim = abv
+        .into_iter()
+        .fold(0, |acc, (a, b)| acc ^ (a - 1) ^ (b - 1));
+    let res = if nim == 0 { "Second" } else { "First" };
+    println!("{}", res);
 }
 
 fn main() {
