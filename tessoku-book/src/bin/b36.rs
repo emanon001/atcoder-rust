@@ -10,7 +10,13 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        _: usize, k: usize,
+        s: Chars
     };
+
+    let one_count = s.into_iter().filter(|ch| ch == &'1').count();
+    let res = if one_count % 2 == k % 2 { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {
