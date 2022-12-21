@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [i64; n]
     };
+
+    let mut map = HashMap::new();
+    for a in av {
+        *map.entry(a).or_insert(0_i64) += 1;
+    }
+    let res = map.into_iter().fold(0_i64, |acc, (_, c)| {
+        acc + if c < 3 { 0 } else { c * (c - 1) * (c - 2) / 6 }
+    });
+    println!("{}", res);
 }
 
 fn main() {
