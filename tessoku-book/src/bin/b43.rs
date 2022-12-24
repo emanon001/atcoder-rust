@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, m: usize,
+        av: [Usize1; m]
     };
+
+    let mut incorrect_counts = vec![0; n];
+    for a in av {
+        incorrect_counts[a] += 1;
+    }
+    for i in 0..n {
+        println!("{}", m - incorrect_counts[i]);
+    }
 }
 
 fn main() {
