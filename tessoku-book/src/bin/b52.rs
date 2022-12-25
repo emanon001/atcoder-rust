@@ -10,7 +10,24 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, x: Usize1,
+        mut av: Chars
     };
+
+    let mut que = VecDeque::new();
+    que.push_back(x);
+    while let Some(pos) = que.pop_front() {
+        av[pos] = '@';
+        if pos > 0 && av[pos - 1] == '.' {
+            av[pos - 1] = '@';
+            que.push_back(pos - 1);
+        }
+        if pos < n - 1 && av[pos + 1] == '.' {
+            av[pos + 1] = '@';
+            que.push_back(pos + 1);
+        }
+    }
+    println!("{}", av.iter().join(""));
 }
 
 fn main() {
