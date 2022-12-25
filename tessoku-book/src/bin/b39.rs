@@ -29,12 +29,33 @@ fn solve() {
     println!("{}", res);
 }
 
+fn solve_pq() {
+    input! {
+        n: usize, d: usize,
+        mut xyv: [(Usize1, i64); n]
+    };
+
+    let mut jobs = vec![Vec::new(); d + 1];
+    for (x, y) in xyv {
+        jobs[x].push(y);
+    }
+    let mut res = 0;
+    let mut heap = BinaryHeap::new();
+    for day in 0..d {
+        for &p in &jobs[day] {
+            heap.push(p);
+        }
+        res += heap.pop().unwrap_or(0);
+    }
+    println!("{}", res);
+}
+
 fn main() {
     std::thread::Builder::new()
         .name("big stack size".into())
         .stack_size(256 * 1024 * 1024)
         .spawn(|| {
-            solve();
+            solve_pq();
         })
         .unwrap()
         .join()
