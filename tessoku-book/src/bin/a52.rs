@@ -10,7 +10,26 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        q: usize,
     };
+
+    let mut que = VecDeque::new();
+    for _ in 0..q {
+        input! { kind: usize };
+        match kind {
+            1 => {
+                input! { x: String };
+                que.push_back(x);
+            }
+            2 => {
+                println!("{}", que.iter().next().unwrap());
+            }
+            3 => {
+                que.pop_front();
+            }
+            _ => unreachable!(),
+        }
+    }
 }
 
 fn main() {
