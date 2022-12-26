@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [usize; n]
     };
+
+    let mut map = HashMap::new();
+    for a in &av {
+        *map.entry(a).or_insert(0) += 1;
+    }
+    let mut res = 0_i64;
+    for (_, c) in map {
+        res += c * (c - 1) / 2;
+    }
+    println!("{}", res);
 }
 
 fn main() {
