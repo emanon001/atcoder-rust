@@ -10,7 +10,32 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        q: usize,
     };
+
+    let mut set = BTreeSet::new();
+    for _ in 0..q {
+        input! {
+            kind: usize, x: i64
+        };
+        match kind {
+            1 => {
+                set.insert(x);
+            }
+            2 => {
+                if set.is_empty() {
+                    println!("-1");
+                    continue;
+                }
+                let max = 1_i64 << 60;
+                let a = (set.range(..x).next_back().unwrap_or(&max) - x).abs();
+                let b = (set.range(x..).next().unwrap_or(&max) - x).abs();
+                let res = a.min(b);
+                println!("{}", res);
+            }
+            _ => unreachable!(),
+        }
+    }
 }
 
 fn main() {
