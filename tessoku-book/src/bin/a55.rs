@@ -10,7 +10,28 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        q: usize,
     };
+
+    let mut set = BTreeSet::new();
+    for _ in 0..q {
+        input! {
+            kind: usize, x: isize
+        };
+        match kind {
+            1 => {
+                set.insert(x);
+            }
+            2 => {
+                set.remove(&x);
+            }
+            3 => {
+                let res = set.range(x..).next().unwrap_or(&-1);
+                println!("{}", res);
+            }
+            _ => unreachable!(),
+        }
+    }
 }
 
 fn main() {
