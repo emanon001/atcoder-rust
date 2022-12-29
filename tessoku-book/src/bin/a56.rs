@@ -148,8 +148,7 @@ fn solve() {
     let base = ModInt::from(100);
     let mut hash = vec![ModInt::zero(); n + 1];
     for i in 0..n {
-        let sum = hash[i] * base + ModInt::from(s[i]);
-        hash[i + 1] = sum;
+        hash[i + 1] = hash[i] * base + ModInt::from(s[i]);
     }
     for _ in 0..q {
         input! {
