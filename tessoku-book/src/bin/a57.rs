@@ -25,13 +25,11 @@ fn solve() {
     for (x, y) in xyv {
         let mut pos = x;
         let mut rest = y;
-        while rest > 0 {
-            let mut i = 0_usize;
-            while 2.pow((i + 1) as u32) < rest {
-                i += 1;
+        for d in (0..30).rev() {
+            if rest & 2.pow(d) != 0 {
+                rest -= 2.pow(d);
+                pos = doubling[d as usize][pos];
             }
-            rest -= 2.pow(i as u32);
-            pos = doubling[i][pos];
         }
         println!("{}", pos + 1);
     }
