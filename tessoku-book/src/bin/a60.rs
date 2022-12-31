@@ -30,12 +30,33 @@ fn solve() {
     println!("{}", res.iter().join(" "));
 }
 
+fn solve_stack() {
+    input! {
+        n: usize,
+        av: [i64; n]
+    };
+
+    let mut stack: Vec<(usize, i64)> = Vec::new();
+    let mut res = vec![-1_isize; n];
+    for (i, a) in av.into_iter().enumerate() {
+        while let Some((_, b)) = stack.last() {
+            if b > &a {
+                break;
+            }
+            stack.pop();
+        }
+        res[i] = stack.last().map(|(j, _)| *j as isize + 1).unwrap_or(-1);
+        stack.push((i, a));
+    }
+    println!("{}", res.iter().join(" "));
+}
+
 fn main() {
     std::thread::Builder::new()
         .name("big stack size".into())
         .stack_size(256 * 1024 * 1024)
         .spawn(|| {
-            solve();
+            solve_stack();
         })
         .unwrap()
         .join()
