@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, m: usize,
+        edges: [(Usize1, Usize1); m]
     };
+
+    let mut graph = vec![Vec::new(); n];
+    for (u, v) in edges {
+        graph[u].push(v);
+        graph[v].push(u);
+    }
+    for (u, vs) in graph.into_iter().enumerate() {
+        println!("{}: {{{}}}", u + 1, vs.iter().map(|v| v + 1).join(", "));
+    }
 }
 
 fn main() {
