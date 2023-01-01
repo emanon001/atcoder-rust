@@ -3,32 +3,35 @@ use cargo_snippet::snippet;
 #[snippet("chmin")]
 #[macro_export]
 macro_rules! chmin {
-    ($min:expr, $v:expr) => {
-        if $min > $v {
-            $min = $v;
+    ($min:expr, $v:expr) => {{
+        let v = $v;
+        if $min > v {
+            $min = v;
             true
         } else {
             false
         }
-    };
+    }};
 }
 
 #[snippet("chmax")]
 #[macro_export]
 macro_rules! chmax {
-    ($max:expr, $v:expr) => {
-        if $max < $v {
-            $max = $v;
+    ($max:expr, $v:expr) => {{
+        let v = $v;
+        if $max < v {
+            $max = v;
             true
         } else {
             false
         }
-    };
+    }};
 }
 
 #[snippet]
-pub fn compress_zahyo<T: Ord + std::hash::Hash>(zahyo: &[T]) -> std::collections::HashMap<&T, usize>
-{
+pub fn compress_zahyo<T: Ord + std::hash::Hash>(
+    zahyo: &[T],
+) -> std::collections::HashMap<&T, usize> {
     let mut set = std::collections::BTreeSet::new();
     for x in zahyo {
         set.insert(x);
