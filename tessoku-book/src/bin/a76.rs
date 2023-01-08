@@ -204,10 +204,8 @@ fn solve() {
     for (i, x) in xv.iter().copied().enumerate() {
         map.insert(x, i);
     }
-    let mut bit: Bit<ModInt> = Bit::new(xv.len() + 1);
+    let mut bit: Bit<ModInt> = Bit::new(xv.len());
     bit.add(0, 1.into());
-    let mut dp = vec![ModInt::zero(); xv.len()];
-    dp[0] = 1.into();
     for i in 0..xv.len() {
         let x = xv[i];
         let mut range = map.range((x - r)..=(x - l));
@@ -215,11 +213,10 @@ fn solve() {
         let r = range.next_back();
         if let (Some((_, &lj)), Some((_, &rj))) = (l, r) {
             let sum = bit.range_sum(lj, rj + 1);
-            dp[i] += sum;
             bit.add(i, sum);
         }
     }
-    println!("{}", dp[xv.len() - 1]);
+    println!("{}", bit.range_sum(xv.len() - 1, xv.len()));
 }
 
 fn main() {
