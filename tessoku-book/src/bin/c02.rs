@@ -10,7 +10,13 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        mut av: [usize; n]
     };
+
+    av.sort_by(|a, b| b.cmp(a));
+    let res = av[0] + av[1];
+    println!("{}", res);
 }
 
 fn main() {
