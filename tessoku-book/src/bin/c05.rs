@@ -10,7 +10,20 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize
     };
+
+    let mut v = Vec::new();
+    for bits in 0..1 << 10 {
+        let mut m = 0_i64;
+        for i in 0..10 {
+            m *= 10;
+            m += if (bits >> i) & 1 == 1 { 4 } else { 7 };
+        }
+        v.push(m);
+    }
+    v.sort();
+    println!("{}", v[n - 1]);
 }
 
 fn main() {
