@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize
     };
+
+    println!("{}", n);
+    for i in 1..n {
+        println!("{} {}", i, i + 1);
+    }
+    println!("{} {}", n, 1);
 }
 
 fn main() {
