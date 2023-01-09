@@ -10,7 +10,29 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        d: usize,
+        av: [i64; d],
+        q: usize,
+        stv: [(Usize1, Usize1); q]
     };
+
+    let cusum = av
+        .into_iter()
+        .scan(0, |state, x| {
+            *state += x;
+            Some(*state)
+        })
+        .collect::<Vec<_>>();
+    for (s, t) in stv {
+        let res = if cusum[s] > cusum[t] {
+            (s + 1).to_string()
+        } else if cusum[t] > cusum[s] {
+            (t + 1).to_string()
+        } else {
+            "Same".to_string()
+        };
+        println!("{}", res);
+    }
 }
 
 fn main() {
