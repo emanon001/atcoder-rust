@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        k: u64
     };
+
+    let two_radix = format!("{:b}", k);
+    let res = two_radix.replace("1", "2");
+    println!("{}", res);
 }
 
 fn main() {
