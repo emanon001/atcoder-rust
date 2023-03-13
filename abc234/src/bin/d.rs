@@ -5,7 +5,6 @@ use num::*;
 use proconio::input;
 #[allow(unused_imports)]
 use proconio::marker::*;
-use std::cmp::Reverse;
 #[allow(unused_imports)]
 use std::collections::*;
 
@@ -16,21 +15,19 @@ fn solve() {
     };
 
     let mut res = Vec::new();
-    let mut heap = BinaryHeap::new();
+    let mut set = BTreeSet::new();
     for i in 0..k {
-        heap.push(Reverse(pv[i]));
+        set.insert(pv[i]);
     }
-    let Reverse(x) = *heap.peek().unwrap();
-    println!("{}", x);
+    println!("{}", set.iter().next().unwrap());
     for i in k..n {
         let p = pv[i];
-        let Reverse(x) = *heap.peek().unwrap();
+        let x = *set.iter().next().unwrap();
         if p > x {
-            heap.pop();
-            heap.push(Reverse(p));
+            set.remove(&x);
+            set.insert(p);
         }
-        let Reverse(x) = *heap.peek().unwrap();
-        res.push(x);
+        res.push(*set.iter().next().unwrap());
     }
     println!("{}", res.iter().join("\n"));
 }
