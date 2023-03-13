@@ -8,9 +8,17 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+fn f(x: i64) -> i64 {
+    x.pow(2) + 2 * x + 3
+}
+
 fn solve() {
     input! {
+        t: i64,
     };
+
+    let res = f(f(f(t) + t) + f(f(t)));
+    println!("{}", res);
 }
 
 fn main() {
