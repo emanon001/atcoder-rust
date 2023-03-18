@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        hv: [i64; n]
     };
+
+    let mut res = 0_i64;
+    for i in 0..n {
+        if hv[i] <= res {
+            break;
+        }
+        res = hv[i];
+    }
+    println!("{}", res);
 }
 
 fn main() {
