@@ -8,9 +8,28 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+fn dfs(i: usize, s: &[char], res: &mut VecDeque<usize>) {
+    if i == s.len() {
+        res.push_front(i);
+        return;
+    }
+    dfs(i + 1, s, res);
+    if s[i] == 'L' {
+        res.push_back(i);
+    } else {
+        res.push_front(i);
+    }
+}
+
 fn solve() {
     input! {
+        _n: usize,
+        s: Chars
     };
+
+    let mut res = VecDeque::new();
+    dfs(0, &s, &mut res);
+    println!("{}", res.iter().join(" "));
 }
 
 fn main() {
