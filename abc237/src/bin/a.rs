@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: i64
     };
+
+    let res = if n >= -(2_i64.pow(31)) && n < 2_i64.pow(31) {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", res);
 }
 
 fn main() {
