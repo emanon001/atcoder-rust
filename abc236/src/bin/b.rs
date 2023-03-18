@@ -10,7 +10,20 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [Usize1; 4 * n - 1]
     };
+
+    let mut counts = vec![0; n];
+    for a in av {
+        counts[a] += 1;
+    }
+    for i in 0..n {
+        if counts[i] == 3 {
+            println!("{}", i + 1);
+            return;
+        }
+    }
 }
 
 fn main() {
