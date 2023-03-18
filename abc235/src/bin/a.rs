@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        abc: Chars
     };
+
+    let sum: u32 = abc.into_iter().map(|x| x.to_digit(10).unwrap()).sum();
+    let res = sum * 100 + sum * 10 + sum;
+    println!("{}", res);
 }
 
 fn main() {
