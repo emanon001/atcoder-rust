@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: u64
     };
+
+    let nn = n * n;
+    let mut two_n = 1;
+    let mut m = n;
+    while m > 0_u64 && two_n <= nn {
+        m -= 1;
+        two_n *= 2;
+    }
+    let res = if two_n > nn { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {
