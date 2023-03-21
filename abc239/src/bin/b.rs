@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        x: i64
     };
+
+    let z = x / 10;
+    let res = if x.is_negative() {
+        z - if x % 10 < 0 { 1 } else { 0 }
+    } else {
+        z
+    };
+    println!("{}", res);
 }
 
 fn main() {
