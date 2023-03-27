@@ -10,7 +10,21 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        v: i64, a: i64, b: i64, c: i64
     };
+
+    let mut rest = v % (a + b + c);
+    rest -= a;
+    if rest < 0 {
+        println!("F");
+        return;
+    }
+    rest -= b;
+    if rest < 0 {
+        println!("M");
+        return;
+    }
+    println!("T");
 }
 
 fn main() {
