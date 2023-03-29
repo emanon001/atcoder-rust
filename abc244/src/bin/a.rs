@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        s: Chars
     };
+
+    let res = s[n - 1];
+    println!("{}", res);
 }
 
 fn main() {
