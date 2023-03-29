@@ -10,7 +10,23 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        _: usize,
+        t: Chars
     };
+
+    let dirs = vec![(1, 0), (0, -1), (-1, 0), (0, 1)];
+
+    let mut pos: (isize, isize) = (0, 0);
+    let mut dir = 0;
+    for ch in t {
+        if ch == 'S' {
+            let d = dirs[dir];
+            pos = (pos.0 + d.0, pos.1 + d.1);
+        } else {
+            dir = (dir + 1) % dirs.len();
+        }
+    }
+    println!("{} {}", pos.0, pos.1);
 }
 
 fn main() {
