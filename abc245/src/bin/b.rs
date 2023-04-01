@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [usize; n]
     };
+
+    let set = av.into_iter().collect::<HashSet<_>>();
+    for x in 0..=2000 {
+        if !set.contains(&x) {
+            println!("{}", x);
+            return;
+        }
+    }
 }
 
 fn main() {
