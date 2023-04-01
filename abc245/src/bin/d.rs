@@ -9,8 +9,7 @@ use proconio::marker::*;
 use std::collections::*;
 
 fn solve() {
-    input! {
-    };
+    input! {};
 }
 
 fn main() {
