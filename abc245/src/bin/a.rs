@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: usize, b: usize, c: usize, d: usize,
     };
+
+    let res = if (a * 60 + b) <= (c * 60 + d) {
+        "Takahashi"
+    } else {
+        "Aoki"
+    };
+    println!("{}", res);
 }
 
 fn main() {
