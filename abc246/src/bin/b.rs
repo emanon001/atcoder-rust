@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: f64, b: f64,
     };
+
+    let d = (a * a + b * b).sqrt();
+    let ratio = 1.0 / d;
+    let x = a * ratio;
+    let y = b * ratio;
+    println!("{} {}", x, y);
 }
 
 fn main() {
