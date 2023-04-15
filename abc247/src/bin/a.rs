@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars
     };
+
+    let mut res = vec!['0'];
+    for i in 0..3 {
+        res.push(s[i]);
+    }
+    println!("{}", res.iter().join(""));
 }
 
 fn main() {
