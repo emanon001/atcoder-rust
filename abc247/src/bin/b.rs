@@ -10,7 +10,24 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        stv: [(String, String); n]
     };
+
+    let mut map = HashMap::new();
+    for (s, t) in &stv {
+        *map.entry(s).or_insert(0) += 1;
+        if s != t {
+            *map.entry(t).or_insert(0) += 1;
+        }
+    }
+    for (s, t) in &stv {
+        if map[s] > 1 && map[t] > 1 {
+            println!("No");
+            return;
+        }
+    }
+    println!("Yes");
 }
 
 fn main() {
