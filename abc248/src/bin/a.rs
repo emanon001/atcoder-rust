@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars,
     };
+
+    let nv = s
+        .into_iter()
+        .map(|ch| ch.to_digit(10).unwrap())
+        .collect::<Vec<_>>();
+    for n in 0..=9 {
+        if !nv.contains(&n) {
+            println!("{}", n);
+            return;
+        }
+    }
 }
 
 fn main() {
