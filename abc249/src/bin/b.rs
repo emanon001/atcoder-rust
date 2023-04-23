@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars
     };
+
+    let is_valid = s.iter().any(|ch| ch.is_ascii_uppercase())
+        && s.iter().any(|ch| ch.is_ascii_lowercase())
+        && s.len() == s.iter().unique().count();
+    let res = if is_valid { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {
