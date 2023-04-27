@@ -10,7 +10,30 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, a: usize, b: usize,
     };
+
+    let mut res = vec![vec![' '; n * b]; n * a];
+    for i in 0..n {
+        for j in 0..n {
+            let ch = if i.is_even() && j.is_even() || i.is_odd() && j.is_odd() {
+                '.'
+            } else {
+                '#'
+            };
+            for i_a in 0..a {
+                for j_b in 0..b {
+                    res[i * a + i_a][j * b + j_b] = ch;
+                }
+            }
+        }
+    }
+    println!(
+        "{}",
+        res.into_iter()
+            .map(|row| row.into_iter().join(""))
+            .join("\n")
+    );
 }
 
 fn main() {
