@@ -10,7 +10,27 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, w: usize,
+        av: [usize; n]
     };
+
+    let mut res = HashSet::new();
+    for i in 0..n {
+        if av[i] <= w {
+            res.insert(av[i]);
+        }
+        for j in i + 1..n {
+            if av[i] + av[j] <= w {
+                res.insert(av[i] + av[j]);
+            }
+            for k in j + 1..n {
+                if av[i] + av[j] + av[k] <= w {
+                    res.insert(av[i] + av[j] + av[k]);
+                }
+            }
+        }
+    }
+    println!("{}", res.len());
 }
 
 fn main() {
