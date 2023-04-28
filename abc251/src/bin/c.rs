@@ -10,7 +10,21 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        stv: [(String, i64); n]
     };
+
+    let mut set = HashSet::new();
+    let mut orig_list = Vec::new();
+    for (i, (s, t)) in stv.into_iter().enumerate() {
+        if set.contains(&s) {
+            continue;
+        }
+        set.insert(s);
+        orig_list.push((t, i + 1));
+    }
+    orig_list.sort_by_key(|o| (-o.0, o.1));
+    println!("{}", orig_list[0].1);
 }
 
 fn main() {
