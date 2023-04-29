@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, k: usize,
+        av: [usize; n],
+        bv: [Usize1; k],
     };
+
+    let max = av.iter().max().unwrap();
+    for b in bv {
+        if &av[b] == max {
+            println!("Yes");
+            return;
+        }
+    }
+    println!("No");
 }
 
 fn main() {
