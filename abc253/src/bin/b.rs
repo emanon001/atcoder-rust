@@ -10,7 +10,22 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        h: usize, w: usize,
+        grid: [Chars; h]
     };
+
+    let mut pv = Vec::new();
+    for i in 0..h {
+        for j in 0..w {
+            if grid[i][j] == 'o' {
+                pv.push((i as isize, j as isize));
+            }
+        }
+    }
+    let p1 = pv[0];
+    let p2 = pv[1];
+    let res = (p1.0 - p2.0).abs() + (p1.1 - p2.1).abs();
+    println!("{}", res);
 }
 
 fn main() {
