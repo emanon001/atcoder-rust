@@ -10,7 +10,13 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        mut v: [usize; 3]
     };
+
+    let b = v[1];
+    v.sort();
+    let res = if b == v[1] { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {
