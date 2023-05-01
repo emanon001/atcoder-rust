@@ -4,7 +4,7 @@ use cargo_snippet::snippet;
 #[snippet("bit")]
 pub struct Bit<T>
 where
-    T: std::ops::AddAssign + std::ops::Sub<Output = T> + num::Zero + Clone,
+    T: std::ops::AddAssign + std::ops::SubAssign + std::ops::Sub<Output = T> + num::Zero + Clone,
 {
     n: usize,
     data: Vec<T>,
@@ -15,7 +15,7 @@ where
 #[snippet("bit")]
 impl<T> Bit<T>
 where
-    T: std::ops::AddAssign + std::ops::Sub<Output = T> + num::Zero + Clone,
+    T: std::ops::AddAssign + std::ops::SubAssign + std::ops::Sub<Output = T> + num::Zero + Clone,
 {
     pub fn new(n: usize) -> Self {
         Self {
@@ -32,6 +32,18 @@ where
         let mut i = i + 1;
         while i <= self.n {
             self.data[i] += x.clone();
+            i += ((i as isize) & -(i as isize)) as usize;
+        }
+    }
+
+    /// 0-origin
+    pub fn sub(&mut self, i: usize, x: T) {
+        if i >= self.n {
+            panic!();
+        }
+        let mut i = i + 1;
+        while i <= self.n {
+            self.data[i] -= x.clone();
             i += ((i as isize) & -(i as isize)) as usize;
         }
     }
@@ -105,6 +117,30 @@ mod tests {
         bit.add(0, 1);
         assert_eq!(bit.sum(0), 0);
         assert_eq!(bit.sum(1), 1);
+    }
+
+    #[test]
+    fn test_sub_and_sum() {
+        let mut bit: Bit<i64> = Bit::new(3);
+        assert_eq!(bit.sum(1), 0);
+        assert_eq!(bit.sum(2), 0);
+        assert_eq!(bit.sum(3), 0);
+        bit.sub(0, 1);
+        assert_eq!(bit.sum(1), -1);
+        assert_eq!(bit.sum(2), -1);
+        assert_eq!(bit.sum(3), -1);
+        bit.sub(1, 2);
+        assert_eq!(bit.sum(1), -1);
+        assert_eq!(bit.sum(2), -3);
+        assert_eq!(bit.sum(3), -3);
+        bit.sub(2, 3);
+        assert_eq!(bit.sum(1), -1);
+        assert_eq!(bit.sum(2), -3);
+        assert_eq!(bit.sum(3), -6);
+        bit.sub(0, -4);
+        assert_eq!(bit.sum(1), 3);
+        assert_eq!(bit.sum(2), 1);
+        assert_eq!(bit.sum(3), -2);
     }
 
     #[test]
