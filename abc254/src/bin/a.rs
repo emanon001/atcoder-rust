@@ -10,7 +10,10 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: String
     };
+
+    println!("{}", &n[1..]);
 }
 
 fn main() {
