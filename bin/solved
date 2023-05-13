@@ -1,0 +1,18 @@
+#!/bin/bash -eu
+
+cmd_name="$(basename ${0})"
+if [ $# -ne 1 ]; then
+  echo "Usage: ${cmd_name} <problem-id>"
+  exit 0
+fi
+problem_id="${1}"
+if [ -z "${problem_id}" ]; then
+  echo "Usage: ${cmd_name} <problem-id>"
+  exit 0
+fi
+
+dir="$(pwd)"
+contest_id="$(basename "${dir}")"
+
+git add "src/bin/${problem_id}.rs"
+git commit -m "${contest_id}/${problem_id}"
