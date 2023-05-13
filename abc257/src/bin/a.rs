@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, x: usize
     };
+
+    let mut a = x / n;
+    if x % n == 0 {
+        a -= 1;
+    }
+    let res = ('A' as u8 + a as u8) as char;
+    println!("{}", res);
 }
 
 fn main() {
