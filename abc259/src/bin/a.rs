@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        _n: usize, m: usize, x: usize, t: usize, d: usize
     };
+
+    let res = if m < x { t - d * (x - m) } else { t };
+    println!("{}", res);
 }
 
 fn main() {
