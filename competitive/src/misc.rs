@@ -29,12 +29,12 @@ macro_rules! chmax {
 }
 
 #[snippet]
-pub fn compress_zahyo<T: Ord + std::hash::Hash>(
+pub fn compress_zahyo<T: Ord + std::hash::Hash + Clone>(
     zahyo: &[T],
-) -> std::collections::HashMap<&T, usize> {
+) -> std::collections::HashMap<T, usize> {
     let mut set = std::collections::BTreeSet::new();
     for x in zahyo {
-        set.insert(x);
+        set.insert(x.clone());
     }
     let mut map = std::collections::HashMap::new();
     for (i, x) in set.into_iter().enumerate() {
