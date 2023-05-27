@@ -486,10 +486,12 @@ where
 
 /// 上下左右 (i, j)
 #[snippet("grid")]
+#[snippet]
 pub const UDLR_DIRS: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
 
 /// 上下左右 + 斜め (i, j)
 #[snippet("grid")]
+#[snippet]
 pub const ALL_DIRS: [(isize, isize); 8] = [
     // 時計回り
     (-1, 0),  // 上
