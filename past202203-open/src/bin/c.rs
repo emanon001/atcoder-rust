@@ -10,7 +10,13 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: String
     };
+
+    let n = a.len();
+    let m = (n - 1) / 3;
+    let ch = (b'a' + m as u8 - 1) as char;
+    println!("{}{}", &a[0..(n - m * 3)], ch);
 }
 
 fn main() {
