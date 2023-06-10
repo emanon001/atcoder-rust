@@ -1,6 +1,7 @@
 pub mod bit;
 pub mod bsearch;
 pub mod chars;
+pub mod date;
 pub mod divisors;
 pub mod dp;
 pub mod geometry;
