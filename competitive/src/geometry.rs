@@ -15,9 +15,9 @@ pub fn distance_coordinates(a: (f64, f64), b: (f64, f64)) -> f64 {
 }
 
 #[snippet]
-pub fn rotate_coordinate(x: f64, y: f64, rad: f64) -> (f64, f64) {
-    let x2 = x * rad.cos() - y * rad.sin();
-    let y2 = x * rad.sin() + y * rad.cos();
+pub fn rotate_coordinate(x: f64, y: f64, radian: f64) -> (f64, f64) {
+    let x2 = x * radian.cos() - y * radian.sin();
+    let y2 = x * radian.sin() + y * radian.cos();
     (x2, y2)
 }
 
