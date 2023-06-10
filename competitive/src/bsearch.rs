@@ -1,19 +1,55 @@
 use cargo_snippet::snippet;
 
+#[snippet("bsearch")]
 #[snippet]
-pub fn bsearch<F>(ok: i64, ng: i64, pred: F) -> Option<i64>
+pub trait BinarySearchOk<T>: PartialEq + Copy {
+    fn bs_needs_next_search(&self, ng: &T) -> bool;
+    fn bs_mid_value(&self, ng: &T) -> Self;
+    fn bs_into(&self) -> T;
+}
+
+#[snippet("bsearch")]
+#[snippet]
+impl BinarySearchOk<i64> for i64 {
+    fn bs_needs_next_search(&self, ng: &Self) -> bool {
+        (self - ng).abs() > 1
+    }
+    fn bs_mid_value(&self, ng: &Self) -> Self {
+        (self + ng) / 2
+    }
+    fn bs_into(&self) -> Self {
+        *self
+    }
+}
+
+#[snippet("bsearch")]
+#[snippet]
+impl BinarySearchOk<f64> for f64 {
+    fn bs_needs_next_search(&self, ng: &Self) -> bool {
+        (self - ng).abs() > 1.0
+    }
+    fn bs_mid_value(&self, ng: &Self) -> Self {
+        (self + ng) / 2.0
+    }
+    fn bs_into(&self) -> Self {
+        *self
+    }
+}
+
+#[snippet("bsearch")]
+pub fn bsearch<T, Num: BinarySearchOk<T>, F>(ok: Num, ng: T, pred: F) -> Option<Num>
 where
-    F: Fn(i64) -> bool,
+    F: Fn(T) -> bool,
 {
     let orig_ok = ok;
     let mut ok = ok;
     let mut ng = ng;
-    while (ok - ng).abs() > 1 {
-        let mid = (ok + ng) / 2;
-        if pred(mid) {
+    while ok.bs_needs_next_search(&ng) {
+        let mid = ok.bs_mid_value(&ng);
+        if pred(mid.bs_into()) {
             ok = mid;
         } else {
-            ng = mid;
+            ng = mid.bs_into();
         }
     }
     if ok == orig_ok {
