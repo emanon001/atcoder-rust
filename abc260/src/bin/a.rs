@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars,
     };
+
+    let res = if s[0] != s[1] && s[0] != s[2] {
+        s[0].to_string()
+    } else if s[1] != s[0] && s[1] != s[2] {
+        s[1].to_string()
+    } else if s[2] != s[0] && s[2] != s[1] {
+        s[2].to_string()
+    } else {
+        "-1".to_string()
+    };
+    println!("{}", res);
 }
 
 fn main() {
