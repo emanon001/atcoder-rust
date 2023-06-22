@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        l: usize, r: usize, l2: usize, r2: usize
     };
+
+    let mut v = vec![0; 100 + 1];
+    for i in l..=r {
+        v[i] += 1;
+    }
+    for i in l2..=r2 {
+        v[i] += 1;
+    }
+    let res = (v.into_iter().filter(|c| *c == 2).count() as isize - 1).max(0);
+    println!("{}", res);
 }
 
 fn main() {
