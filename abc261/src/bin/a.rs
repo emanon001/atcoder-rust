@@ -14,13 +14,13 @@ fn solve() {
     };
 
     let mut v = vec![0; 100 + 1];
-    for i in l..=r {
+    for i in l + 1..=r {
         v[i] += 1;
     }
-    for i in l2..=r2 {
+    for i in l2 + 1..=r2 {
         v[i] += 1;
     }
-    let res = (v.into_iter().filter(|c| *c == 2).count() as isize - 1).max(0);
+    let res = v.into_iter().filter(|c| *c == 2).count();
     println!("{}", res);
 }
 
