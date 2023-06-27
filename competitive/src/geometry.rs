@@ -21,6 +21,25 @@ pub fn rotate_coordinate(x: f64, y: f64, radian: f64) -> (f64, f64) {
     (x2, y2)
 }
 
+#[snippet("circle")]
+type Circle = (isize, isize, isize);
+
+#[snippet("circle")]
+pub fn is_inside_circle(c1: Circle, c2: Circle) -> bool {
+    let dx = c1.0 - c2.0;
+    let dy = c1.1 - c2.1;
+    let dr = c1.2 - c2.2;
+    dx * dx + dy * dy < dr * dr
+}
+
+#[snippet("circle")]
+pub fn is_outside_circle(c1: Circle, c2: Circle) -> bool {
+    let dx = c1.0 - c2.0;
+    let dy = c1.1 - c2.1;
+    let dr = c1.2 + c2.2;
+    dx * dx + dy * dy > dr * dr
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
