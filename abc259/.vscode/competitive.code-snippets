@@ -1,4 +1,37 @@
 {
+  "ALL_DIRS": {
+    "prefix": "ALL_DIRS",
+    "body": [
+      "/// 上下左右 + 斜め (i, j)",
+      "pub const ALL_DIRS: [(isize, isize); 8] = [",
+      "    (-1, 0),",
+      "    (-1, 1),",
+      "    (0, 1),",
+      "    (1, 1),",
+      "    (1, 0),",
+      "    (1, -1),",
+      "    (0, -1),",
+      "    (-1, -1),",
+      "];"
+    ]
+  },
+  "BinarySearchOk": {
+    "prefix": "BinarySearchOk",
+    "body": [
+      "pub trait BinarySearchOk<T>: PartialEq + Copy {",
+      "    fn bs_needs_next_search(&self, ng: &T) -> bool;",
+      "    fn bs_mid_value(&self, ng: &T) -> Self;",
+      "    fn bs_into(&self) -> T;",
+      "}"
+    ]
+  },
+  "UDLR_DIRS": {
+    "prefix": "UDLR_DIRS",
+    "body": [
+      "/// 上下左右 (i, j)",
+      "pub const UDLR_DIRS: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];"
+    ]
+  },
   "ascii_chars": {
     "prefix": "ascii_chars",
     "body": [
@@ -171,19 +204,46 @@
   "bsearch": {
     "prefix": "bsearch",
     "body": [
-      "pub fn bsearch<F>(ok: i64, ng: i64, pred: F) -> Option<i64>",
+      "pub trait BinarySearchOk<T>: PartialEq + Copy {",
+      "    fn bs_needs_next_search(&self, ng: &T) -> bool;",
+      "    fn bs_mid_value(&self, ng: &T) -> Self;",
+      "    fn bs_into(&self) -> T;",
+      "}",
+      "impl BinarySearchOk<i64> for i64 {",
+      "    fn bs_needs_next_search(&self, ng: &Self) -> bool {",
+      "        (self - ng).abs() > 1",
+      "    }",
+      "    fn bs_mid_value(&self, ng: &Self) -> Self {",
+      "        (self + ng) / 2",
+      "    }",
+      "    fn bs_into(&self) -> Self {",
+      "        *self",
+      "    }",
+      "}",
+      "impl BinarySearchOk<f64> for f64 {",
+      "    fn bs_needs_next_search(&self, ng: &Self) -> bool {",
+      "        (self - ng).abs() > 1.0",
+      "    }",
+      "    fn bs_mid_value(&self, ng: &Self) -> Self {",
+      "        (self + ng) / 2.0",
+      "    }",
+      "    fn bs_into(&self) -> Self {",
+      "        *self",
+      "    }",
+      "}",
+      "pub fn bsearch<T, Num: BinarySearchOk<T>, F>(ok: Num, ng: T, pred: F) -> Option<Num>",
       "where",
-      "    F: Fn(i64) -> bool,",
+      "    F: Fn(T) -> bool,",
       "{",
       "    let orig_ok = ok;",
       "    let mut ok = ok;",
       "    let mut ng = ng;",
-      "    while (ok - ng).abs() > 1 {",
-      "        let mid = (ok + ng) / 2;",
-      "        if pred(mid) {",
+      "    while ok.bs_needs_next_search(&ng) {",
+      "        let mid = ok.bs_mid_value(&ng);",
+      "        if pred(mid.bs_into()) {",
       "            ok = mid;",
       "        } else {",
-      "            ng = mid;",
+      "            ng = mid.bs_into();",
       "        }",
       "    }",
       "    if ok == orig_ok {",
@@ -228,15 +288,57 @@
       "}"
     ]
   },
+  "circle": {
+    "prefix": "circle",
+    "body": [
+      "type Circle = (isize, isize, isize);",
+      "pub fn is_inside_circle(c1: Circle, c2: Circle) -> bool {",
+      "    let dx = c1.0 - c2.0;",
+      "    let dy = c1.1 - c2.1;",
+      "    let dr = c1.2 - c2.2;",
+      "    dx * dx + dy * dy < dr * dr",
+      "}",
+      "pub fn is_outside_circle(c1: Circle, c2: Circle) -> bool {",
+      "    let dx = c1.0 - c2.0;",
+      "    let dy = c1.1 - c2.1;",
+      "    let dr = c1.2 + c2.2;",
+      "    dx * dx + dy * dy > dr * dr",
+      "}"
+    ]
+  },
+  "compress_list": {
+    "prefix": "compress_list",
+    "body": [
+      "pub fn compress_list<T: Copy + std::cmp::PartialEq>(list: Vec<T>) -> Vec<(T, usize)> {",
+      "    let mut res = Vec::new();",
+      "    if list.is_empty() {",
+      "        return res;",
+      "    }",
+      "    let mut cur_v = list[0];",
+      "    let mut count = 1;",
+      "    for v in list.into_iter().skip(1) {",
+      "        if v == cur_v {",
+      "            count += 1;",
+      "        } else {",
+      "            res.push((cur_v, count));",
+      "            count = 1;",
+      "        }",
+      "        cur_v = v;",
+      "    }",
+      "    res.push((cur_v, count));",
+      "    res",
+      "}"
+    ]
+  },
   "compress_zahyo": {
     "prefix": "compress_zahyo",
     "body": [
-      "pub fn compress_zahyo<T: Ord + std::hash::Hash>(",
+      "pub fn compress_zahyo<T: Ord + std::hash::Hash + Clone>(",
       "    zahyo: &[T],",
-      ") -> std::collections::HashMap<&T, usize> {",
+      ") -> std::collections::HashMap<T, usize> {",
       "    let mut set = std::collections::BTreeSet::new();",
       "    for x in zahyo {",
-      "        set.insert(x);",
+      "        set.insert(x.clone());",
       "    }",
       "    let mut map = std::collections::HashMap::new();",
       "    for (i, x) in set.into_iter().enumerate() {",
@@ -612,6 +714,14 @@
       "}"
     ]
   },
+  "is_lear_year": {
+    "prefix": "is_lear_year",
+    "body": [
+      "pub fn is_leap_year(n: usize) -> bool {",
+      "    n % 4 == 0 && !(n % 100 == 0 && n % 400 != 0)",
+      "}"
+    ]
+  },
   "is_prime": {
     "prefix": "is_prime",
     "body": [
@@ -627,6 +737,26 @@
       "        i += 1;",
       "    }",
       "    true",
+      "}"
+    ]
+  },
+  "is_valid_date": {
+    "prefix": "is_valid_date",
+    "body": [
+      "pub fn is_leap_year(n: usize) -> bool {",
+      "    n % 4 == 0 && !(n % 100 == 0 && n % 400 != 0)",
+      "}",
+      "pub fn is_valid_date(y: usize, m: usize, d: usize) -> bool {",
+      "    if !(1..=12).contains(&m) {",
+      "        return false;",
+      "    }",
+      "    let last_day_each_month = vec![31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];",
+      "    let last_day = if m == 2 && is_leap_year(y) {",
+      "        29",
+      "    } else {",
+      "        last_day_each_month[m - 1]",
+      "    };",
+      "    (1..=last_day).contains(&d)",
       "}"
     ]
   },
@@ -1383,6 +1513,16 @@
       "    let c = (b.0 - b.1 + a.1, b.1 + b.0 - a.0);",
       "    let d = (c.0 - c.1 + b.1, c.1 + c.0 - b.0);",
       "    (c, d)",
+      "}"
+    ]
+  },
+  "rotate_coordinate": {
+    "prefix": "rotate_coordinate",
+    "body": [
+      "pub fn rotate_coordinate(x: f64, y: f64, radian: f64) -> (f64, f64) {",
+      "    let x2 = x * radian.cos() - y * radian.sin();",
+      "    let y2 = x * radian.sin() + y * radian.cos();",
+      "    (x2, y2)",
       "}"
     ]
   },

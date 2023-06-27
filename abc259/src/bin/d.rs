@@ -8,24 +8,22 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
-type PR = (isize, isize, isize);
-
-fn can_move(from: PR, to: PR) -> bool {
-    !in_circle(from, to) && !out_circle(from, to)
-}
-
-fn in_circle(p1: PR, p2: PR) -> bool {
-    let dx = (p1.0 - p2.0).abs();
-    let dy = (p1.1 - p2.1).abs();
-    let dr = (p1.2 - p2.2).abs();
+type Circle = (isize, isize, isize);
+pub fn is_inside_circle(c1: Circle, c2: Circle) -> bool {
+    let dx = c1.0 - c2.0;
+    let dy = c1.1 - c2.1;
+    let dr = c1.2 - c2.2;
     dx * dx + dy * dy < dr * dr
 }
-
-fn out_circle(p1: PR, p2: PR) -> bool {
-    let dx = (p1.0 - p2.0).abs();
-    let dy = (p1.1 - p2.1).abs();
-    let dr = (p1.2 + p2.2).abs();
+pub fn is_outside_circle(c1: Circle, c2: Circle) -> bool {
+    let dx = c1.0 - c2.0;
+    let dy = c1.1 - c2.1;
+    let dr = c1.2 + c2.2;
     dx * dx + dy * dy > dr * dr
+}
+
+fn can_move(from: Circle, to: Circle) -> bool {
+    !is_inside_circle(from, to) && !is_outside_circle(from, to)
 }
 
 fn solve() {
