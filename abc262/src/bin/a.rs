@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        y: usize
     };
+
+    for y in y..=9999 {
+        if y % 4 == 2 {
+            println!("{}", y);
+            return;
+        }
+    }
 }
 
 fn main() {
