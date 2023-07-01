@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, m: usize
     };
+
+    let res = (1..=m)
+        .combinations(n)
+        .map(|v| v.into_iter().sorted().collect::<Vec<_>>())
+        .sorted()
+        .collect::<Vec<_>>();
+    println!(
+        "{}",
+        res.into_iter().map(|v| v.into_iter().join(" ")).join("\n ")
+    );
 }
 
 fn main() {
