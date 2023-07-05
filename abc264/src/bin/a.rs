@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        l: Usize1, r: Usize1,
     };
+
+    let res = &"atcoder"[l..=r];
+    println!("{}", res);
 }
 
 fn main() {
