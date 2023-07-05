@@ -8,19 +8,6 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
-#[macro_export]
-macro_rules! chmin {
-    ($ min : expr , $ v : expr ) => {{
-        let v = $v;
-        if $min > v {
-            $min = v;
-            true
-        } else {
-            false
-        }
-    }};
-}
-
 fn solve() {
     input! {
         s: String
