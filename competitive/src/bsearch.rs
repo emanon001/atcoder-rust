@@ -37,6 +37,20 @@ impl BinarySearchOk<f64> for f64 {
 }
 
 #[snippet("bsearch")]
+#[snippet]
+impl BinarySearchOk<usize> for usize {
+    fn bs_needs_next_search(&self, ng: &Self) -> bool {
+        (*self as isize - *ng as isize).abs() > 1
+    }
+    fn bs_mid_value(&self, ng: &Self) -> Self {
+        (self + ng) / 2
+    }
+    fn bs_into(&self) -> Self {
+        *self
+    }
+}
+
+#[snippet("bsearch")]
 pub fn bsearch<T, Num: BinarySearchOk<T>, F>(ok: Num, ng: T, pred: F) -> Option<Num>
 where
     F: Fn(T) -> bool,
