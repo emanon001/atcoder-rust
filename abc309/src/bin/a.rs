@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: Usize1, b: Usize1,
     };
+
+    let res = if a / 3 == b / 3 && a == b - 1 {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", res);
 }
 
 fn main() {
