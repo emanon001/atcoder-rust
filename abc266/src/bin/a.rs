@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars
     };
+
+    let res = s[s.len() / 2];
+    println!("{}", res);
 }
 
 fn main() {
