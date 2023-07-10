@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: i128
     };
+
+    let mut res = n % 998244353;
+    if res < 0 {
+        res += 998244353;
+    }
+    println!("{}", res);
 }
 
 fn main() {
