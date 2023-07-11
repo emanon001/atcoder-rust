@@ -10,7 +10,22 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, m: usize,
+        cv: [String; n],
+        dv: [String; m],
+        pv: [i64; m + 1],
     };
+
+    let mut res = 0_i64;
+    for c in cv {
+        let j = dv
+            .iter()
+            .position(|c2| &c == c2)
+            .map(|j| j + 1)
+            .unwrap_or(0);
+        res += pv[j];
+    }
+    println!("{}", res);
 }
 
 fn main() {
