@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        sv: [i64; 8]
     };
+
+    let mut prev = 0;
+    for s in sv {
+        if s < prev || !(100..=675).contains(&s) || s % 25 != 0 {
+            println!("No");
+            return;
+        }
+        prev = s;
+    }
+    println!("Yes");
 }
 
 fn main() {
