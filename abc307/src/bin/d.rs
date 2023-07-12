@@ -10,7 +10,36 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        _n: usize,
+        s: Chars
     };
+
+    let mut left_parent_count = 0;
+    let mut stack = Vec::new();
+    for ch in s {
+        match ch {
+            '(' => {
+                left_parent_count += 1;
+                stack.push(ch);
+            }
+            ')' => {
+                if left_parent_count > 0 {
+                    left_parent_count -= 1;
+                    loop {
+                        if stack.pop().unwrap() == '(' {
+                            break;
+                        }
+                    }
+                } else {
+                    stack.push(')');
+                }
+            }
+            ch => {
+                stack.push(ch);
+            }
+        }
+    }
+    println!("{}", stack.iter().join(""));
 }
 
 fn main() {
