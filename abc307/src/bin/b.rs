@@ -10,7 +10,23 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        sv: [String; n]
     };
+
+    for i in 0..n {
+        for j in 0..n {
+            if i == j {
+                continue;
+            }
+            let s2 = format!("{}{}", sv[i], sv[j]);
+            if s2 == s2.chars().rev().collect::<String>() {
+                println!("Yes");
+                return;
+            }
+        }
+    }
+    println!("No");
 }
 
 fn main() {
