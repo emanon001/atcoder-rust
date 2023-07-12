@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [u64; 7 * n]
     };
+
+    for i in 0..n {
+        let mut sum = 0;
+        for j in 0..7 {
+            sum += av[i * 7 + j];
+        }
+        println!("{}", sum);
+    }
 }
 
 fn main() {
