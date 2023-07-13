@@ -10,7 +10,13 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        day: String
     };
+
+    let days = vec!["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+    let i = days.iter().position(|d| d == &day).unwrap();
+    let res = 5 - i;
+    println!("{}", res);
 }
 
 fn main() {
