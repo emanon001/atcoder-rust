@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        v: [i64; 5]
     };
+
+    let res = v.into_iter().unique().count();
+    println!("{}", res);
 }
 
 fn main() {
