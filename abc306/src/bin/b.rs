@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        av: [u128; 64]
     };
+
+    let mut res = 0_u128;
+    for i in 0..64 {
+        res += av[i] * 2.pow(i as u32);
+    }
+    println!("{}", res);
 }
 
 fn main() {
