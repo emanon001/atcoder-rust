@@ -10,7 +10,26 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        p: char, q: char
     };
+
+    let l = p.min(q);
+    let r = p.max(q);
+    let mut res = 0;
+    for (ch, d) in &[
+        ('A', 3),
+        ('B', 1),
+        ('C', 4),
+        ('D', 1),
+        ('E', 5),
+        ('F', 9),
+        ('G', 0),
+    ] {
+        if (l..r).contains(ch) {
+            res += d;
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
