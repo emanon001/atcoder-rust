@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: u8,
+        b: u8
     };
+
+    let res = a | b;
+    println!("{}", res);
 }
 
 fn main() {
