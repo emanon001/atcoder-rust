@@ -10,7 +10,10 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize
     };
+
+    println!("{:>02X}", n);
 }
 
 fn main() {
