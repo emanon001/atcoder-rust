@@ -10,7 +10,13 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, q: usize,
+        lv: [[usize]; n],
+        stv: [(Usize1, Usize1); q]
     };
+    for (s, t) in stv {
+        println!("{}", lv[s][t]);
+    }
 }
 
 fn main() {
