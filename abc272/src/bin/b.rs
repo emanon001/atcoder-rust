@@ -10,7 +10,26 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        m: usize,
+        kv: [[Usize1]; m]
     };
+
+    let k_set = kv
+        .into_iter()
+        .map(|v| v.into_iter().collect::<HashSet<_>>())
+        .collect::<Vec<_>>();
+
+    for i in 0..n {
+        for j in i + 1..n {
+            let is_ok = k_set.iter().any(|set| set.contains(&i) && set.contains(&j));
+            if !is_ok {
+                println!("No");
+                return;
+            }
+        }
+    }
+    println!("Yes");
 }
 
 fn main() {
