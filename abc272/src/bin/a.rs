@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        av: [i64; n]
     };
+
+    let res: i64 = av.iter().sum();
+    println!("{}", res);
 }
 
 fn main() {
