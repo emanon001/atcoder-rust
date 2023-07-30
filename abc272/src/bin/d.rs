@@ -115,20 +115,115 @@ where
     pub fn vertex_count(&self) -> usize {
         self.vc
     }
+    fn optionalize(&self, v: Vec<Cost>) -> Vec<Option<Cost>> {
+        v.into_iter()
+            .map(|x| if x == self.inf { None } else { Some(x) })
+            .collect::<Vec<_>>()
+    }
 }
-
-pub fn compress_zahyo<T: Ord + std::hash::Hash + Clone>(
-    zahyo: &[T],
-) -> std::collections::HashMap<T, usize> {
-    let mut set = std::collections::BTreeSet::new();
-    for x in zahyo {
-        set.insert(x.clone());
+pub struct Grid<T>
+where
+    T: PartialEq + Eq + Copy,
+{
+    grid: Vec<Vec<T>>,
+    h: usize,
+    w: usize,
+    ng: Option<T>,
+}
+impl<T> Grid<T>
+where
+    T: PartialEq + Eq + Copy + Default,
+{
+    pub fn new(grid: Vec<Vec<T>>, ng: impl Into<Option<T>>) -> Self {
+        assert!(grid.len() > 0);
+        let h = grid.len();
+        let w = grid[0].len();
+        let ng: Option<T> = ng.into();
+        Self { grid, h, w, ng }
     }
-    let mut map = std::collections::HashMap::new();
-    for (i, x) in set.into_iter().enumerate() {
-        map.insert(x, i);
+    pub fn new_with_size(n: usize, m: usize) -> Self {
+        let grid = vec![vec![T::default(); m]; n];
+        Self::new(grid, None)
     }
-    map
+    pub fn to_graph<Cost, F>(&self, inf: Cost, generator: F) -> Graph<Cost>
+    where
+        Cost: PartialOrd + Copy + num::traits::NumAssign,
+        F: Fn(&Grid<T>, usize, usize) -> Vec<GridDestination<Cost>>,
+    {
+        let mut edges: Vec<Edge<Cost>> = Vec::new();
+        for i in 0..self.h {
+            for j in 0..self.w {
+                let from = self.vertex(i, j);
+                for (pos, w) in generator(&self, i, j) {
+                    let to = self.vertex(pos.0, pos.1);
+                    edges.push((from, to, w).into());
+                }
+            }
+        }
+        Graph::new_directed(edges, self.h * self.w, inf)
+    }
+    pub fn height(&self) -> usize {
+        self.h
+    }
+    pub fn width(&self) -> usize {
+        self.w
+    }
+    pub fn in_grid(&self, i: isize, j: isize) -> bool {
+        i >= 0 && i < self.h as isize && j >= 0 && j < self.w as isize
+    }
+    pub fn cell(&self, i: usize, j: usize) -> T {
+        self.grid[i][j]
+    }
+    pub fn ng(&self) -> Option<T> {
+        self.ng
+    }
+    pub fn vertex(&self, i: usize, j: usize) -> usize {
+        i * self.w + j
+    }
+}
+/// 上下左右 (i, j)
+pub const UDLR_DIRS: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
+/// 上下左右 + 斜め (i, j)
+pub const ALL_DIRS: [(isize, isize); 8] = [
+    (-1, 0),
+    (-1, 1),
+    (0, 1),
+    (1, 1),
+    (1, 0),
+    (1, -1),
+    (0, -1),
+    (-1, -1),
+];
+pub type GridPos = (usize, usize);
+pub type GridDestination<Cost> = (GridPos, Cost);
+pub fn gen_grid_destinations<T, Cost>(
+    grid: &Grid<T>,
+    i: usize,
+    j: usize,
+    directions: &[(isize, isize)],
+) -> Vec<GridDestination<Cost>>
+where
+    T: PartialEq + Eq + Copy + Default,
+    Cost: PartialOrd + Copy + num::traits::NumAssign,
+{
+    let mut dest = Vec::new();
+    if grid.ng().is_some() && grid.cell(i, j) == grid.ng().unwrap() {
+        return dest;
+    }
+    for &(di, dj) in directions {
+        let new_i = i as isize + di;
+        let new_j = j as isize + dj;
+        if !grid.in_grid(new_i, new_j) {
+            continue;
+        }
+        let new_i = new_i as usize;
+        let new_j = new_j as usize;
+        if grid.ng().is_some() && grid.cell(new_i, new_j) == grid.ng().unwrap() {
+            continue;
+        }
+        dest.push(((new_i, new_j), Cost::one()));
+    }
+    dest
 }
 
 impl<Cost> Graph<Cost>
@@ -162,58 +257,33 @@ fn solve() {
         n: usize, m: usize,
     };
 
-    let mut vertexes = Vec::new();
-    for i in 0..n {
-        for j in 0..n {
-            vertexes.push((i, j));
-        }
-    }
-    let zahyo = compress_zahyo(&vertexes);
-
     let dv = {
         let mut dv = Vec::new();
         for di in 0..=n {
             for dj in 0..n {
                 let m2 = di * di + dj * dj;
                 if m2 == m {
-                    dv.push((di as isize, dj as isize));
+                    let signs: Vec<(isize, isize)> = vec![(1, 1), (1, -1), (-1, -1), (-1, 1)];
+                    for (xs, ys) in signs {
+                        let xd = di as isize * xs;
+                        let yd = dj as isize * ys;
+                        dv.push((xd, yd));
+                    }
                 }
             }
         }
         dv
     };
-    let edges = {
-        let mut edges = Vec::new();
-        for &(i, j) in &vertexes {
-            let u = zahyo[&(i, j)];
-            let i = i as isize;
-            let j = j as isize;
-            for &(xd, yd) in &dv {
-                let signs = vec![(1, 1), (1, -1), (-1, -1), (-1, 1)];
-                for (xs, ys) in signs {
-                    let xd = xd * xs;
-                    let yd = yd * ys;
-                    let new_i = i + xd;
-                    let new_j = j + yd;
-                    if new_i < 0 || new_i >= n as isize || new_j < 0 || new_j >= n as isize {
-                        continue;
-                    }
-                    let new_i = new_i as usize;
-                    let new_j = new_j as usize;
-                    let v = zahyo[&(new_i, new_j)];
-                    edges.push((u, v));
-                }
-            }
-        }
-        edges
-    };
-    let graph = Graph::new_directed(edges, n * n, 1_i64 << 60);
-    let s = zahyo[&(0, 0)];
+    let grid: Grid<usize> = Grid::new_with_size(n, n);
+    let graph = grid.to_graph(1_i64 << 60, |grid, i: usize, j: usize| {
+        gen_grid_destinations(grid, i, j, &dv)
+    });
+    let s = grid.vertex(0, 0);
     let dist = graph.shortest_path_1(s);
     let mut res = vec![vec![-1; n]; n];
     for i in 0..n {
         for j in 0..n {
-            let v = zahyo[&(i, j)];
+            let v = grid.vertex(i, j);
             let d = dist[v].unwrap_or(-1);
             res[i][j] = d;
         }
