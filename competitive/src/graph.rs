@@ -431,7 +431,7 @@ where
 #[snippet("grid")]
 impl<T> Grid<T>
 where
-    T: PartialEq + Eq + Copy,
+    T: PartialEq + Eq + Copy + Default,
 {
     pub fn new(grid: Vec<Vec<T>>, ng: impl Into<Option<T>>) -> Self {
         assert!(grid.len() > 0);
@@ -439,6 +439,11 @@ where
         let w = grid[0].len();
         let ng: Option<T> = ng.into();
         Self { grid, h, w, ng }
+    }
+
+    pub fn new_with_size(n: usize, m: usize) -> Self {
+        let grid = vec![vec![T::default(); m]; n];
+        Self::new(grid, None)
     }
 
     pub fn to_graph<Cost, F>(&self, inf: Cost, generator: F) -> Graph<Cost>
@@ -482,6 +487,18 @@ where
     pub fn vertex(&self, i: usize, j: usize) -> usize {
         i * self.w + j
     }
+
+    pub fn is_ok_cell(&self, i: isize, j: isize) -> bool {
+        if !self.in_grid(i, j) {
+            return false;
+        }
+        let i = i as usize;
+        let j = j as usize;
+        if self.ng().is_some() && self.cell(i, j) == self.ng().unwrap() {
+            return false;
+        }
+        true
+    }
 }
 
 /// 上下左右 (i, j)
@@ -518,7 +535,7 @@ pub fn gen_grid_destinations<T, Cost>(
     directions: &[(isize, isize)],
 ) -> Vec<GridDestination<Cost>>
 where
-    T: PartialEq + Eq + Copy,
+    T: PartialEq + Eq + Copy + Default,
     Cost: PartialOrd + Copy + num::traits::NumAssign,
 {
     let mut dest = Vec::new();
@@ -528,15 +545,11 @@ where
     for &(di, dj) in directions {
         let new_i = i as isize + di;
         let new_j = j as isize + dj;
-        if !grid.in_grid(new_i, new_j) {
-            continue;
+        if grid.is_ok_cell(new_i, new_j) {
+            let new_i = new_i as usize;
+            let new_j = new_j as usize;
+            dest.push(((new_i, new_j), Cost::one()));
         }
-        let new_i = new_i as usize;
-        let new_j = new_j as usize;
-        if grid.ng().is_some() && grid.cell(new_i, new_j) == grid.ng().unwrap() {
-            continue;
-        }
-        dest.push(((new_i, new_j), Cost::one()));
     }
     dest
 }
