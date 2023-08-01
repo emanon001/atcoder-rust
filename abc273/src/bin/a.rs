@@ -8,9 +8,21 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+fn f(n: usize) -> usize {
+    if n == 0 {
+        1
+    } else {
+        n * f(n - 1)
+    }
+}
+
 fn solve() {
     input! {
+        n: usize
     };
+
+    let res = f(n);
+    println!("{}", res);
 }
 
 fn main() {
