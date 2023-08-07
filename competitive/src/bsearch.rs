@@ -38,9 +38,9 @@ impl BinarySearchOk<f64> for f64 {
 
 #[snippet("bsearch")]
 #[snippet]
-impl BinarySearchOk<usize> for usize {
+impl BinarySearchOk<isize> for isize {
     fn bs_needs_next_search(&self, ng: &Self) -> bool {
-        (*self as isize - *ng as isize).abs() > 1
+        (*self - *ng).abs() > 1
     }
     fn bs_mid_value(&self, ng: &Self) -> Self {
         (self + ng) / 2
