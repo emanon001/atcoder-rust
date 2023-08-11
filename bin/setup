@@ -4,7 +4,7 @@ cd "$(dirname ${0})"
 cd ..
 
 echo 'lnking config file...'
-ln -s config/cargo-atcoder.toml ~/Library/Application\ Support/cargo-atcoder.toml
+ln -s "$(pwd)/config/cargo-atcoder.toml" "${HOME}/Library/Application Support/cargo-atcoder.toml"
 
 echo 'generate snippet files...'
 competitive/bin/gen-code-snippets
