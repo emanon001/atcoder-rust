@@ -60,16 +60,19 @@ mod tests {
 
     #[test]
     fn test_compress_list_char() {
-        let list = "abbcccd".chars().collect::<Vec<_>>();
+        let list = "abbcccdbb".chars().collect::<Vec<_>>();
         assert_eq!(
             compress_list(list),
-            vec![('a', 1), ('b', 2), ('c', 3), ('d', 1)]
+            vec![('a', 1), ('b', 2), ('c', 3), ('d', 1), ('b', 2)]
         );
     }
 
     #[test]
     fn test_compress_list_number() {
-        let list = vec![1, 2, 2, 3, 3, 3, 4];
-        assert_eq!(compress_list(list), vec![(1, 1), (2, 2), (3, 3), (4, 1)]);
+        let list = vec![1, 2, 2, 3, 3, 3, 4, 2, 2];
+        assert_eq!(
+            compress_list(list),
+            vec![(1, 1), (2, 2), (3, 3), (4, 1), (2, 2)]
+        );
     }
 }
