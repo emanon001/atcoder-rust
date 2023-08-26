@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: String
     };
+
+    let res = s.rfind('a').map(|i| i as isize + 1).unwrap_or(-1);
+    println!("{}", res);
 }
 
 fn main() {
