@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, x: usize,
+        pv: [usize; n]
     };
+
+    let res = pv.into_iter().position(|p| p == x).map(|i| i + 1).unwrap();
+    println!("{}", res);
 }
 
 fn main() {
