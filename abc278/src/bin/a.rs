@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, k: usize,
+        mut av: [usize; n]
     };
+
+    for _ in 0..k {
+        av.remove(0);
+        av.push(0);
+    }
+    println!("{}", av.iter().join(" "));
 }
 
 fn main() {
