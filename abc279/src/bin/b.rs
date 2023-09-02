@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: String,
+        t: String
     };
+
+    let res = if s.contains(&t) { "Yes" } else { "No" };
+    println!("{}", res);
 }
 
 fn main() {
