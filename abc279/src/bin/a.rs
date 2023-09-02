@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars
     };
+
+    let res = s.into_iter().fold(0_usize, |acc, ch| {
+        acc + match ch {
+            'v' => 1,
+            'w' => 2,
+            _ => 0,
+        }
+    });
+    println!("{}", res);
 }
 
 fn main() {
