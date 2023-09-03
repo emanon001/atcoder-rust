@@ -13,7 +13,7 @@ type Pos = (usize, usize);
 /**
  * 区画
  */
-struct Grid {
+struct Ground {
     /**
      * 区画の縦幅
      */
@@ -54,7 +54,17 @@ impl Direction {
     }
 }
 
-impl Grid {
+/**
+ * 作物を栽培するための土地
+ */
+impl Ground {
+    fn plant(&mut self, pos: Pos) {
+        if self.planted_at_grid(&pos) {
+            panic!("already planted ({:?})", pos);
+        }
+        self.planted[pos.0][pos.1] = true;
+    }
+
     fn find_far_block(&self) -> Option<Pos> {
         if self.planted_at_grid(&self.start) {
             return None;
@@ -82,16 +92,22 @@ impl Grid {
         far_pos
     }
 
+    /**
+     * 指定した区画から移動する
+     */
     fn move_block(&self, pos: &Pos, dir: &Direction) -> Option<Pos> {
         if !self.planted_at_grid(pos) {
             return None;
         }
+
         let new_pos: (isize, isize) = match dir {
             Direction::Top => (pos.0 as isize - 1, pos.1 as isize),
             Direction::Bottom => (pos.0 as isize + 1, pos.1 as isize),
             Direction::Left => (pos.0 as isize, pos.1 as isize - 1),
             Direction::Right => (pos.0 as isize, pos.1 as isize + 1),
         };
+
+        // 土地の範囲外か
         if new_pos.0 < 0
             || new_pos.0 >= self.h as isize
             || new_pos.1 < 0
@@ -99,13 +115,14 @@ impl Grid {
         {
             return None;
         }
+
+        // 作物を植えているか
         let new_pos = (new_pos.0 as usize, new_pos.1 as usize);
         if !self.planted_at_grid(&new_pos) {
             return None;
         }
 
         // 水路を通らないか
-
         if self.exists_waterway(pos, dir) {
             None
         } else {
@@ -113,6 +130,9 @@ impl Grid {
         }
     }
 
+    /**
+     * 指定した区画の、指定した方向に水路が存在するか
+     */
     fn exists_waterway(&self, pos: &Pos, dir: &Direction) -> bool {
         match dir {
             Direction::Top => pos.0 >= 1 && self.h_waterway[pos.0 - 1][pos.1] != '#',
