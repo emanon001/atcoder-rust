@@ -25,7 +25,7 @@ struct Grid {
     /**
      * 出入口の縦方向の位置
      */
-    i0: usize,
+    start: Pos,
     /**
      * 横方向の水路の位置
      */
@@ -42,48 +42,89 @@ struct Grid {
 
 #[derive(Copy, Clone)]
 enum Direction {
-    Left,
     Top,
-    Right,
     Bottom,
+    Left,
+    Right,
+}
+
+impl Direction {
+    fn all() -> Vec<Direction> {
+        vec![Self::Top, Self::Bottom, Self::Left, Self::Right]
+    }
 }
 
 impl Grid {
-    fn can_move(&self, pos: Pos, dir: Direction) -> bool {
-        if !self.planted_at_grid(&pos) {
-            return false;
+    fn find_far_block(&self) -> Option<Pos> {
+        if self.planted_at_grid(&self.start) {
+            return None;
+        }
+
+        let mut visited: Vec<Vec<bool>> = vec![vec![false; self.w]; self.h];
+        visited[self.start.0][self.start.1] = true;
+        let mut que = VecDeque::new();
+        que.push_back(self.start);
+
+        let mut far_pos: Option<Pos> = None;
+        let dirs = Direction::all();
+        while let Some(pos) = que.pop_front() {
+            far_pos = Some(pos);
+            for d in &dirs {
+                if let Some(new_pos) = self.move_block(&pos, d) {
+                    if visited[new_pos.0][new_pos.1] {
+                        continue;
+                    }
+                    visited[new_pos.0][new_pos.1] = true;
+                    que.push_back(new_pos);
+                }
+            }
+        }
+        far_pos
+    }
+
+    fn move_block(&self, pos: &Pos, dir: &Direction) -> Option<Pos> {
+        if !self.planted_at_grid(pos) {
+            return None;
         }
         let new_pos: (isize, isize) = match dir {
-            Direction::Left => (pos.0 as isize, pos.1 as isize - 1),
             Direction::Top => (pos.0 as isize - 1, pos.1 as isize),
-            Direction::Right => (pos.0 as isize, pos.1 as isize + 1),
             Direction::Bottom => (pos.0 as isize + 1, pos.1 as isize),
+            Direction::Left => (pos.0 as isize, pos.1 as isize - 1),
+            Direction::Right => (pos.0 as isize, pos.1 as isize + 1),
         };
         if new_pos.0 < 0
             || new_pos.0 >= self.h as isize
             || new_pos.1 < 0
             || new_pos.1 >= self.w as isize
         {
-            return false;
+            return None;
         }
         let new_pos = (new_pos.0 as usize, new_pos.1 as usize);
         if !self.planted_at_grid(&new_pos) {
-            return false;
+            return None;
         }
 
         // 水路を通らないか
-        self.exists_waterway(&pos, dir)
-    }
 
-    fn exists_waterway(&self, pos: &Pos, dir: Direction) -> bool {
-        match dir {
-            Direction::Left => pos.1 >= 1 && self.v_waterway[pos.0][pos.1 - 1] != '#',
-            Direction::Top => pos.0 >= 1 && self.h_waterway[pos.0 - 1][pos.1] != '#',
-            Direction::Right => pos.1 <= self.w - 2 && self.h_waterway[pos.0][pos.1] != '#',
-            Direction::Bottom => pos.0 <= self.h - 2 && self.h_waterway[pos.0][pos.1] != '#',
+        if self.exists_waterway(pos, dir) {
+            None
+        } else {
+            Some(new_pos)
         }
     }
 
+    fn exists_waterway(&self, pos: &Pos, dir: &Direction) -> bool {
+        match dir {
+            Direction::Top => pos.0 >= 1 && self.h_waterway[pos.0 - 1][pos.1] != '#',
+            Direction::Bottom => pos.0 <= self.h - 2 && self.h_waterway[pos.0][pos.1] != '#',
+            Direction::Left => pos.1 >= 1 && self.v_waterway[pos.0][pos.1 - 1] != '#',
+            Direction::Right => pos.1 <= self.w - 2 && self.h_waterway[pos.0][pos.1] != '#',
+        }
+    }
+
+    /**
+     * 指定した区画に作物を植えたか
+     */
     fn planted_at_grid(&self, p: &Pos) -> bool {
         self.planted[p.0][p.1]
     }
