@@ -8,6 +8,79 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+type Pos = (usize, usize);
+
+/**
+ * 区画
+ */
+struct Grid {
+    /**
+     * 区画の縦幅
+     */
+    h: usize,
+    /**
+     * 区画の横幅
+     */
+    w: usize,
+    /**
+     * 出入口の縦方向の位置
+     */
+    i0: usize,
+    /**
+     * 横方向の水路の位置
+     */
+    h_waterway: Vec<Vec<char>>,
+    /**
+     * 縦方向の水路の位置
+     */
+    v_waterway: Vec<Vec<char>>,
+    /**
+     * 区画に作物を植えているか
+     */
+    planted: Vec<Vec<bool>>,
+}
+
+#[derive(Copy, Clone)]
+enum Direction {
+    Left,
+    Top,
+    Right,
+    Bottom,
+}
+
+impl Grid {
+    fn can_move(&self, pos: Pos, dir: Direction) -> bool {
+        if !self.planted_at_grid(&pos) {
+            return false;
+        }
+        let new_pos: (isize, isize) = match dir {
+            Direction::Left => (pos.0 as isize, pos.1 as isize - 1),
+            Direction::Top => (pos.0 as isize - 1, pos.1 as isize),
+            Direction::Right => (pos.0 as isize, pos.1 as isize + 1),
+            Direction::Bottom => (pos.0 as isize + 1, pos.1 as isize),
+        };
+        if new_pos.0 < 0
+            || new_pos.0 >= self.h as isize
+            || new_pos.1 < 0
+            || new_pos.1 >= self.w as isize
+        {
+            return false;
+        }
+        let new_pos = (new_pos.0 as usize, new_pos.1 as usize);
+        if !self.planted_at_grid(&new_pos) {
+            return false;
+        }
+
+        // TODO: 水路の判定
+
+        true
+    }
+
+    fn planted_at_grid(&self, p: &Pos) -> bool {
+        self.planted[p.0][p.1]
+    }
+}
+
 struct Solver {
     /**
      * 栽培の最大期間
