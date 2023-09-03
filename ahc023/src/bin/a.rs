@@ -30,6 +30,17 @@ struct Input {
     sdv: Vec<(usize, usize)>,
 }
 
+struct Plan {
+    k: usize,
+    i: usize,
+    j: usize,
+    s: usize,
+}
+struct Output {
+    m: usize,
+    plans: Vec<Plan>,
+}
+
 impl Solver {
     fn new(input: Input) -> Self {
         Self {
@@ -43,10 +54,15 @@ impl Solver {
             sdv: input.sdv,
         }
     }
-    fn solve(mut self) {}
+    fn solve(self) -> Output {
+        Output {
+            m: 0,
+            plans: vec![],
+        }
+    }
 }
 
-fn solve() {
+fn main() {
     input! {
         t: usize, h: usize, w: usize, i0: usize,
         h_grid: [Chars; h - 1],
@@ -65,18 +81,15 @@ fn solve() {
         k,
         sdv,
     };
-    let mut solver = Solver::new(input);
-    solver.solve();
-}
-
-fn main() {
-    std::thread::Builder::new()
-        .name("big stack size".into())
-        .stack_size(256 * 1024 * 1024)
-        .spawn(|| {
-            solve();
-        })
-        .unwrap()
-        .join()
-        .unwrap();
+    let solver = Solver::new(input);
+    let output = solver.solve();
+    println!("{}", output.m);
+    println!(
+        "{}",
+        output
+            .plans
+            .iter()
+            .map(|p| format!("{} {} {} {}", p.k, p.i, p.j, p.s))
+            .join("\n")
+    );
 }
