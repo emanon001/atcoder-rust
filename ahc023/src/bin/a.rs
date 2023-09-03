@@ -13,8 +13,8 @@ struct Solver {
     h: usize,
     w: usize,
     i0: usize,
-    h_grid: Vec<Vec<char>>,
-    v_grid: Vec<Vec<char>>,
+    h_waterway: Vec<Vec<char>>,
+    v_waterway: Vec<Vec<char>>,
     k: usize,
     sdv: Vec<(usize, usize)>,
 }
@@ -24,8 +24,8 @@ struct Input {
     h: usize,
     w: usize,
     i0: usize,
-    h_grid: Vec<Vec<char>>,
-    v_grid: Vec<Vec<char>>,
+    h_waterway: Vec<Vec<char>>,
+    v_waterway: Vec<Vec<char>>,
     k: usize,
     sdv: Vec<(usize, usize)>,
 }
@@ -48,8 +48,8 @@ impl Solver {
             h: input.h,
             w: input.w,
             i0: input.i0,
-            h_grid: input.h_grid,
-            v_grid: input.v_grid,
+            h_waterway: input.h_waterway,
+            v_waterway: input.v_waterway,
             k: input.k,
             sdv: input.sdv,
         }
@@ -65,8 +65,8 @@ impl Solver {
 fn main() {
     input! {
         t: usize, h: usize, w: usize, i0: usize,
-        h_grid: [Chars; h - 1],
-        v_grid: [Chars; h],
+        h_waterway: [Chars; h - 1],
+        v_waterway: [Chars; h],
         k: usize,
         sdv: [(usize, usize); k]
     };
@@ -76,8 +76,8 @@ fn main() {
         h,
         w,
         i0,
-        h_grid,
-        v_grid,
+        h_waterway,
+        v_waterway,
         k,
         sdv,
     };
