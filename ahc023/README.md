@@ -15,3 +15,8 @@
 - 提出
   - <https://atcoder.jp/contests/ahc023/submissions/45231398>
   - 20616850
+- [x] 最初は400, 後は1200ずつ処理する
+- 提出
+  - <https://atcoder.jp/contests/ahc023/submissions/45231971>
+  - 21752000
+
