@@ -8,37 +8,10 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
-type Pos = (usize, usize);
-
 /**
  * 区画
  */
-struct Ground {
-    /**
-     * 区画の縦幅
-     */
-    h: usize,
-    /**
-     * 区画の横幅
-     */
-    w: usize,
-    /**
-     * 出入口の縦方向の位置
-     */
-    start: Pos,
-    /**
-     * 横方向の水路の位置
-     */
-    h_waterway: Vec<Vec<char>>,
-    /**
-     * 縦方向の水路の位置
-     */
-    v_waterway: Vec<Vec<char>>,
-    /**
-     * 区画に作物を植えているか
-     */
-    planted: Vec<Vec<bool>>,
-}
+type Block = (usize, usize);
 
 #[derive(Copy, Clone)]
 enum Direction {
@@ -55,17 +28,64 @@ impl Direction {
 }
 
 /**
+ * 区画
+ */
+struct Ground {
+    /**
+     * 区画の縦幅
+     */
+    h: usize,
+    /**
+     * 区画の横幅
+     */
+    w: usize,
+    /**
+     * 出入口の縦方向の位置
+     */
+    start: Block,
+    /**
+     * 横方向の水路の位置
+     */
+    h_waterway: Vec<Vec<char>>,
+    /**
+     * 縦方向の水路の位置
+     */
+    v_waterway: Vec<Vec<char>>,
+    /**
+     * 区画に作物を植えているか
+     */
+    planted: Vec<Vec<bool>>,
+}
+
+/**
  * 作物を栽培するための土地
  */
 impl Ground {
-    fn plant(&mut self, pos: Pos) {
-        if self.planted_at_grid(&pos) {
-            panic!("already planted ({:?})", pos);
+    fn new(
+        h: usize,
+        w: usize,
+        i0: usize,
+        h_waterway: Vec<Vec<char>>,
+        v_waterway: Vec<Vec<char>>,
+    ) -> Self {
+        Self {
+            h,
+            w,
+            h_waterway,
+            v_waterway,
+            start: (i0, 0),
+            planted: vec![vec![false; w]; h],
         }
-        self.planted[pos.0][pos.1] = true;
     }
 
-    fn find_far_block(&self) -> Option<Pos> {
+    fn plant(&mut self, block: Block) {
+        if self.planted_at_grid(&block) {
+            panic!("already planted ({:?})", block);
+        }
+        self.planted[block.0][block.1] = true;
+    }
+
+    fn find_far_block(&self) -> Option<Block> {
         if self.planted_at_grid(&self.start) {
             return None;
         }
@@ -75,77 +95,77 @@ impl Ground {
         let mut que = VecDeque::new();
         que.push_back(self.start);
 
-        let mut far_pos: Option<Pos> = None;
+        let mut far_block: Option<Block> = None;
         let dirs = Direction::all();
-        while let Some(pos) = que.pop_front() {
-            far_pos = Some(pos);
+        while let Some(block) = que.pop_front() {
+            far_block = Some(block);
             for d in &dirs {
-                if let Some(new_pos) = self.move_block(&pos, d) {
-                    if visited[new_pos.0][new_pos.1] {
+                if let Some(new_block) = self.move_block(&block, d) {
+                    if visited[new_block.0][new_block.1] {
                         continue;
                     }
-                    visited[new_pos.0][new_pos.1] = true;
-                    que.push_back(new_pos);
+                    visited[new_block.0][new_block.1] = true;
+                    que.push_back(new_block);
                 }
             }
         }
-        far_pos
+        far_block
     }
 
     /**
      * 指定した区画から移動する
      */
-    fn move_block(&self, pos: &Pos, dir: &Direction) -> Option<Pos> {
-        if !self.planted_at_grid(pos) {
+    fn move_block(&self, block: &Block, dir: &Direction) -> Option<Block> {
+        if self.planted_at_grid(block) {
             return None;
         }
 
-        let new_pos: (isize, isize) = match dir {
-            Direction::Top => (pos.0 as isize - 1, pos.1 as isize),
-            Direction::Bottom => (pos.0 as isize + 1, pos.1 as isize),
-            Direction::Left => (pos.0 as isize, pos.1 as isize - 1),
-            Direction::Right => (pos.0 as isize, pos.1 as isize + 1),
+        let new_block: (isize, isize) = match dir {
+            Direction::Top => (block.0 as isize - 1, block.1 as isize),
+            Direction::Bottom => (block.0 as isize + 1, block.1 as isize),
+            Direction::Left => (block.0 as isize, block.1 as isize - 1),
+            Direction::Right => (block.0 as isize, block.1 as isize + 1),
         };
 
         // 土地の範囲外か
-        if new_pos.0 < 0
-            || new_pos.0 >= self.h as isize
-            || new_pos.1 < 0
-            || new_pos.1 >= self.w as isize
+        if new_block.0 < 0
+            || new_block.0 >= self.h as isize
+            || new_block.1 < 0
+            || new_block.1 >= self.w as isize
         {
             return None;
         }
 
         // 作物を植えているか
-        let new_pos = (new_pos.0 as usize, new_pos.1 as usize);
-        if !self.planted_at_grid(&new_pos) {
+        let new_block = (new_block.0 as usize, new_block.1 as usize);
+        if self.planted_at_grid(&new_block) {
             return None;
         }
 
         // 水路を通らないか
-        if self.exists_waterway(pos, dir) {
+        if self.exists_waterway(block, dir) {
             None
         } else {
-            Some(new_pos)
+            Some(new_block)
         }
     }
 
     /**
      * 指定した区画の、指定した方向に水路が存在するか
      */
-    fn exists_waterway(&self, pos: &Pos, dir: &Direction) -> bool {
+    fn exists_waterway(&self, block: &Block, dir: &Direction) -> bool {
         match dir {
-            Direction::Top => pos.0 >= 1 && self.h_waterway[pos.0 - 1][pos.1] != '#',
-            Direction::Bottom => pos.0 <= self.h - 2 && self.h_waterway[pos.0][pos.1] != '#',
-            Direction::Left => pos.1 >= 1 && self.v_waterway[pos.0][pos.1 - 1] != '#',
-            Direction::Right => pos.1 <= self.w - 2 && self.h_waterway[pos.0][pos.1] != '#',
+            Direction::Top => block.0 >= 1 && self.h_waterway[block.0 - 1][block.1] == '1',
+            Direction::Bottom => block.0 <= self.h - 2 && self.h_waterway[block.0][block.1] == '1',
+            Direction::Left => block.1 >= 1 && self.v_waterway[block.0][block.1 - 1] == '1',
+            Direction::Right => block.1 <= self.w - 2 && self.v_waterway[block.0][block.1] == '1',
         }
     }
 
     /**
      * 指定した区画に作物を植えたか
      */
-    fn planted_at_grid(&self, p: &Pos) -> bool {
+    fn planted_at_grid(&self, p: &Block) -> bool {
         self.planted[p.0][p.1]
     }
 }
@@ -222,9 +242,30 @@ impl Solver {
         }
     }
     fn solve(self) -> Output {
+        let mut ground = Ground::new(self.h, self.w, self.i0, self.h_waterway, self.v_waterway);
+        // 収穫の遅い作物を最初に植える
+        let sorted = self
+            .plans
+            .into_iter()
+            .enumerate()
+            .sorted_by_key(|(_, p)| -(p.1 as isize))
+            .collect::<Vec<_>>();
+        let mut output_plans = Vec::new();
+        for (k, _) in sorted {
+            if let Some((i, j)) = ground.find_far_block() {
+                output_plans.push(Plan {
+                    k: k + 1,
+                    i,
+                    j,
+                    s: 1,
+                });
+                ground.plant((i, j));
+            }
+        }
+
         Output {
-            m: 0,
-            plans: vec![],
+            m: output_plans.len(),
+            plans: output_plans,
         }
     }
 }
