@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        h: usize, _: usize,
+        grid: [Chars; h]
     };
+
+    let res = grid.into_iter().fold(0, |acc, row| {
+        acc + row.into_iter().filter(|ch| ch == &'#').count()
+    });
+    println!("{}", res);
 }
 
 fn main() {
