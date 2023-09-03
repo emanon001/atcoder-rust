@@ -71,9 +71,17 @@ impl Grid {
             return false;
         }
 
-        // TODO: 水路の判定
+        // 水路を通らないか
+        self.exists_waterway(&pos, dir)
+    }
 
-        true
+    fn exists_waterway(&self, pos: &Pos, dir: Direction) -> bool {
+        match dir {
+            Direction::Left => pos.1 >= 1 && self.v_waterway[pos.0][pos.1 - 1] != '#',
+            Direction::Top => pos.0 >= 1 && self.h_waterway[pos.0 - 1][pos.1] != '#',
+            Direction::Right => pos.1 <= self.w - 2 && self.h_waterway[pos.0][pos.1] != '#',
+            Direction::Bottom => pos.0 <= self.h - 2 && self.h_waterway[pos.0][pos.1] != '#',
+        }
     }
 
     fn planted_at_grid(&self, p: &Pos) -> bool {
