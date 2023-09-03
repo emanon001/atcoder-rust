@@ -278,7 +278,7 @@ impl Solver {
             .into_iter()
             .enumerate()
             .sorted_by_key(|(_, p)| (p.1, p.0))
-            .chunks(400);
+            .chunks(1100);
 
         let mut cur_m = 1_usize;
         let mut output_plans = Vec::new();
