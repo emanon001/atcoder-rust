@@ -9,14 +9,39 @@ use proconio::marker::*;
 use std::collections::*;
 
 struct Solver {
+    /**
+     * 栽培の最大期間
+     */
     t: usize,
+    /**
+     * 区画の縦幅
+     */
     h: usize,
+    /**
+     * 区画の横幅
+     */
     w: usize,
+    /**
+     * 出入口の縦方向の位置
+     */
     i0: usize,
+    /**
+     * 横方向の水路の位置
+     */
     h_waterway: Vec<Vec<char>>,
+    /**
+     * 縦方向の水路の位置
+     */
     v_waterway: Vec<Vec<char>>,
+    /**
+     * 作物の種類
+     */
     k: usize,
-    sdv: Vec<(usize, usize)>,
+    /**
+     * 作物の栽培プラン
+     * (〜ヶ月目までに植える必要がある, 〜ヶ月目に収穫する必要がある)
+     */
+    plans: Vec<(usize, usize)>,
 }
 
 struct Input {
@@ -27,7 +52,7 @@ struct Input {
     h_waterway: Vec<Vec<char>>,
     v_waterway: Vec<Vec<char>>,
     k: usize,
-    sdv: Vec<(usize, usize)>,
+    plans: Vec<(usize, usize)>,
 }
 
 struct Plan {
@@ -51,7 +76,7 @@ impl Solver {
             h_waterway: input.h_waterway,
             v_waterway: input.v_waterway,
             k: input.k,
-            sdv: input.sdv,
+            plans: input.plans,
         }
     }
     fn solve(self) -> Output {
@@ -68,7 +93,7 @@ fn main() {
         h_waterway: [Chars; h - 1],
         v_waterway: [Chars; h],
         k: usize,
-        sdv: [(usize, usize); k]
+        plans: [(usize, usize); k]
     };
 
     let input = Input {
@@ -79,7 +104,7 @@ fn main() {
         h_waterway,
         v_waterway,
         k,
-        sdv,
+        plans,
     };
     let solver = Solver::new(input);
     let output = solver.solve();
