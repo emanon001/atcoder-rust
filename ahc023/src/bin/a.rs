@@ -8,6 +8,19 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[macro_export]
+macro_rules! chmax {
+    ($ max : expr , $ v : expr ) => {{
+        let v = $v;
+        if $max < v {
+            $max = v;
+            true
+        } else {
+            false
+        }
+    }};
+}
+
 /**
  * 区画
  */
@@ -52,9 +65,10 @@ struct Ground {
      */
     v_waterway: Vec<Vec<char>>,
     /**
-     * 区画に作物を植えているか
+     * 区画にどの作物を植えているか
      */
-    planted: Vec<Vec<bool>>,
+    planted_map: HashMap<Block, usize>,
+    inverted_planted_map: HashMap<usize, Block>,
 }
 
 /**
@@ -74,15 +88,30 @@ impl Ground {
             h_waterway,
             v_waterway,
             start: (i0, 0),
-            planted: vec![vec![false; w]; h],
+            planted_map: HashMap::new(),
+            inverted_planted_map: HashMap::new(),
         }
     }
 
-    fn plant(&mut self, block: Block) {
+    fn plant(&mut self, block: Block, k: usize) {
         if self.planted_at_grid(&block) {
             panic!("already planted ({:?})", block);
         }
-        self.planted[block.0][block.1] = true;
+        self.planted_map.insert(block, k);
+        self.inverted_planted_map.insert(k, block);
+    }
+
+    fn harvest_all(&mut self) {
+        self.planted_map = HashMap::new();
+        self.inverted_planted_map = HashMap::new();
+    }
+
+    fn harvest(&mut self, k: usize) -> Option<Block> {
+        if let Some(b) = self.inverted_planted_map.remove(&k) {
+            self.planted_map.remove(&b);
+            return Some(b);
+        }
+        None
     }
 
     fn find_far_block(&self) -> Option<Block> {
@@ -166,7 +195,7 @@ impl Ground {
      * 指定した区画に作物を植えたか
      */
     fn planted_at_grid(&self, p: &Block) -> bool {
-        self.planted[p.0][p.1]
+        self.planted_map.contains_key(p)
     }
 }
 
@@ -243,24 +272,35 @@ impl Solver {
     }
     fn solve(self) -> Output {
         let mut ground = Ground::new(self.h, self.w, self.i0, self.h_waterway, self.v_waterway);
-        // 収穫の遅い作物を最初に植える
-        let sorted = self
+        // 収穫までが速い, 植えるまでが速い
+        let chunks = self
             .plans
             .into_iter()
             .enumerate()
-            .sorted_by_key(|(_, p)| -(p.1 as isize))
-            .collect::<Vec<_>>();
+            .sorted_by_key(|(_, p)| (p.1, p.0))
+            .chunks(400);
+
+        let mut cur_m = 1_usize;
         let mut output_plans = Vec::new();
-        for (k, _) in sorted {
-            if let Some((i, j)) = ground.find_far_block() {
-                output_plans.push(Plan {
-                    k: k + 1,
-                    i,
-                    j,
-                    s: 1,
-                });
-                ground.plant((i, j));
+        for chunk in &chunks {
+            let mut next_m = cur_m + 1;
+            for (k, (s, d)) in chunk.sorted_by_key(|(_, p)| (-(p.1 as isize), p.0)) {
+                if s < cur_m {
+                    continue;
+                }
+                if let Some((i, j)) = ground.find_far_block() {
+                    output_plans.push(Plan {
+                        k: k + 1,
+                        i,
+                        j,
+                        s: cur_m,
+                    });
+                    ground.plant((i, j), k + 1);
+                    chmax!(next_m, d + 1);
+                }
             }
+            cur_m = next_m;
+            ground.harvest_all();
         }
 
         Output {

@@ -7,4 +7,7 @@
 - 提出
   - <https://atcoder.jp/contests/ahc023/submissions/45230943>
   - 6317350
-### 
+- [x] 400プランずつ処理する
+- 提出
+  - <https://atcoder.jp/contests/ahc023/submissions/45231227>
+  - 6652550
