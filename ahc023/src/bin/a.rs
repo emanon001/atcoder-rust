@@ -277,16 +277,20 @@ impl Solver {
             .plans
             .into_iter()
             .enumerate()
-            .sorted_by_key(|(_, p)| (p.1, p.0));
-        let head = sorted.clone().take(400);
-        let rest = sorted.skip(400).chunks(1200);
+            .sorted_by_key(|(_, p)| (p.1, p.0))
+            .filter(|(_, p)| p.1 - p.0 >= 7)
+            .collect::<Vec<_>>();
+        // let len = sorted.len();
+        // eprintln!("{}", len);
+        let head = sorted.iter().take(400);
+        let rest = sorted.iter().skip(400).chunks(1200);
 
         let mut cur_m = 1_usize;
         let mut output_plans = Vec::new();
         {
             let mut next_m = cur_m + 1;
             for (k, (s, d)) in head.sorted_by_key(|(_, p)| (-(p.1 as isize), p.0)) {
-                if s < cur_m {
+                if s < &cur_m {
                     continue;
                 }
                 if let Some((i, j)) = ground.find_far_block() {
@@ -307,7 +311,7 @@ impl Solver {
         for chunk in &rest {
             let mut next_m = cur_m + 1;
             for (k, (s, d)) in chunk.sorted_by_key(|(_, p)| (-(p.1 as isize), p.0)) {
-                if s < cur_m {
+                if s < &cur_m {
                     continue;
                 }
                 if let Some((i, j)) = ground.find_far_block() {

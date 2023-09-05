@@ -19,4 +19,7 @@
 - 提出
   - <https://atcoder.jp/contests/ahc023/submissions/45231971>
   - 21752000
-
+- [x] 植えてから収穫までに7ヶ月以上かかる作物のみに絞る
+- 提出
+  - <https://atcoder.jp/contests/ahc023/submissions/45271612>
+  - 22508825
