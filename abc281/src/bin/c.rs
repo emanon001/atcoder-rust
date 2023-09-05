@@ -10,7 +10,20 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, t: i64,
+        av: [i64; n]
     };
+
+    let sum: i64 = av.iter().sum();
+    let pos = t % sum;
+    let mut cur = 0;
+    for (i, a) in av.into_iter().enumerate() {
+        if pos <= cur + a {
+            println!("{} {}", i + 1, pos - cur);
+            return;
+        }
+        cur += a;
+    }
 }
 
 fn main() {
