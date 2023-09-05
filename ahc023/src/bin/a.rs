@@ -101,6 +101,10 @@ impl Ground {
         self.inverted_planted_map.insert(k, block);
     }
 
+    fn planted_count(&self) -> usize {
+        self.planted_map.len()
+    }
+
     fn harvest_all(&mut self) {
         self.planted_map = HashMap::new();
         self.inverted_planted_map = HashMap::new();
@@ -277,56 +281,55 @@ impl Solver {
             .plans
             .into_iter()
             .enumerate()
-            .sorted_by_key(|(_, p)| (p.1, p.0))
+            .map(|(k, p)| (k + 1, p))
             .filter(|(_, p)| p.1 - p.0 >= 7)
+            .sorted_by_key(|(_, p)| (p.1, p.0))
             .collect::<Vec<_>>();
         // let len = sorted.len();
         // eprintln!("{}", len);
-        let head = sorted.iter().take(400);
-        let rest = sorted.iter().skip(400).chunks(1200);
 
-        let mut cur_m = 1_usize;
         let mut output_plans = Vec::new();
-        {
-            let mut next_m = cur_m + 1;
-            for (k, (s, d)) in head.sorted_by_key(|(_, p)| (-(p.1 as isize), p.0)) {
-                if s < &cur_m {
-                    continue;
-                }
-                if let Some((i, j)) = ground.find_far_block() {
-                    output_plans.push(Plan {
-                        k: k + 1,
-                        i,
-                        j,
-                        s: cur_m,
-                    });
-                    ground.plant((i, j), k + 1);
-                    chmax!(next_m, d + 1);
-                }
+        let mut cur_plans = Vec::new();
+        let mut cur_month = 1;
+        let mut next_month = 1;
+        for (k, (s, d)) in sorted {
+            if s < cur_month {
+                continue;
             }
-            cur_m = next_m;
-            ground.harvest_all();
+
+            cur_plans.push((k, (s, d)));
+
+            if cur_plans.len() == 400 {
+                for (k, (_, d)) in cur_plans.into_iter().rev() {
+                    if let Some((i, j)) = ground.find_far_block() {
+                        output_plans.push(Plan {
+                            k,
+                            i,
+                            j,
+                            s: cur_month,
+                        });
+                        ground.plant((i, j), k);
+                        chmax!(next_month, d + 1);
+                    }
+                }
+
+                ground.harvest_all();
+                cur_plans = Vec::new();
+                cur_month = next_month;
+                next_month = cur_month + 1;
+            }
         }
 
-        for chunk in &rest {
-            let mut next_m = cur_m + 1;
-            for (k, (s, d)) in chunk.sorted_by_key(|(_, p)| (-(p.1 as isize), p.0)) {
-                if s < &cur_m {
-                    continue;
-                }
-                if let Some((i, j)) = ground.find_far_block() {
-                    output_plans.push(Plan {
-                        k: k + 1,
-                        i,
-                        j,
-                        s: cur_m,
-                    });
-                    ground.plant((i, j), k + 1);
-                    chmax!(next_m, d + 1);
-                }
+        for (k, _) in cur_plans.into_iter().rev() {
+            if let Some((i, j)) = ground.find_far_block() {
+                output_plans.push(Plan {
+                    k,
+                    i,
+                    j,
+                    s: cur_month,
+                });
+                ground.plant((i, j), k);
             }
-            cur_m = next_m;
-            ground.harvest_all();
         }
 
         Output {

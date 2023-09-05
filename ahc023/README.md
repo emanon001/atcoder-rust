@@ -23,3 +23,7 @@
 - 提出
   - <https://atcoder.jp/contests/ahc023/submissions/45271612>
   - 22508825
+- [x] 収穫までが速い作物を前から順に処理
+- 提出
+  - <https://atcoder.jp/contests/ahc023/submissions/45272579>
+  - 23130925
