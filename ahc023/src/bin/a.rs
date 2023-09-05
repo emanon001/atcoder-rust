@@ -282,7 +282,7 @@ impl Solver {
             .into_iter()
             .enumerate()
             .map(|(k, p)| (k + 1, p))
-            .filter(|(_, p)| p.1 - p.0 >= 7)
+            .filter(|(_, p)| (6..).contains(&(p.1 - p.0)))
             .sorted_by_key(|(_, p)| (p.1, p.0))
             .collect::<Vec<_>>();
         // let len = sorted.len();

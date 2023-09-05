@@ -23,7 +23,11 @@
 - 提出
   - <https://atcoder.jp/contests/ahc023/submissions/45271612>
   - 22508825
-- [x] 収穫までが速い作物を前から順に処理
+- [x] 収穫までが早い作物を前から順に処理
 - 提出
   - <https://atcoder.jp/contests/ahc023/submissions/45272579>
   - 23130925
+- [x] 植えてから収穫までに6ヶ月以上かかる作物のみに絞る
+- 提出
+  - <https://atcoder.jp/contests/ahc023/submissions/45273007>
+  - 23494800
