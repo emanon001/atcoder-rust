@@ -35,3 +35,6 @@
 - 提出
   - <https://atcoder.jp/contests/ahc023/submissions/45314209>
   - 23684250
+- [x] ランダムにN個の作物を貯めてから、スコアの高い作物のみに絞る
+  - <https://atcoder.jp/contests/ahc023/submissions/45314733>
+  - 24860825

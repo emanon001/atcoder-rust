@@ -5,9 +5,11 @@ use num::*;
 use proconio::input;
 #[allow(unused_imports)]
 use proconio::marker::*;
-use std::cmp::Reverse;
+use rand::prelude::*;
 #[allow(unused_imports)]
 use std::collections::*;
+use std::time::Instant;
+use std::{cmp::Reverse, time::Duration};
 
 #[macro_export]
 macro_rules! chmax {
@@ -204,6 +206,29 @@ impl Ground {
     }
 }
 
+struct Input {
+    t: usize,
+    h: usize,
+    w: usize,
+    i0: usize,
+    h_waterway: Vec<Vec<char>>,
+    v_waterway: Vec<Vec<char>>,
+    k: usize,
+    plans: Vec<(usize, usize)>,
+}
+
+struct OutputPlan {
+    k: usize,
+    i: usize,
+    j: usize,
+    s: usize,
+}
+struct Output {
+    m: usize,
+    plans: Vec<OutputPlan>,
+    score: u64,
+}
+
 struct Solver {
     /**
      * 栽培の最大期間
@@ -238,28 +263,16 @@ struct Solver {
      * (〜ヶ月目までに植える必要がある, 〜ヶ月目に収穫する必要がある)
      */
     plans: Vec<(usize, usize)>,
+    /**
+     * 乱数生成器
+     */
+    rng: ThreadRng,
 }
 
-struct Input {
-    t: usize,
-    h: usize,
-    w: usize,
-    i0: usize,
-    h_waterway: Vec<Vec<char>>,
-    v_waterway: Vec<Vec<char>>,
-    k: usize,
-    plans: Vec<(usize, usize)>,
-}
-
-struct Plan {
-    k: usize,
-    i: usize,
-    j: usize,
-    s: usize,
-}
-struct Output {
-    m: usize,
-    plans: Vec<Plan>,
+type Plan = (usize, usize);
+type PlanWithId = (usize, Plan);
+struct RandValues {
+    max_batch_item_count: usize,
 }
 
 impl Solver {
@@ -273,43 +286,82 @@ impl Solver {
             v_waterway: input.v_waterway,
             k: input.k,
             plans: input.plans,
+            rng: thread_rng(),
         }
     }
-    fn solve(self) -> Output {
-        let mut ground = Ground::new(self.h, self.w, self.i0, self.h_waterway, self.v_waterway);
+    fn solve(&mut self) -> Output {
+        let start = Instant::now();
+
+        let mut ground = Ground::new(
+            self.h,
+            self.w,
+            self.i0,
+            self.h_waterway.clone(),
+            self.v_waterway.clone(),
+        );
         // 収穫までが速い, 植えるまでが速い
         let sorted = self
             .plans
-            .into_iter()
+            .iter()
+            .copied()
             .enumerate()
             .map(|(k, p)| (k + 1, p))
             .filter(|(_, p)| (6..).contains(&(p.1 - p.0)))
             .sorted_by_key(|(_, p)| (p.1, p.0 as isize))
             .collect::<Vec<_>>();
-        // let len = sorted.len();
-        // eprintln!("{}", len);
 
+        // 時間の許す限り繰り返す
+        let mut max_output: Output = Output {
+            m: 0,
+            plans: vec![],
+            score: 0,
+        };
+        loop {
+            let now = Instant::now();
+            if now - start >= Duration::from_millis(1900) {
+                break;
+            }
+            let rand_values = RandValues {
+                max_batch_item_count: self.rng.gen_range(400..=650),
+            };
+            let cur_output = self.simulate(sorted.clone(), &mut ground, rand_values);
+            if cur_output.score > max_output.score {
+                max_output = cur_output;
+            }
+            ground.harvest_all();
+        }
+
+        max_output
+    }
+
+    fn simulate(
+        &mut self,
+        input_plans: Vec<PlanWithId>,
+        ground: &mut Ground,
+        rand_values: RandValues,
+    ) -> Output {
+        let mut score = 0_u64;
         let mut output_plans = Vec::new();
         let mut cur_plans = Vec::new();
         let mut cur_month = 1;
         let mut next_month = 1;
-        for (k, (s, d)) in sorted {
+        for (k, (s, d)) in input_plans {
             if s < cur_month {
                 continue;
             }
 
             cur_plans.push((k, (s, d)));
 
-            if cur_plans.len() == 600 {
+            if cur_plans.len() == rand_values.max_batch_item_count {
                 let sorted = cur_plans
                     .iter()
                     .copied()
                     .sorted_by_key(|(_, p)| Reverse(p.1 - p.0))
                     .take(400)
                     .sorted_by_key(|(_, p)| Reverse(p.1));
-                for (k, (_, d)) in sorted {
+                for (k, (s, d)) in sorted {
                     if let Some((i, j)) = ground.find_far_block() {
-                        output_plans.push(Plan {
+                        output_plans.push(OutputPlan {
                             k,
                             i,
                             j,
@@ -317,6 +369,7 @@ impl Solver {
                         });
                         ground.plant((i, j), k);
                         chmax!(next_month, d + 1);
+                        score += (d - s + 1) as u64;
                     }
                 }
 
@@ -327,21 +380,29 @@ impl Solver {
             }
         }
 
-        for (k, _) in cur_plans.into_iter().rev() {
+        let sorted = cur_plans
+            .iter()
+            .copied()
+            .sorted_by_key(|(_, p)| Reverse(p.1 - p.0))
+            .take(400)
+            .sorted_by_key(|(_, p)| Reverse(p.1));
+        for (k, (s, d)) in sorted {
             if let Some((i, j)) = ground.find_far_block() {
-                output_plans.push(Plan {
+                output_plans.push(OutputPlan {
                     k,
                     i,
                     j,
                     s: cur_month,
                 });
                 ground.plant((i, j), k);
+                score += (d - s + 1) as u64;
             }
         }
 
         Output {
             m: output_plans.len(),
             plans: output_plans,
+            score,
         }
     }
 }
@@ -365,7 +426,7 @@ fn main() {
         k,
         plans,
     };
-    let solver = Solver::new(input);
+    let mut solver = Solver::new(input);
     let output = solver.solve();
     println!("{}", output.m);
     println!(
