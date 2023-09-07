@@ -121,6 +121,29 @@ impl Ground {
         None
     }
 
+    fn calculate_far_blocks(&self) -> VecDeque<Block> {
+        let mut visited: Vec<Vec<bool>> = vec![vec![false; self.w]; self.h];
+        visited[self.start.0][self.start.1] = true;
+        let mut que = VecDeque::new();
+        que.push_back(self.start);
+
+        let mut far_blocks = VecDeque::new();
+        let dirs = Direction::all();
+        while let Some(block) = que.pop_front() {
+            far_blocks.push_front(block);
+            for d in &dirs {
+                if let Some(new_block) = self.move_block(&block, d) {
+                    if visited[new_block.0][new_block.1] {
+                        continue;
+                    }
+                    visited[new_block.0][new_block.1] = true;
+                    que.push_back(new_block);
+                }
+            }
+        }
+        far_blocks
+    }
+
     fn find_far_block(&self) -> Option<Block> {
         if self.planted_at_grid(&self.start) {
             return None;
@@ -271,10 +294,6 @@ struct Solver {
 
 type Plan = (usize, usize);
 type PlanWithId = (usize, Plan);
-struct RandValues {
-    max_batch_item_count: usize,
-}
-
 impl Solver {
     fn new(input: Input) -> Self {
         Self {
@@ -316,20 +335,24 @@ impl Solver {
             plans: vec![],
             score: 0,
         };
-        loop {
-            let now = Instant::now();
-            if now - start >= Duration::from_millis(1900) {
-                break;
-            }
-            let rand_values = RandValues {
-                max_batch_item_count: self.rng.gen_range(400..=650),
-            };
-            let cur_output = self.simulate(sorted.clone(), &mut ground, rand_values);
+        for max_item_count in 400..=2000 {
+            let cur_output = self.simulate(sorted.clone(), &mut ground, max_item_count);
             if cur_output.score > max_output.score {
                 max_output = cur_output;
             }
-            ground.harvest_all();
         }
+
+        // loop {
+        //     let now = Instant::now();
+        //     if now - start >= Duration::from_millis(1900) {
+        //         break;
+        //     }
+        //     let cur_output = self.simulate(sorted.clone(), &mut ground);
+        //     if cur_output.score > max_output.score {
+        //         max_output = cur_output;
+        //     }
+        //     ground.harvest_all();
+        // }
 
         max_output
     }
@@ -338,13 +361,15 @@ impl Solver {
         &mut self,
         input_plans: Vec<PlanWithId>,
         ground: &mut Ground,
-        rand_values: RandValues,
+        max_item_count: usize,
     ) -> Output {
         let mut score = 0_u64;
         let mut output_plans = Vec::new();
         let mut cur_plans = Vec::new();
         let mut cur_month = 1;
         let mut next_month = 1;
+        // let max_item_count = self.rng.gen_range(400..=1200);
+        let far_blocks = ground.calculate_far_blocks();
         for (k, (s, d)) in input_plans {
             if s < cur_month {
                 continue;
@@ -352,28 +377,24 @@ impl Solver {
 
             cur_plans.push((k, (s, d)));
 
-            if cur_plans.len() == rand_values.max_batch_item_count {
+            if cur_plans.len() == max_item_count {
                 let sorted = cur_plans
                     .iter()
                     .copied()
                     .sorted_by_key(|(_, p)| Reverse(p.1 - p.0))
                     .take(400)
                     .sorted_by_key(|(_, p)| Reverse(p.1));
-                for (k, (s, d)) in sorted {
-                    if let Some((i, j)) = ground.find_far_block() {
-                        output_plans.push(OutputPlan {
-                            k,
-                            i,
-                            j,
-                            s: cur_month,
-                        });
-                        ground.plant((i, j), k);
-                        chmax!(next_month, d + 1);
-                        score += (d - s + 1) as u64;
-                    }
+                for ((k, (s, d)), &(i, j)) in sorted.zip(far_blocks.iter()) {
+                    output_plans.push(OutputPlan {
+                        k,
+                        i,
+                        j,
+                        s: cur_month,
+                    });
+                    chmax!(next_month, d + 1);
+                    score += (d - s + 1) as u64;
                 }
 
-                ground.harvest_all();
                 cur_plans = Vec::new();
                 cur_month = next_month;
                 next_month = cur_month + 1;
@@ -386,17 +407,14 @@ impl Solver {
             .sorted_by_key(|(_, p)| Reverse(p.1 - p.0))
             .take(400)
             .sorted_by_key(|(_, p)| Reverse(p.1));
-        for (k, (s, d)) in sorted {
-            if let Some((i, j)) = ground.find_far_block() {
-                output_plans.push(OutputPlan {
-                    k,
-                    i,
-                    j,
-                    s: cur_month,
-                });
-                ground.plant((i, j), k);
-                score += (d - s + 1) as u64;
-            }
+        for ((k, (s, d)), &(i, j)) in sorted.zip(far_blocks.iter()) {
+            output_plans.push(OutputPlan {
+                k,
+                i,
+                j,
+                s: cur_month,
+            });
+            score += (d - s + 1) as u64;
         }
 
         Output {
