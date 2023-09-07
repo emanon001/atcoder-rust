@@ -41,3 +41,6 @@
 - [x] 遠い区画の計算を高速化
   - <https://atcoder.jp/contests/ahc023/submissions/45315549>
   - 24992125
+- [x] 作物のフィルタリングを削除
+  - <https://atcoder.jp/contests/ahc023/submissions/45315746>
+  - 25046175

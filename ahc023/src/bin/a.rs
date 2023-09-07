@@ -325,7 +325,6 @@ impl Solver {
             .copied()
             .enumerate()
             .map(|(k, p)| (k + 1, p))
-            .filter(|(_, p)| (6..).contains(&(p.1 - p.0)))
             .sorted_by_key(|(_, p)| (p.1, p.0 as isize))
             .collect::<Vec<_>>();
 
