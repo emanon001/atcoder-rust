@@ -31,3 +31,7 @@
 - 提出
   - <https://atcoder.jp/contests/ahc023/submissions/45273007>
   - 23494800
+- [x] 600個の作物を貯めてから、スコアの高い作物のみに絞る
+- 提出
+  - <https://atcoder.jp/contests/ahc023/submissions/45314209>
+  - 23684250

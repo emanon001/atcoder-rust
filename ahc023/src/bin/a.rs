@@ -5,6 +5,7 @@ use num::*;
 use proconio::input;
 #[allow(unused_imports)]
 use proconio::marker::*;
+use std::cmp::Reverse;
 #[allow(unused_imports)]
 use std::collections::*;
 
@@ -283,7 +284,7 @@ impl Solver {
             .enumerate()
             .map(|(k, p)| (k + 1, p))
             .filter(|(_, p)| (6..).contains(&(p.1 - p.0)))
-            .sorted_by_key(|(_, p)| (p.1, p.0))
+            .sorted_by_key(|(_, p)| (p.1, p.0 as isize))
             .collect::<Vec<_>>();
         // let len = sorted.len();
         // eprintln!("{}", len);
@@ -299,8 +300,14 @@ impl Solver {
 
             cur_plans.push((k, (s, d)));
 
-            if cur_plans.len() == 400 {
-                for (k, (_, d)) in cur_plans.into_iter().rev() {
+            if cur_plans.len() == 600 {
+                let sorted = cur_plans
+                    .iter()
+                    .copied()
+                    .sorted_by_key(|(_, p)| Reverse(p.1 - p.0))
+                    .take(400)
+                    .sorted_by_key(|(_, p)| Reverse(p.1));
+                for (k, (_, d)) in sorted {
                     if let Some((i, j)) = ground.find_far_block() {
                         output_plans.push(Plan {
                             k,
