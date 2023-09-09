@@ -246,8 +246,7 @@ struct OutputPlan {
     j: usize,
     s: usize,
 }
-struct Output {
-    m: usize,
+struct CalculateResult {
     plans: Vec<OutputPlan>,
     score: u64,
 }
@@ -308,7 +307,7 @@ impl Solver {
             rng: thread_rng(),
         }
     }
-    fn solve(&mut self) -> Output {
+    fn solve(&mut self) -> CalculateResult {
         let start = Instant::now();
 
         let mut ground = Ground::new(
@@ -325,12 +324,11 @@ impl Solver {
             .copied()
             .enumerate()
             .map(|(k, p)| (k + 1, p))
-            .sorted_by_key(|(_, p)| (p.1, p.0 as isize))
+            .sorted_by_key(|(_, p)| (p.1, p.0))
             .collect::<Vec<_>>();
 
         // 時間の許す限り繰り返す
-        let mut max_output: Output = Output {
-            m: 0,
+        let mut max_output: CalculateResult = CalculateResult {
             plans: vec![],
             score: 0,
         };
@@ -361,7 +359,7 @@ impl Solver {
         input_plans: Vec<PlanWithId>,
         ground: &mut Ground,
         max_item_count: usize,
-    ) -> Output {
+    ) -> CalculateResult {
         let mut score = 0_u64;
         let mut output_plans = Vec::new();
         let mut cur_plans = Vec::new();
@@ -416,8 +414,7 @@ impl Solver {
             score += (d - s + 1) as u64;
         }
 
-        Output {
-            m: output_plans.len(),
+        CalculateResult {
             plans: output_plans,
             score,
         }
@@ -445,7 +442,7 @@ fn main() {
     };
     let mut solver = Solver::new(input);
     let output = solver.solve();
-    println!("{}", output.m);
+    println!("{}", output.plans.len());
     println!(
         "{}",
         output
