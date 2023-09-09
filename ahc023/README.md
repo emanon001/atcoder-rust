@@ -42,5 +42,11 @@
   - <https://atcoder.jp/contests/ahc023/submissions/45315549>
   - 24992125
 - [x] 作物のフィルタリングを削除
+  - 50138600
   - <https://atcoder.jp/contests/ahc023/submissions/45315746>
   - 25046175
+- [x] 最低のスコアを0..=8の範囲で取り除く
+  - 50177975
+  - <https://atcoder.jp/contests/ahc023/submissions/45427206>
+  - 25074600
+

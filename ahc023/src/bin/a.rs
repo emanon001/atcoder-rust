@@ -291,9 +291,10 @@ struct Solver {
     rng: ThreadRng,
 }
 
-struct SimulationVars {
+struct SimulationVars<'a> {
     max_item_count: usize,
     min_score: usize,
+    far_blocks: &'a VecDeque<Block>,
 }
 
 type Plan = (usize, usize);
@@ -338,23 +339,26 @@ impl Solver {
             score: 0,
         };
         let mut _max_item_count = 0;
-        // 'outer: loop {
-        for max_item_count in 400..=1500 {
-            // let now = Instant::now();
-            // if now - start >= Duration::from_millis(1900) {
-            //     break 'outer;
-            // }
-            _max_item_count = max_item_count;
-            // for min_score in 0..=6 {
-            let simulation_vars = SimulationVars {
-                max_item_count,
-                min_score: 0,
-            };
-            let cur_output = self.simulate(&sorted, &mut ground, simulation_vars);
-            if cur_output.score > max_output.score {
-                max_output = cur_output;
+        let far_blocks = ground.calculate_far_blocks();
+        for max_item_count in 400..=1600 {
+            if max_item_count % 50 == 0 {
+                let now = Instant::now();
+                if now - start >= Duration::from_millis(1800) {
+                    break;
+                }
             }
-            // }
+            _max_item_count = max_item_count;
+            for min_score in 0..=8 {
+                let simulation_vars = SimulationVars {
+                    max_item_count,
+                    min_score,
+                    far_blocks: &far_blocks,
+                };
+                let cur_output = self.simulate(&sorted, &mut ground, simulation_vars);
+                if cur_output.score > max_output.score {
+                    max_output = cur_output;
+                }
+            }
         }
         // }
         eprintln!(
@@ -381,7 +385,7 @@ impl Solver {
     fn simulate(
         &mut self,
         input_plans: &Vec<PlanWithId>,
-        ground: &mut Ground,
+        _ground: &mut Ground,
         simulation_vars: SimulationVars,
     ) -> CalculateResult {
         let mut score = 0_u64;
@@ -389,7 +393,6 @@ impl Solver {
         let mut cur_plans = Vec::new();
         let mut cur_month = 1;
         let mut next_month = 1;
-        let far_blocks = ground.calculate_far_blocks();
         for (k, (s, d)) in input_plans {
             if s < &cur_month {
                 continue;
@@ -407,7 +410,7 @@ impl Solver {
                     .sorted_by_key(|(_, p)| Reverse(p.1 - p.0))
                     .take(400)
                     .sorted_by_key(|(_, p)| Reverse(p.1));
-                for ((&k, (s, d)), &(i, j)) in sorted.zip(far_blocks.iter()) {
+                for ((&k, (s, d)), &(i, j)) in sorted.zip(simulation_vars.far_blocks.iter()) {
                     output_plans.push(OutputPlan {
                         k,
                         i,
@@ -430,7 +433,7 @@ impl Solver {
             .sorted_by_key(|(_, p)| Reverse(p.1 - p.0))
             .take(400)
             .sorted_by_key(|(_, p)| Reverse(p.1));
-        for ((&k, (s, d)), &(i, j)) in sorted.zip(far_blocks.iter()) {
+        for ((&k, (s, d)), &(i, j)) in sorted.zip(simulation_vars.far_blocks.iter()) {
             output_plans.push(OutputPlan {
                 k,
                 i,
