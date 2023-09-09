@@ -291,6 +291,11 @@ struct Solver {
     rng: ThreadRng,
 }
 
+struct SimulationVars {
+    max_item_count: usize,
+    min_score: usize,
+}
+
 type Plan = (usize, usize);
 type PlanWithId = (usize, Plan);
 impl Solver {
@@ -332,12 +337,31 @@ impl Solver {
             plans: vec![],
             score: 0,
         };
-        for max_item_count in 400..=2000 {
-            let cur_output = self.simulate(sorted.clone(), &mut ground, max_item_count);
+        let mut _max_item_count = 0;
+        // 'outer: loop {
+        for max_item_count in 400..=1500 {
+            // let now = Instant::now();
+            // if now - start >= Duration::from_millis(1900) {
+            //     break 'outer;
+            // }
+            _max_item_count = max_item_count;
+            // for min_score in 0..=6 {
+            let simulation_vars = SimulationVars {
+                max_item_count,
+                min_score: 0,
+            };
+            let cur_output = self.simulate(&sorted, &mut ground, simulation_vars);
             if cur_output.score > max_output.score {
                 max_output = cur_output;
             }
+            // }
         }
+        // }
+        eprintln!(
+            "max_item_count: {}, time: {:?}",
+            _max_item_count,
+            Instant::now() - start
+        );
 
         // loop {
         //     let now = Instant::now();
@@ -356,32 +380,34 @@ impl Solver {
 
     fn simulate(
         &mut self,
-        input_plans: Vec<PlanWithId>,
+        input_plans: &Vec<PlanWithId>,
         ground: &mut Ground,
-        max_item_count: usize,
+        simulation_vars: SimulationVars,
     ) -> CalculateResult {
         let mut score = 0_u64;
         let mut output_plans = Vec::new();
         let mut cur_plans = Vec::new();
         let mut cur_month = 1;
         let mut next_month = 1;
-        // let max_item_count = self.rng.gen_range(400..=1200);
         let far_blocks = ground.calculate_far_blocks();
         for (k, (s, d)) in input_plans {
-            if s < cur_month {
+            if s < &cur_month {
+                continue;
+            }
+            if (d - s) < simulation_vars.min_score {
                 continue;
             }
 
             cur_plans.push((k, (s, d)));
 
-            if cur_plans.len() == max_item_count {
+            if cur_plans.len() == simulation_vars.max_item_count {
                 let sorted = cur_plans
                     .iter()
                     .copied()
                     .sorted_by_key(|(_, p)| Reverse(p.1 - p.0))
                     .take(400)
                     .sorted_by_key(|(_, p)| Reverse(p.1));
-                for ((k, (s, d)), &(i, j)) in sorted.zip(far_blocks.iter()) {
+                for ((&k, (s, d)), &(i, j)) in sorted.zip(far_blocks.iter()) {
                     output_plans.push(OutputPlan {
                         k,
                         i,
@@ -404,7 +430,7 @@ impl Solver {
             .sorted_by_key(|(_, p)| Reverse(p.1 - p.0))
             .take(400)
             .sorted_by_key(|(_, p)| Reverse(p.1));
-        for ((k, (s, d)), &(i, j)) in sorted.zip(far_blocks.iter()) {
+        for ((&k, (s, d)), &(i, j)) in sorted.zip(far_blocks.iter()) {
             output_plans.push(OutputPlan {
                 k,
                 i,
