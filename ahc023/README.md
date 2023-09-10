@@ -57,6 +57,14 @@
   - 52098275
   - <https://atcoder.jp/contests/ahc023/submissions/45439046>
   - 26199975
+- [x] 高速化
+  - 55325325
+  - <https://atcoder.jp/contests/ahc023/submissions/45440348>
+  - 27575050
+
+
+
+
 
 
 

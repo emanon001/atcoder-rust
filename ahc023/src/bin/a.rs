@@ -72,11 +72,11 @@ struct Ground {
     /**
      * 区画にどの作物を植えているか
      */
-    planted_map: HashMap<Block, Crop>,
-    crop_to_planted_block: HashMap<usize, Block>,
+    planted_map: Vec<Vec<Option<Crop>>>,
+    crop_to_planted_block: Vec<Option<Block>>,
 
     far_blocks_with_cost: VecDeque<BlockWithDistance>,
-    block_to_distance: HashMap<Block, usize>,
+    block_to_distance: Vec<Vec<usize>>,
     plantable_blocks: BTreeSet<DistanceWithBlock>,
 }
 
@@ -95,6 +95,7 @@ impl Ground {
         i0: usize,
         h_waterway: Vec<Vec<char>>,
         v_waterway: Vec<Vec<char>>,
+        crop_count: usize,
     ) -> Self {
         let ground = Self {
             h,
@@ -102,10 +103,10 @@ impl Ground {
             h_waterway,
             v_waterway,
             start: (i0, 0),
-            planted_map: HashMap::new(),
-            crop_to_planted_block: HashMap::new(),
+            planted_map: vec![vec![None; 20]; 20],
+            crop_to_planted_block: vec![None; crop_count + 1], // 1-origin
             far_blocks_with_cost: VecDeque::new(),
-            block_to_distance: HashMap::new(),
+            block_to_distance: vec![vec![0; 20]; 20],
             plantable_blocks: BTreeSet::new(),
         };
         ground.init()
@@ -113,16 +114,14 @@ impl Ground {
 
     fn init(mut self) -> Self {
         self.far_blocks_with_cost = self.calculate_far_blocks();
-        let mut block_to_distance = HashMap::new();
         let mut distance_to_blocks = BTreeMap::new();
         for &(b, d) in &self.far_blocks_with_cost {
-            block_to_distance.insert(b, d);
+            self.block_to_distance[b.0][b.1] = d;
             distance_to_blocks
                 .entry(d)
                 .or_insert(BTreeSet::new())
                 .insert(b);
         }
-        self.block_to_distance = block_to_distance;
         let mut plantable_blocks = BTreeSet::new();
         for (k, v) in distance_to_blocks {
             for v2 in v {
@@ -137,22 +136,30 @@ impl Ground {
         if self.planted_at_grid(&block) {
             panic!("already planted ({:?})", block);
         }
-        self.planted_map.insert(block, crop);
-        self.crop_to_planted_block.insert(crop.0, block);
-        let distance = self.block_to_distance[&block];
+        self.planted_map[block.0][block.1] = crop.into();
+        self.crop_to_planted_block[crop.0] = Some(block);
+        let distance = self.get_distance(&block);
         self.plantable_blocks.remove(&(distance, block));
     }
 
+    fn get_distance(&self, block: &Block) -> usize {
+        self.block_to_distance[block.0][block.1]
+    }
+
+    fn get_planted_crop(&self, block: &Block) -> Option<Crop> {
+        self.planted_map[block.0][block.1]
+    }
+
     fn harvest(&mut self, crop: Crop) -> Option<Block> {
-        if let Some(b) = self.crop_to_planted_block.remove(&crop.0) {
-            self.planted_map.remove(&b);
-            let distance = self.block_to_distance[&b];
+        if let Some(b) = self.crop_to_planted_block[crop.0] {
+            self.planted_map[b.0][b.1] = None;
+            let distance = self.get_distance(&b);
             self.plantable_blocks.insert((distance, b));
             for b in self
                 .calculate_around_blocks_reachable_at_harvest(b, 0)
                 .reachable_blocks
             {
-                let distance = self.block_to_distance[&b];
+                let distance = self.get_distance(&b);
                 self.plantable_blocks.insert((distance, b));
             }
             return Some(b);
@@ -223,7 +230,7 @@ impl Ground {
         // 上下左右の区画から見た時に収穫が可能か確認する
         for d in &dirs {
             if let Some(around_block) = self.move_block(&fill_block, d, false) {
-                let around_crop = self.planted_map.get(&around_block).unwrap_or(&(0, (0, 0)));
+                let around_crop = self.get_planted_crop(&around_block).unwrap_or_default();
 
                 let mut visited: Vec<Vec<bool>> = vec![vec![false; self.w]; self.h];
                 visited[around_block.0][around_block.1] = true;
@@ -241,8 +248,8 @@ impl Ground {
                             if new_block == fill_block && around_crop.1 .1 < fill_d {
                                 continue;
                             }
-                            if let Some((_, (_, d))) = self.planted_map.get(&new_block) {
-                                if around_crop.1 .1 < *d {
+                            if let Some((_, (_, d))) = self.get_planted_crop(&new_block) {
+                                if around_crop.1 .1 < d {
                                     continue;
                                 }
                             }
@@ -318,7 +325,7 @@ impl Ground {
      * 指定した区画に作物を植えたか
      */
     fn planted_at_grid(&self, p: &Block) -> bool {
-        self.planted_map.contains_key(p)
+        self.get_planted_crop(p).is_some()
     }
 }
 
@@ -409,6 +416,7 @@ impl Solver {
             self.i0,
             self.h_waterway.clone(),
             self.v_waterway.clone(),
+            self.k,
         );
 
         let sorted = self
@@ -455,11 +463,10 @@ impl Solver {
                     }
 
                     let check_result = ground.calculate_around_blocks_reachable_at_harvest(b, d);
-                    // TLEになる
-                    // for b in check_result.reachable_blocks {
-                    //     let distance = ground.block_to_distance[&b];
-                    //     ground.plantable_blocks.insert((distance, b));
-                    // }
+                    for b in check_result.reachable_blocks {
+                        let distance = ground.get_distance(&b);
+                        ground.plantable_blocks.insert((distance, b));
+                    }
                     let mut ok = true;
                     if !check_result.unreachable_blocks.is_empty() {
                         ok = false;
@@ -478,7 +485,7 @@ impl Solver {
                     break;
                 }
                 for b in &unreachable_blocks {
-                    let key = (ground.block_to_distance[b], b.clone());
+                    let key = (ground.get_distance(b), *b);
                     ground.plantable_blocks.remove(&key);
                 }
             }
