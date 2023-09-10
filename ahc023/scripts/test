@@ -1,0 +1,14 @@
+#!/bin/bash -eu
+
+cd "$(dirname ${0})"
+cd ..
+
+cargo build --release --bin a
+cd tools
+cargo build --release --bin gen
+cargo build --release --bin vis
+mkdir -p out
+echo -n > out/score.txt
+seq -f "%04g" -w 0 99 \
+  | xargs -P8 -I{} bash -c '../../target/release/a < in/{}.txt 1> out/{}.txt && ../../target/release/vis in/{}.txt out/{}.txt >>out/score.txt'
+ruby -e "n = 100; puts n.times.map { gets.split('= ')[1].to_i }.sum" < out/score.txt
