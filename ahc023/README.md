@@ -61,6 +61,18 @@
   - 55325325
   - <https://atcoder.jp/contests/ahc023/submissions/45440348>
   - 27575050
+- [x] 植えた時と、収穫時に周囲マスの確認を行わない
+  - 57453200
+  - <https://atcoder.jp/contests/ahc023/submissions/45441848>
+  - 28709700
+
+
+
+
+
+
+
+
 
 
 

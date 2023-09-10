@@ -145,28 +145,28 @@ impl Ground {
         // }
     }
 
+    fn harvest(&mut self, crop: Crop) -> Option<Block> {
+        if let Some(b) = self.crop_to_planted_block[crop.0] {
+            self.planted_map[b.0][b.1] = None;
+            let distance = self.get_distance(&b);
+            self.plantable_blocks.insert((distance, b));
+            // for b in self
+            //     .calculate_around_blocks_reachable_on_harvest(b, 0)
+            //     .reachable_blocks
+            // {
+            //     self.add_plantable_block(b);
+            // }
+            return Some(b);
+        }
+        None
+    }
+
     fn get_distance(&self, block: &Block) -> usize {
         self.block_to_distance[block.0][block.1]
     }
 
     fn get_planted_crop(&self, block: &Block) -> Option<Crop> {
         self.planted_map[block.0][block.1]
-    }
-
-    fn harvest(&mut self, crop: Crop) -> Option<Block> {
-        if let Some(b) = self.crop_to_planted_block[crop.0] {
-            self.planted_map[b.0][b.1] = None;
-            let distance = self.get_distance(&b);
-            self.plantable_blocks.insert((distance, b));
-            for b in self
-                .calculate_around_blocks_reachable_on_harvest(b, 0)
-                .reachable_blocks
-            {
-                self.add_plantable_block(b);
-            }
-            return Some(b);
-        }
-        None
     }
 
     fn calculate_far_blocks(&self) -> VecDeque<BlockWithDistance> {
