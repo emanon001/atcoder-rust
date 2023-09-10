@@ -28,7 +28,8 @@ macro_rules! chmax {
  */
 type Block = (usize, usize);
 
-type BlockWithCost = (Block, usize);
+type BlockWithDistance = (Block, usize);
+type DistanceWithBlock = (usize, Block);
 
 #[derive(Copy, Clone)]
 enum Direction {
@@ -74,9 +75,9 @@ struct Ground {
     planted_map: HashMap<Block, Crop>,
     crop_to_planted_block: HashMap<usize, Block>,
 
-    far_blocks_with_cost: VecDeque<BlockWithCost>,
+    far_blocks_with_cost: VecDeque<BlockWithDistance>,
     block_to_distance: HashMap<Block, usize>,
-    plantable_blocks: BTreeSet<(usize, Block)>,
+    plantable_blocks: BTreeSet<DistanceWithBlock>,
 }
 
 struct CalcAroundBlocksReachableAtHarvest {
@@ -159,7 +160,7 @@ impl Ground {
         None
     }
 
-    fn calculate_far_blocks(&self) -> VecDeque<BlockWithCost> {
+    fn calculate_far_blocks(&self) -> VecDeque<BlockWithDistance> {
         if self.planted_at_grid(&self.start) {
             return VecDeque::new();
         }
@@ -168,7 +169,7 @@ impl Ground {
         let mut que = VecDeque::new();
         que.push_back((self.start, 1));
 
-        let mut far_blocks: VecDeque<BlockWithCost> = VecDeque::new();
+        let mut far_blocks: VecDeque<BlockWithDistance> = VecDeque::new();
         let dirs = Direction::all();
         while let Some((block, cost)) = que.pop_front() {
             far_blocks.push_front((block, cost));
@@ -185,9 +186,9 @@ impl Ground {
         far_blocks
     }
 
-    fn reachable_blocks(&self) -> BTreeSet<Block> {
+    fn reachable_blocks(&self) -> HashSet<Block> {
         if self.planted_at_grid(&self.start) {
-            return BTreeSet::new();
+            return HashSet::new();
         }
         let mut visited: Vec<Vec<bool>> = vec![vec![false; self.w]; self.h];
         visited[self.start.0][self.start.1] = true;
@@ -195,7 +196,7 @@ impl Ground {
         que.push_back(self.start);
 
         let dirs = Direction::all();
-        let mut result = BTreeSet::new();
+        let mut result = HashSet::new();
         while let Some(block) = que.pop_front() {
             result.insert(block);
             for d in &dirs {
@@ -441,7 +442,7 @@ impl Solver {
         let mut score = 0_u64;
         let mut output_plans = Vec::new();
         for month in 1..=100 {
-            if Instant::now() - self.start >= Duration::from_millis(1900) {
+            if month % 5 == 0 && Instant::now() - self.start >= Duration::from_millis(1900) {
                 break;
             }
             let mut unreachable_blocks = Vec::new();
@@ -449,6 +450,7 @@ impl Solver {
                 let reachable_blocks = ground.reachable_blocks();
                 for (_, b) in ground.plantable_blocks.clone().into_iter().rev() {
                     if !reachable_blocks.contains(&b) {
+                        unreachable_blocks.push(b);
                         continue;
                     }
 
