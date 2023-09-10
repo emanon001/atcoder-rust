@@ -133,13 +133,16 @@ impl Ground {
     }
 
     fn plant(&mut self, block: Block, crop: Crop) {
-        if self.planted_at_grid(&block) {
-            panic!("already planted ({:?})", block);
-        }
+        debug_assert!(!self.planted_at_grid(&block));
         self.planted_map[block.0][block.1] = crop.into();
         self.crop_to_planted_block[crop.0] = Some(block);
-        let distance = self.get_distance(&block);
-        self.plantable_blocks.remove(&(distance, block));
+        self.remove_plantable_block(&block);
+        // for b in self
+        //     .calculate_around_blocks_reachable_on_harvest(block, 0)
+        //     .unreachable_blocks
+        // {
+        //     self.remove_plantable_block(&b);
+        // }
     }
 
     fn get_distance(&self, block: &Block) -> usize {
@@ -156,11 +159,10 @@ impl Ground {
             let distance = self.get_distance(&b);
             self.plantable_blocks.insert((distance, b));
             for b in self
-                .calculate_around_blocks_reachable_at_harvest(b, 0)
+                .calculate_around_blocks_reachable_on_harvest(b, 0)
                 .reachable_blocks
             {
-                let distance = self.get_distance(&b);
-                self.plantable_blocks.insert((distance, b));
+                self.add_plantable_block(b);
             }
             return Some(b);
         }
@@ -219,7 +221,17 @@ impl Ground {
         result
     }
 
-    fn calculate_around_blocks_reachable_at_harvest(
+    fn add_plantable_block(&mut self, block: Block) {
+        let distance = self.get_distance(&block);
+        self.plantable_blocks.insert((distance, block));
+    }
+
+    fn remove_plantable_block(&mut self, block: &Block) {
+        let key = (self.get_distance(&block), block.clone());
+        self.plantable_blocks.remove(&key);
+    }
+
+    fn calculate_around_blocks_reachable_on_harvest(
         &self,
         fill_block: Block,
         fill_d: usize,
@@ -455,26 +467,24 @@ impl Solver {
             }
             let mut unreachable_blocks = Vec::new();
             for &(k, (s, d)) in s_to_plans.get(&month).unwrap_or(&Vec::new()) {
-                let reachable_blocks = ground.reachable_blocks();
+                let reachable_block_set = ground.reachable_blocks();
                 for (_, b) in ground.plantable_blocks.clone().into_iter().rev() {
-                    if !reachable_blocks.contains(&b) {
+                    if !reachable_block_set.contains(&b) {
                         unreachable_blocks.push(b);
                         continue;
                     }
 
-                    let check_result = ground.calculate_around_blocks_reachable_at_harvest(b, d);
+                    // 作物を植えた後に、周囲の区画に植えられている作物を収穫できるか確認する
+                    let check_result = ground.calculate_around_blocks_reachable_on_harvest(b, d);
                     for b in check_result.reachable_blocks {
-                        let distance = ground.get_distance(&b);
-                        ground.plantable_blocks.insert((distance, b));
+                        ground.add_plantable_block(b);
                     }
-                    let mut ok = true;
                     if !check_result.unreachable_blocks.is_empty() {
-                        ok = false;
-                        unreachable_blocks.push(b.clone());
-                    }
-                    if !ok {
+                        unreachable_blocks.push(b);
                         continue;
                     }
+
+                    // 作物を植える区画が存在する
                     output_plans.push(OutputPlan {
                         k,
                         i: b.0,
@@ -485,8 +495,7 @@ impl Solver {
                     break;
                 }
                 for b in &unreachable_blocks {
-                    let key = (ground.get_distance(b), *b);
-                    ground.plantable_blocks.remove(&key);
+                    ground.remove_plantable_block(b);
                 }
             }
             for &(k, (s, d)) in d_to_plans.get(&month).unwrap_or(&Vec::new()) {
