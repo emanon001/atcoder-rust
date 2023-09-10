@@ -227,7 +227,7 @@ impl Ground {
     }
 
     fn remove_plantable_block(&mut self, block: &Block) {
-        let key = (self.get_distance(&block), block.clone());
+        let key = (self.get_distance(block), *block);
         self.plantable_blocks.remove(&key);
     }
 
