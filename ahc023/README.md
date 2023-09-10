@@ -49,4 +49,10 @@
   - 50177975
   - <https://atcoder.jp/contests/ahc023/submissions/45427206>
   - 25074600
+- [x] まとめて処理せず逐次処理を行う。なるべく遠く配置できる区画を探す。
+  - 51412125
+  - <https://atcoder.jp/contests/ahc023/submissions/45430549>
+  - 26199975
+
+
 

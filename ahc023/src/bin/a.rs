@@ -8,8 +8,7 @@ use proconio::marker::*;
 use rand::prelude::*;
 #[allow(unused_imports)]
 use std::collections::*;
-use std::time::Instant;
-use std::{cmp::Reverse, time::Duration};
+use std::time::{Duration, Instant};
 
 #[macro_export]
 macro_rules! chmax {
@@ -28,6 +27,8 @@ macro_rules! chmax {
  * 区画
  */
 type Block = (usize, usize);
+
+type BlockWithCost = (Block, usize);
 
 #[derive(Copy, Clone)]
 enum Direction {
@@ -70,8 +71,17 @@ struct Ground {
     /**
      * 区画にどの作物を植えているか
      */
-    planted_map: HashMap<Block, usize>,
-    inverted_planted_map: HashMap<usize, Block>,
+    planted_map: HashMap<Block, Crop>,
+    crop_to_planted_block: HashMap<usize, Block>,
+
+    far_blocks_with_cost: VecDeque<BlockWithCost>,
+    block_to_distance: HashMap<Block, usize>,
+    plantable_blocks: BTreeSet<(usize, Block)>,
+}
+
+struct CalcAroundBlocksReachableAtHarvest {
+    reachable_blocks: Vec<Block>,
+    unreachable_blocks: Vec<Block>,
 }
 
 /**
@@ -85,81 +95,111 @@ impl Ground {
         h_waterway: Vec<Vec<char>>,
         v_waterway: Vec<Vec<char>>,
     ) -> Self {
-        Self {
+        let ground = Self {
             h,
             w,
             h_waterway,
             v_waterway,
             start: (i0, 0),
             planted_map: HashMap::new(),
-            inverted_planted_map: HashMap::new(),
-        }
+            crop_to_planted_block: HashMap::new(),
+            far_blocks_with_cost: VecDeque::new(),
+            block_to_distance: HashMap::new(),
+            plantable_blocks: BTreeSet::new(),
+        };
+        ground.init()
     }
 
-    fn plant(&mut self, block: Block, k: usize) {
+    fn init(mut self) -> Self {
+        self.far_blocks_with_cost = self.calculate_far_blocks();
+        let mut block_to_distance = HashMap::new();
+        let mut distance_to_blocks = BTreeMap::new();
+        for &(b, d) in &self.far_blocks_with_cost {
+            block_to_distance.insert(b, d);
+            distance_to_blocks
+                .entry(d)
+                .or_insert(BTreeSet::new())
+                .insert(b);
+        }
+        self.block_to_distance = block_to_distance;
+        let mut plantable_blocks = BTreeSet::new();
+        for (k, v) in distance_to_blocks {
+            for v2 in v {
+                plantable_blocks.insert((k, v2));
+            }
+        }
+        self.plantable_blocks = plantable_blocks;
+        self
+    }
+
+    fn plant(&mut self, block: Block, crop: Crop) {
         if self.planted_at_grid(&block) {
             panic!("already planted ({:?})", block);
         }
-        self.planted_map.insert(block, k);
-        self.inverted_planted_map.insert(k, block);
+        self.planted_map.insert(block, crop);
+        self.crop_to_planted_block.insert(crop.0, block);
+        let distance = self.block_to_distance[&block];
+        self.plantable_blocks.remove(&(distance, block));
     }
 
-    fn planted_count(&self) -> usize {
-        self.planted_map.len()
-    }
-
-    fn harvest_all(&mut self) {
-        self.planted_map = HashMap::new();
-        self.inverted_planted_map = HashMap::new();
-    }
-
-    fn harvest(&mut self, k: usize) -> Option<Block> {
-        if let Some(b) = self.inverted_planted_map.remove(&k) {
+    fn harvest(&mut self, crop: Crop) -> Option<Block> {
+        if let Some(b) = self.crop_to_planted_block.remove(&crop.0) {
             self.planted_map.remove(&b);
+            let distance = self.block_to_distance[&b];
+            self.plantable_blocks.insert((distance, b));
+            for b in self
+                .calculate_around_blocks_reachable_at_harvest(b, 0)
+                .reachable_blocks
+            {
+                let distance = self.block_to_distance[&b];
+                self.plantable_blocks.insert((distance, b));
+            }
             return Some(b);
         }
         None
     }
 
-    fn calculate_far_blocks(&self) -> VecDeque<Block> {
+    fn calculate_far_blocks(&self) -> VecDeque<BlockWithCost> {
+        if self.planted_at_grid(&self.start) {
+            return VecDeque::new();
+        }
         let mut visited: Vec<Vec<bool>> = vec![vec![false; self.w]; self.h];
         visited[self.start.0][self.start.1] = true;
         let mut que = VecDeque::new();
-        que.push_back(self.start);
+        que.push_back((self.start, 1));
 
-        let mut far_blocks = VecDeque::new();
+        let mut far_blocks: VecDeque<BlockWithCost> = VecDeque::new();
         let dirs = Direction::all();
-        while let Some(block) = que.pop_front() {
-            far_blocks.push_front(block);
+        while let Some((block, cost)) = que.pop_front() {
+            far_blocks.push_front((block, cost));
             for d in &dirs {
-                if let Some(new_block) = self.move_block(&block, d) {
+                if let Some(new_block) = self.move_block(&block, d, false) {
                     if visited[new_block.0][new_block.1] {
                         continue;
                     }
                     visited[new_block.0][new_block.1] = true;
-                    que.push_back(new_block);
+                    que.push_back((new_block, cost + 1));
                 }
             }
         }
         far_blocks
     }
 
-    fn find_far_block(&self) -> Option<Block> {
+    fn reachable_blocks(&self) -> BTreeSet<Block> {
         if self.planted_at_grid(&self.start) {
-            return None;
+            return BTreeSet::new();
         }
-
         let mut visited: Vec<Vec<bool>> = vec![vec![false; self.w]; self.h];
         visited[self.start.0][self.start.1] = true;
         let mut que = VecDeque::new();
         que.push_back(self.start);
 
-        let mut far_block: Option<Block> = None;
         let dirs = Direction::all();
+        let mut result = BTreeSet::new();
         while let Some(block) = que.pop_front() {
-            far_block = Some(block);
+            result.insert(block);
             for d in &dirs {
-                if let Some(new_block) = self.move_block(&block, d) {
+                if let Some(new_block) = self.move_block(&block, d, true) {
                     if visited[new_block.0][new_block.1] {
                         continue;
                     }
@@ -168,14 +208,66 @@ impl Ground {
                 }
             }
         }
-        far_block
+        result
+    }
+
+    fn calculate_around_blocks_reachable_at_harvest(
+        &self,
+        fill_block: Block,
+        fill_d: usize,
+    ) -> CalcAroundBlocksReachableAtHarvest {
+        let mut unreachable_blocks = Vec::new();
+        let mut reachable_blocks = Vec::new();
+        let dirs = Direction::all();
+        // 上下左右の区画から見た時に収穫が可能か確認する
+        for d in &dirs {
+            if let Some(around_block) = self.move_block(&fill_block, d, false) {
+                let around_crop = self.planted_map.get(&around_block).unwrap_or(&(0, (0, 0)));
+
+                let mut visited: Vec<Vec<bool>> = vec![vec![false; self.w]; self.h];
+                visited[around_block.0][around_block.1] = true;
+                let mut que = VecDeque::new();
+                que.push_back(around_block);
+                let dirs = Direction::all();
+                let mut blocks = BTreeSet::new();
+                while let Some(block) = que.pop_front() {
+                    blocks.insert(block);
+                    for d in &dirs {
+                        if let Some(new_block) = self.move_block(&block, d, false) {
+                            if visited[new_block.0][new_block.1] {
+                                continue;
+                            }
+                            if new_block == fill_block && around_crop.1 .1 < fill_d {
+                                continue;
+                            }
+                            if let Some((_, (_, d))) = self.planted_map.get(&new_block) {
+                                if around_crop.1 .1 < *d {
+                                    continue;
+                                }
+                            }
+                            visited[new_block.0][new_block.1] = true;
+                            que.push_back(new_block);
+                        }
+                    }
+                }
+                if blocks.contains(&self.start) {
+                    reachable_blocks.push(around_block);
+                } else {
+                    unreachable_blocks.push(around_block);
+                }
+            }
+        }
+        CalcAroundBlocksReachableAtHarvest {
+            unreachable_blocks,
+            reachable_blocks,
+        }
     }
 
     /**
      * 指定した区画から移動する
      */
-    fn move_block(&self, block: &Block, dir: &Direction) -> Option<Block> {
-        if self.planted_at_grid(block) {
+    fn move_block(&self, block: &Block, dir: &Direction, check_planted: bool) -> Option<Block> {
+        if check_planted && self.planted_at_grid(block) {
             return None;
         }
 
@@ -197,7 +289,7 @@ impl Ground {
 
         // 作物を植えているか
         let new_block = (new_block.0 as usize, new_block.1 as usize);
-        if self.planted_at_grid(&new_block) {
+        if check_planted && self.planted_at_grid(&new_block) {
             return None;
         }
 
@@ -289,16 +381,11 @@ struct Solver {
      * 乱数生成器
      */
     rng: ThreadRng,
-}
-
-struct SimulationVars<'a> {
-    max_item_count: usize,
-    min_score: usize,
-    far_blocks: &'a VecDeque<Block>,
+    start: Instant,
 }
 
 type Plan = (usize, usize);
-type PlanWithId = (usize, Plan);
+type Crop = (usize, Plan);
 impl Solver {
     fn new(input: Input) -> Self {
         Self {
@@ -311,11 +398,10 @@ impl Solver {
             k: input.k,
             plans: input.plans,
             rng: thread_rng(),
+            start: Instant::now(),
         }
     }
     fn solve(&mut self) -> CalculateResult {
-        let start = Instant::now();
-
         let mut ground = Ground::new(
             self.h,
             self.w,
@@ -323,7 +409,7 @@ impl Solver {
             self.h_waterway.clone(),
             self.v_waterway.clone(),
         );
-        // 収穫までが速い, 植えるまでが速い
+
         let sorted = self
             .plans
             .iter()
@@ -332,115 +418,73 @@ impl Solver {
             .map(|(k, p)| (k + 1, p))
             .sorted_by_key(|(_, p)| (p.1, p.0))
             .collect::<Vec<_>>();
+        let cur_output = self.simulate(&sorted, &mut ground);
 
-        // 時間の許す限り繰り返す
-        let mut max_output: CalculateResult = CalculateResult {
-            plans: vec![],
-            score: 0,
-        };
-        let mut _max_item_count = 0;
-        let far_blocks = ground.calculate_far_blocks();
-        for max_item_count in 400..=1600 {
-            if max_item_count % 50 == 0 {
-                let now = Instant::now();
-                if now - start >= Duration::from_millis(1800) {
-                    break;
-                }
-            }
-            _max_item_count = max_item_count;
-            for min_score in 0..=8 {
-                let simulation_vars = SimulationVars {
-                    max_item_count,
-                    min_score,
-                    far_blocks: &far_blocks,
-                };
-                let cur_output = self.simulate(&sorted, &mut ground, simulation_vars);
-                if cur_output.score > max_output.score {
-                    max_output = cur_output;
-                }
-            }
-        }
-        // }
-        eprintln!(
-            "max_item_count: {}, time: {:?}",
-            _max_item_count,
-            Instant::now() - start
-        );
-
-        // loop {
-        //     let now = Instant::now();
-        //     if now - start >= Duration::from_millis(1900) {
-        //         break;
-        //     }
-        //     let cur_output = self.simulate(sorted.clone(), &mut ground);
-        //     if cur_output.score > max_output.score {
-        //         max_output = cur_output;
-        //     }
-        //     ground.harvest_all();
-        // }
-
-        max_output
+        eprintln!("time: {:?}", Instant::now() - self.start);
+        cur_output
     }
 
-    fn simulate(
-        &mut self,
-        input_plans: &Vec<PlanWithId>,
-        _ground: &mut Ground,
-        simulation_vars: SimulationVars,
-    ) -> CalculateResult {
-        let mut score = 0_u64;
-        let mut output_plans = Vec::new();
-        let mut cur_plans = Vec::new();
-        let mut cur_month = 1;
-        let mut next_month = 1;
+    fn simulate(&mut self, input_plans: &Vec<Crop>, ground: &mut Ground) -> CalculateResult {
+        let mut s_to_plans = HashMap::new();
+        let mut d_to_plans = HashMap::new();
         for (k, (s, d)) in input_plans {
-            if s < &cur_month {
-                continue;
-            }
-            if (d - s) < simulation_vars.min_score {
-                continue;
-            }
-
-            cur_plans.push((k, (s, d)));
-
-            if cur_plans.len() == simulation_vars.max_item_count {
-                let sorted = cur_plans
-                    .iter()
-                    .copied()
-                    .sorted_by_key(|(_, p)| Reverse(p.1 - p.0))
-                    .take(400)
-                    .sorted_by_key(|(_, p)| Reverse(p.1));
-                for ((&k, (s, d)), &(i, j)) in sorted.zip(simulation_vars.far_blocks.iter()) {
-                    output_plans.push(OutputPlan {
-                        k,
-                        i,
-                        j,
-                        s: cur_month,
-                    });
-                    chmax!(next_month, d + 1);
-                    score += (d - s + 1) as u64;
-                }
-
-                cur_plans = Vec::new();
-                cur_month = next_month;
-                next_month = cur_month + 1;
-            }
+            s_to_plans
+                .entry(s)
+                .or_insert(Vec::new())
+                .push((*k, (*s, *d)));
+            d_to_plans
+                .entry(d)
+                .or_insert(Vec::new())
+                .push((*k, (*s, *d)));
         }
 
-        let sorted = cur_plans
-            .iter()
-            .copied()
-            .sorted_by_key(|(_, p)| Reverse(p.1 - p.0))
-            .take(400)
-            .sorted_by_key(|(_, p)| Reverse(p.1));
-        for ((&k, (s, d)), &(i, j)) in sorted.zip(simulation_vars.far_blocks.iter()) {
-            output_plans.push(OutputPlan {
-                k,
-                i,
-                j,
-                s: cur_month,
-            });
-            score += (d - s + 1) as u64;
+        let mut score = 0_u64;
+        let mut output_plans = Vec::new();
+        for month in 1..=100 {
+            if Instant::now() - self.start >= Duration::from_millis(1900) {
+                break;
+            }
+            let mut unreachable_blocks = Vec::new();
+            for &(k, (s, d)) in s_to_plans.get(&month).unwrap_or(&Vec::new()) {
+                let reachable_blocks = ground.reachable_blocks();
+                for (_, b) in ground.plantable_blocks.clone().into_iter().rev() {
+                    if !reachable_blocks.contains(&b) {
+                        continue;
+                    }
+
+                    let check_result = ground.calculate_around_blocks_reachable_at_harvest(b, d);
+                    // TLEになる
+                    // for b in check_result.reachable_blocks {
+                    //     let distance = ground.block_to_distance[&b];
+                    //     ground.plantable_blocks.insert((distance, b));
+                    // }
+                    let mut ok = true;
+                    if !check_result.unreachable_blocks.is_empty() {
+                        ok = false;
+                        unreachable_blocks.push(b.clone());
+                    }
+                    if !ok {
+                        continue;
+                    }
+                    output_plans.push(OutputPlan {
+                        k,
+                        i: b.0,
+                        j: b.1,
+                        s,
+                    });
+                    ground.plant(b, (k, (s, d)));
+                    break;
+                }
+                for b in &unreachable_blocks {
+                    let key = (ground.block_to_distance[b], b.clone());
+                    ground.plantable_blocks.remove(&key);
+                }
+            }
+            for &(k, (s, d)) in d_to_plans.get(&month).unwrap_or(&Vec::new()) {
+                if let Some(_) = ground.harvest((k, (s, d))) {
+                    score += (d - s + 1) as u64;
+                }
+            }
         }
 
         CalculateResult {
