@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        k: u8
     };
+
+    let res = (0..k).map(|k_i| (b'A' + k_i) as char).join("");
+    println!("{}", res);
 }
 
 fn main() {
