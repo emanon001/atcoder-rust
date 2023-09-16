@@ -10,7 +10,20 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, m: usize,
+        grid: [Chars; n]
     };
+
+    let mut res = 0;
+    for i in 0..n {
+        for j in i + 1..n {
+            let is_ok = (0..m).all(|m_i| grid[i][m_i] == 'o' || grid[j][m_i] == 'o');
+            if is_ok {
+                res += 1;
+            }
+        }
+    }
+    println!("{}", res);
 }
 
 fn main() {
