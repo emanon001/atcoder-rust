@@ -10,7 +10,35 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars
     };
+
+    let mut stack = Vec::new();
+    let mut set = HashSet::new();
+    let mut cur_set = HashSet::new();
+    for ch in s {
+        match ch {
+            '(' => {
+                stack.push(cur_set);
+                cur_set = HashSet::new();
+            }
+            ')' => {
+                for ch in cur_set {
+                    set.remove(&ch);
+                }
+                cur_set = stack.pop().unwrap_or(HashSet::new());
+            }
+            ch => {
+                if set.contains(&ch) {
+                    println!("No");
+                    return;
+                }
+                set.insert(ch);
+                cur_set.insert(ch);
+            }
+        }
+    }
+    println!("Yes");
 }
 
 fn main() {
