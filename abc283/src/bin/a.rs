@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: u64, b: u32
     };
+
+    let res = a.pow(b);
+    println!("{}", res);
 }
 
 fn main() {
