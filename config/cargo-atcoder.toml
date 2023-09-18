@@ -80,7 +80,7 @@ smallvec = '=1.11.0'
 
 [project]
 # to create `rust-toolchain` file, uncomment this line.
-# rustc_version = "1.47.0"
+rustc_version = "1.70.0"
 
 # source code template
 template = """
