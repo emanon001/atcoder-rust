@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        t: usize,
     };
+
+    for _ in 0..t {
+        input! {
+            n: usize,
+            av: [usize; n]
+        }
+
+        let res = av.into_iter().filter(|a| a.is_odd()).count();
+        println!("{}", res);
+    }
 }
 
 fn main() {
