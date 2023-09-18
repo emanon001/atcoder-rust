@@ -10,7 +10,13 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        sv: [String; n]
     };
+
+    for s in sv.into_iter().rev() {
+        println!("{}", s);
+    }
 }
 
 fn main() {
