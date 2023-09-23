@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars,
     };
+
+    let mut res = 0_u64;
+    for ch in s {
+        let n = (ch as u8 - b'A' + 1_u8) as u64;
+        res *= 26;
+        res += n;
+    }
+    println!("{}", res);
 }
 
 fn main() {
