@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        a: usize, b: usize
     };
+
+    let res = if a * 2 == b || a * 2 + 1 == b {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", res);
 }
 
 fn main() {
