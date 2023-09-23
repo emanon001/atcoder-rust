@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        s: Chars
     };
+
+    for i in 1..n {
+        let mut res = 0;
+        let mut pos = 0;
+        while pos + i < n && s[pos] != s[pos + i] {
+            res += 1;
+            pos += 1;
+        }
+        println!("{}", res);
+    }
 }
 
 fn main() {
