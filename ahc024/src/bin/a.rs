@@ -2,7 +2,6 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
-use petgraph::visit::VisitMap;
 use proconio::input;
 #[allow(unused_imports)]
 use proconio::marker::*;
@@ -15,6 +14,8 @@ use std::time::{Duration, Instant};
 pub const UDLR_DIRS: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
 
 type Color = usize;
+
+type Pos = (usize, usize);
 
 type Grid = Vec<Vec<usize>>;
 
@@ -65,6 +66,37 @@ impl CityMap {
             }
         }
         res
+    }
+
+    fn adjacent_color_positions(&self, i: usize, j: usize) -> Vec<Pos> {
+        let color = self.grid[i][j];
+        let mut res = HashSet::new();
+        let mut visited = vec![vec![false; self.n]; self.n];
+        visited[i][j] = true;
+        let mut que = VecDeque::new();
+        que.push_back((i, j));
+        while let Some((i, j)) = que.pop_front() {
+            for (di, dj) in &UDLR_DIRS {
+                let new_i = i as isize + di;
+                let new_j = j as isize + dj;
+                if new_i < 0 || new_i >= self.n as isize || new_j < 0 || new_j >= self.n as isize {
+                    continue;
+                }
+                let new_i = new_i as usize;
+                let new_j = new_j as usize;
+                let color2 = self.grid[new_i][new_j];
+                if color2 != color {
+                    res.insert((new_i, new_j));
+                    continue;
+                }
+                if visited[new_i][new_j] {
+                    continue;
+                }
+                visited[new_i][new_j] = true;
+                que.push_back((new_i, new_j));
+            }
+        }
+        res.into_iter().collect::<Vec<_>>()
     }
 
     fn simulate_update(&mut self, i: usize, j: usize, k: usize) -> SimulateResult {
@@ -207,7 +239,7 @@ impl Solver {
     fn solve(mut self) -> Output {
         let mut count = 0;
         loop {
-            if count % 50 == 0 && Instant::now() - self.started_at >= Duration::from_millis(1950) {
+            if count % 100 == 0 && Instant::now() - self.started_at >= Duration::from_millis(1950) {
                 break;
             }
             let i = self.rng.gen_range(0..self.n);
