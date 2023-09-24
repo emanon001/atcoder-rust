@@ -10,15 +10,46 @@ use std::collections::*;
 
 type Grid = Vec<Vec<usize>>;
 
+type Alignment = Vec<Vec<bool>>;
+
 struct CityMap {
     n: usize,
     m: usize,
     grid: Grid,
+    alignment: Alignment,
 }
 
 impl CityMap {
     fn new(n: usize, m: usize, grid: Grid) -> Self {
-        Self { n, m, grid }
+        let alignment = Self::calculate_alignment(n, m, &grid);
+        Self {
+            n,
+            m,
+            grid,
+            alignment,
+        }
+    }
+
+    fn calculate_alignment(n: usize, m: usize, grid: &Grid) -> Alignment {
+        let mut alignment = vec![vec![false; m]; m];
+        for i in 0..n {
+            for j in 0..j {
+                let color1 = grid[i][j];
+                // 右
+                if j + 1 < n {
+                    let color2 = grid[i][j + 1];
+                    alignment[color1][color2] = true;
+                    alignment[color2][color1] = true;
+                }
+                // 下
+                if i + 1 < n {
+                    let color2 = grid[i + 1][j];
+                    alignment[color1][color2] = true;
+                    alignment[color2][color1] = true;
+                }
+            }
+        }
+        alignment
     }
 }
 
@@ -44,13 +75,13 @@ impl Solver {
     }
 }
 
-struct Output {
-    grid: Grid,
-}
-
 struct Input {
     n: usize,
     m: usize,
+    grid: Grid,
+}
+
+struct Output {
     grid: Grid,
 }
 
