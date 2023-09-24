@@ -14,13 +14,15 @@ use std::time::{Duration, Instant};
 /// 上下左右 (i, j)
 pub const UDLR_DIRS: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, -1), (0, 1)];
 
+type Color = usize;
+
 type Grid = Vec<Vec<usize>>;
 
 type Alignment = Vec<Vec<bool>>;
 
 struct SimulateResult {
     can_update: bool,
-    score: usize,
+    score: isize,
 }
 
 struct CityMap {
@@ -29,6 +31,7 @@ struct CityMap {
     m: usize,
     grid: Grid,
     alignment: Alignment,
+    score: isize,
 }
 
 impl CityMap {
@@ -47,10 +50,24 @@ impl CityMap {
             m,
             grid: new_grid,
             alignment,
+            score: 0,
         }
     }
 
-    fn simulate_update(&mut self, i: usize, j: usize, k: usize) -> bool {
+    fn adjacent_colors(&self, i: usize, j: usize) -> Vec<Color> {
+        let i = i + 1;
+        let j = j + 1;
+        let color = self.grid[i][j];
+        let mut res = Vec::new();
+        for (c, connected) in self.alignment[color].iter().enumerate() {
+            if *connected {
+                res.push(c);
+            }
+        }
+        res
+    }
+
+    fn simulate_update(&mut self, i: usize, j: usize, k: usize) -> SimulateResult {
         let i = i + 1;
         let j = j + 1;
         let bk_k = self.grid[i][j];
@@ -58,13 +75,25 @@ impl CityMap {
         let new_alignment = Self::calculate_alignment(self.n, self.m, &self.grid);
         let is_connected = Self::is_connected(self.n, self.m, &self.grid);
         self.grid[i][j] = bk_k;
-        is_connected && self.alignment == new_alignment
+        let score = Self::calculate_score(self.score, bk_k, k);
+        SimulateResult {
+            can_update: is_connected && self.alignment == new_alignment,
+            score,
+        }
+    }
+
+    fn calculate_score(cur_score: isize, before_color: usize, after_color: usize) -> isize {
+        let before_color = before_color.max(1) as isize;
+        let after_color = after_color.max(1) as isize;
+        (cur_score + before_color - after_color).min(0)
     }
 
     fn update(&mut self, i: usize, j: usize, k: usize) {
         let i = i + 1;
         let j = j + 1;
+        let bk_k = self.grid[i][j];
         self.grid[i][j] = k;
+        self.score = Self::calculate_score(self.score, bk_k, k);
     }
 
     fn output_grid(self) -> Grid {
@@ -183,13 +212,24 @@ impl Solver {
             }
             let i = self.rng.gen_range(0..self.n);
             let j = self.rng.gen_range(0..self.n);
-            if self.city_map.simulate_update(i, j, 0) {
-                self.city_map.update(i, j, 0);
+            let k = if count < 10000 || count % 2 == 0 {
+                0
+            } else {
+                let colors = self.city_map.adjacent_colors(i, j);
+                *colors.choose(&mut self.rng).unwrap_or(&0)
+            };
+            let res = self.city_map.simulate_update(i, j, k);
+            if res.can_update && res.score >= self.city_map.score {
+                self.city_map.update(i, j, k);
             }
 
             count += 1;
         }
-        eprintln!("time: {:?}", Instant::now() - self.started_at);
+        eprintln!(
+            "time: {:?}, count: {}",
+            Instant::now() - self.started_at,
+            count
+        );
         Output {
             grid: self.city_map.output_grid(),
         }
