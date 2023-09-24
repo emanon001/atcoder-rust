@@ -238,9 +238,13 @@ impl Solver {
 
     fn solve(mut self) -> Output {
         let mut count = 0;
+        let mut now = Instant::now();
         loop {
-            if count % 100 == 0 && Instant::now() - self.started_at >= Duration::from_millis(1950) {
-                break;
+            if count % 100 == 0 {
+                now = Instant::now();
+                if now - self.started_at >= Duration::from_millis(1950) {
+                    break;
+                }
             }
             let i = self.rng.gen_range(0..self.n);
             let j = self.rng.gen_range(0..self.n);
@@ -251,7 +255,11 @@ impl Solver {
                 *colors.choose(&mut self.rng).unwrap_or(&0)
             };
             let res = self.city_map.simulate_update(i, j, k);
-            if res.can_update && res.score >= self.city_map.score {
+            let t = (now - self.started_at).as_millis();
+            if res.can_update
+                && (res.score >= self.city_map.score
+                    || self.rng.gen_ratio((2000_u128 - t) as u32, 2000))
+            {
                 self.city_map.update(i, j, k);
             }
 
