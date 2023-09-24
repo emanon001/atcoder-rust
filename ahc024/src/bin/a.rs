@@ -18,7 +18,13 @@ type Grid = Vec<Vec<usize>>;
 
 type Alignment = Vec<Vec<bool>>;
 
+struct SimulateResult {
+    can_update: bool,
+    score: usize,
+}
+
 struct CityMap {
+    raw_n: usize,
     n: usize,
     m: usize,
     grid: Grid,
@@ -27,22 +33,24 @@ struct CityMap {
 
 impl CityMap {
     fn new(n: usize, m: usize, grid: Grid) -> Self {
-        let mut new_grid = vec![vec![0; n + 2]; n + 2];
+        let new_n = n + 2;
+        let mut new_grid = vec![vec![0; new_n]; new_n];
         for i in 0..n {
             for j in 0..n {
                 new_grid[i + 1][j + 1] = grid[i][j];
             }
         }
-        let alignment = Self::calculate_alignment(n, m, &new_grid);
+        let alignment = Self::calculate_alignment(new_n, m, &new_grid);
         Self {
-            n,
+            raw_n: n,
+            n: new_n,
             m,
             grid: new_grid,
             alignment,
         }
     }
 
-    fn can_update(&mut self, i: usize, j: usize, k: usize) -> bool {
+    fn simulate_update(&mut self, i: usize, j: usize, k: usize) -> bool {
         let i = i + 1;
         let j = j + 1;
         let bk_k = self.grid[i][j];
@@ -60,9 +68,9 @@ impl CityMap {
     }
 
     fn output_grid(self) -> Grid {
-        let mut res = vec![vec![0; self.n]; self.n];
-        for i in 1..self.n + 1 {
-            for j in 1..self.n + 1 {
+        let mut res = vec![vec![0; self.raw_n]; self.raw_n];
+        for i in 1..self.n - 1 {
+            for j in 1..self.n - 1 {
                 res[i - 1][j - 1] = self.grid[i][j];
             }
         }
@@ -71,8 +79,8 @@ impl CityMap {
 
     fn calculate_alignment(n: usize, m: usize, grid: &Grid) -> Alignment {
         let mut alignment = vec![vec![false; m + 1]; m + 1];
-        for i in 0..n + 1 {
-            for j in 0..n + 1 {
+        for i in 0..n {
+            for j in 0..n {
                 let color1 = grid[i][j];
                 // 右
                 if j + 1 < n {
@@ -97,15 +105,15 @@ impl CityMap {
 
     fn is_connected(n: usize, m: usize, grid: &Grid) -> bool {
         let mut color_count_map = vec![0; m + 1];
-        for i in 0..n + 2 {
-            for j in 0..n + 2 {
+        for i in 0..n {
+            for j in 0..n {
                 let color = grid[i][j];
                 color_count_map[color] += 1;
             }
         }
-        let mut visited = vec![vec![false; n + 2]; n + 2];
-        for i in 0..n + 2 {
-            for j in 0..n + 2 {
+        let mut visited = vec![vec![false; n]; n];
+        for i in 0..n {
+            for j in 0..n {
                 if visited[i][j] {
                     continue;
                 }
@@ -119,11 +127,7 @@ impl CityMap {
                     for (di, dj) in &UDLR_DIRS {
                         let new_i = i as isize + di;
                         let new_j = j as isize + dj;
-                        if new_i < 0
-                            || new_i >= n as isize + 2
-                            || new_j < 0
-                            || new_j >= n as isize + 2
-                        {
+                        if new_i < 0 || new_i >= n as isize || new_j < 0 || new_j >= n as isize {
                             continue;
                         }
                         let new_i = new_i as usize;
@@ -179,7 +183,7 @@ impl Solver {
             }
             let i = self.rng.gen_range(0..self.n);
             let j = self.rng.gen_range(0..self.n);
-            if self.city_map.can_update(i, j, 0) {
+            if self.city_map.simulate_update(i, j, 0) {
                 self.city_map.update(i, j, 0);
             }
 
