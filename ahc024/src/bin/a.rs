@@ -102,15 +102,29 @@ impl CityMap {
     fn simulate_update(&mut self, i: usize, j: usize, k: usize) -> SimulateResult {
         let i = i + 1;
         let j = j + 1;
+
+        let failure = SimulateResult {
+            can_update: false,
+            score: 0,
+        };
+
         let bk_k = self.grid[i][j];
         self.grid[i][j] = k;
-        let new_alignment = Self::calculate_alignment(self.n, self.m, &self.grid);
+
         let is_connected = Self::is_connected(self.n, self.m, &self.grid);
+        if !is_connected {
+            self.grid[i][j] = bk_k;
+            return failure;
+        }
+        let new_alignment = Self::calculate_alignment(self.n, self.m, &self.grid);
         self.grid[i][j] = bk_k;
-        let score = Self::calculate_score(self.score, bk_k, k);
+        if self.alignment != new_alignment {
+            return failure;
+        }
+
         SimulateResult {
-            can_update: is_connected && self.alignment == new_alignment,
-            score,
+            can_update: true,
+            score: Self::calculate_score(self.score, bk_k, k),
         }
     }
 
@@ -242,7 +256,7 @@ impl Solver {
         loop {
             if count % 100 == 0 {
                 now = Instant::now();
-                if now - self.started_at >= Duration::from_millis(1950) {
+                if now - self.started_at >= Duration::from_millis(1980) {
                     break;
                 }
             }
