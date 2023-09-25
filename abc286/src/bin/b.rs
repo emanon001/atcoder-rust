@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        _: usize,
+        s: String
     };
+
+    let res = s.replace("na", "nya");
+    println!("{}", res);
 }
 
 fn main() {
