@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, k: usize,
+        sv: [String; n]
     };
+
+    let ans = sv.into_iter().take(k).sorted().join("\n");
+    println!("{}", ans);
 }
 
 fn main() {
