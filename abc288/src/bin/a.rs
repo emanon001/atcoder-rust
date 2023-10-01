@@ -10,7 +10,13 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        abv: [(i64, i64); n]
     };
+
+    for (a, b) in abv {
+        println!("{}", a + b);
+    }
 }
 
 fn main() {
