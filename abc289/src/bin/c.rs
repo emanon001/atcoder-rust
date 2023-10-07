@@ -10,7 +10,25 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, m: usize,
+        av: [[usize]; m]
     };
+
+    let mut ans = 0;
+    for bits in 1..1 << m {
+        let mut set = HashSet::new();
+        for i in 0..m {
+            if (bits >> i) & 1 == 1 {
+                for a in &av[i] {
+                    set.insert(a);
+                }
+            }
+        }
+        if set.len() == n {
+            ans += 1;
+        }
+    }
+    println!("{}", ans);
 }
 
 fn main() {
