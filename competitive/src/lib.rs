@@ -10,6 +10,7 @@ pub mod graph;
 pub mod io;
 pub mod lazy_segment_tree;
 pub mod lca;
+pub mod maps;
 pub mod misc;
 pub mod mod_comb;
 pub mod mod_int;
