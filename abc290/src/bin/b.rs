@@ -10,7 +10,20 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, k: usize,
+        s: Chars
     };
+
+    let mut c = 0;
+    let mut list = vec!['x'; n];
+    for (i, ch) in s.into_iter().enumerate() {
+        if ch == 'o' && c < k {
+            list[i] = 'o';
+            c += 1;
+        }
+    }
+    let ans = list.into_iter().join("");
+    println!("{}", ans);
 }
 
 fn main() {
