@@ -10,7 +10,13 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize, m: usize,
+        av: [usize; n],
+        bv: [Usize1; m]
     };
+
+    let ans: usize = bv.into_iter().map(|i| av[i]).sum();
+    println!("{}", ans);
 }
 
 fn main() {
