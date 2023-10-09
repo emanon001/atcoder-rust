@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        n: usize,
+        xv: [i64; 5 * n]
     };
+
+    let ans = xv.into_iter().sorted().dropping(n).take(3 * n).sum::<i64>() as f64 / (3 * n) as f64;
+    println!("{}", ans);
 }
 
 fn main() {
