@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input! {
+        s: Chars,
     };
+
+    let ans = s
+        .into_iter()
+        .position(|ch| ch.is_uppercase())
+        .map(|i| i + 1)
+        .unwrap();
+    println!("{}", ans);
 }
 
 fn main() {
