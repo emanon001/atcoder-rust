@@ -13,7 +13,26 @@ fn solve() {
     let mut source = LineSource::new(BufReader::new(stdin()));
     macro_rules! input(($($tt:tt)*) => (proconio::input!(from &mut source, $($tt)*)));
     input! {
+        n: usize, q: usize,
+        events: [(usize, Usize1); q]
     };
+
+    let mut cards = vec![(0, 0); n];
+    for (c, x) in events {
+        match c {
+            1 => cards[x].0 += 1,
+            2 => cards[x].1 += 1,
+            3 => {
+                let ans = if cards[x].0 >= 2 || cards[x].1 >= 1 {
+                    "Yes"
+                } else {
+                    "No"
+                };
+                println!("{}", ans);
+            },
+            _ => unreachable!()
+        }
+    }
 }
 
 fn main() {
