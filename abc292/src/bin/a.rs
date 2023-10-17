@@ -13,7 +13,11 @@ fn solve() {
     let mut source = LineSource::new(BufReader::new(stdin()));
     macro_rules! input(($($tt:tt)*) => (proconio::input!(from &mut source, $($tt)*)));
     input! {
+        s: String
     };
+
+    let ans = s.to_ascii_uppercase();
+    println!("{}", ans);
 }
 
 fn main() {
