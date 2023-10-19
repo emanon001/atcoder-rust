@@ -13,7 +13,16 @@ fn solve() {
     let mut source = LineSource::new(BufReader::new(stdin()));
     macro_rules! input(($($tt:tt)*) => (proconio::input!(from &mut source, $($tt)*)));
     input! {
+        n: usize,
+        av: [usize; n]
     };
+    let mut set = (1..=n).collect::<BTreeSet<_>>();
+    for (i, a) in (1..=n).zip(av) {
+        if set.contains(&i) {
+            set.remove(&a);
+        }
+    }
+    println!("{}\n{}", set.len(), set.iter().join(" "));
 }
 
 fn main() {
