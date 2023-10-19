@@ -13,7 +13,13 @@ fn solve() {
     let mut source = LineSource::new(BufReader::new(stdin()));
     macro_rules! input(($($tt:tt)*) => (proconio::input!(from &mut source, $($tt)*)));
     input! {
+        mut s: Chars
     };
+
+    for i in 1..=(s.len() / 2) {
+        s.swap(2 * i - 1 - 1, 2 * i - 1);
+    }
+    println!("{}", s.iter().join(""));
 }
 
 fn main() {
