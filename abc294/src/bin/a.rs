@@ -13,7 +13,12 @@ fn solve() {
     let mut source = LineSource::new(BufReader::new(stdin()));
     macro_rules! input(($($tt:tt)*) => (proconio::input!(from &mut source, $($tt)*)));
     input! {
+        n: usize,
+        av: [usize; n]
     };
+
+    let ans = av.iter().filter(|a| a.is_even()).join(" ");
+    println!("{}", ans);
 }
 
 fn main() {
