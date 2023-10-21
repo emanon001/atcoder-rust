@@ -13,7 +13,34 @@ fn solve() {
     let mut source = LineSource::new(BufReader::new(stdin()));
     macro_rules! input(($($tt:tt)*) => (proconio::input!(from &mut source, $($tt)*)));
     input! {
+        n: usize, q: usize,
     };
+
+    let mut uncalled = (1..=n).collect::<BTreeSet<_>>();
+    let mut called = BTreeSet::new();
+    for _ in 0..q {
+        input! {
+            kind: usize,
+        };
+        match kind {
+            1 => {
+                let x = *uncalled.first().unwrap();
+                uncalled.remove(&x);
+                called.insert(x);
+            },
+            2 => {
+                input! {
+                    x: usize
+                };
+                called.remove(&x);
+            },
+            3 => {
+                let x = *called.first().unwrap();
+                println!("{}", x);
+            },
+            _ => unreachable!()
+        }
+    }
 }
 
 fn main() {
