@@ -2,9 +2,9 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
-use proconio::{input, source::line::LineSource};
 #[allow(unused_imports)]
 use proconio::marker::*;
+use proconio::{input, source::line::LineSource};
 #[allow(unused_imports)]
 use std::collections::*;
 use std::io::{stdin, BufReader};
