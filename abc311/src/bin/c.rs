@@ -22,31 +22,29 @@ fn solve() {
         if visited.contains(&u) {
             continue;
         }
-            let (is_cycle, mut path) = dfs(u, &a, &mut visited);
-        if is_cycle {
-            let u = path.pop_back().unwrap();
-            let mut ans = VecDeque::new();
-            for v in path.into_iter().rev() {
-                ans.push_front(v);
-                if u == v {
-                    break;
-                }
+        let mut path = dfs(u, &a, &mut visited);
+        let u = path.pop_back().unwrap();
+        let mut ans = VecDeque::new();
+        for v in path.into_iter().rev() {
+            ans.push_front(v);
+            if u == v {
+                break;
             }
-            println!("{}", ans.len());
-            println!("{}", ans.into_iter().join(" "));
-            return;
         }
+        println!("{}", ans.len());
+        println!("{}", ans.into_iter().join(" "));
+        return;
     }
 }
 
-fn dfs(u: usize, edges: &Vec<usize>, visited: &mut HashSet<usize>) -> (bool, VecDeque<usize>) {
+fn dfs(u: usize, edges: &Vec<usize>, visited: &mut HashSet<usize>) -> VecDeque<usize> {
     if visited.contains(&u) {
-        return (true, vec![u + 1].into());
+        return vec![u + 1].into();
     }
     visited.insert(u);
-    let (is_cycle, mut path) = dfs(edges[u], edges, visited);
+    let mut path = dfs(edges[u], edges, visited);
     path.push_front(u + 1);
-    (is_cycle, path)
+    path
 }
 
 fn main() {
