@@ -13,7 +13,18 @@ fn solve() {
     let mut source = LineSource::new(BufReader::new(stdin()));
     macro_rules! input(($($tt:tt)*) => (proconio::input!(from &mut source, $($tt)*)));
     input! {
+        _n: usize,
+        s: Chars
     };
+
+    let mut set = HashSet::new();
+    for (i, &ch) in s.iter().enumerate() {
+        set.insert(ch);
+        if set.len() == 3 {
+            println!("{}", i + 1);
+            return;
+        }
+    }
 }
 
 fn main() {
