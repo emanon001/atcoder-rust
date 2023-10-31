@@ -13,7 +13,15 @@ fn solve() {
     let mut source = LineSource::new(BufReader::new(stdin()));
     macro_rules! input(($($tt:tt)*) => (proconio::input!(from &mut source, $($tt)*)));
     input! {
+        s: String
     };
+
+    let ans = if vec!["ACE", "BDF", "CEG", "DFA", "EGB", "FAC", "GBD"].contains(&s.as_str()) {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", ans);
 }
 
 fn main() {
