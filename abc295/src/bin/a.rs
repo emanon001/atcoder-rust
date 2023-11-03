@@ -13,7 +13,16 @@ fn solve() {
     let mut source = LineSource::new(BufReader::new(stdin()));
     macro_rules! input(($($tt:tt)*) => (proconio::input!(from &mut source, $($tt)*)));
     input! {
+        n: usize,
+        w: [String; n]
     };
+
+    let ans = if w.into_iter().any(|w_i| vec!["and", "not", "that", "the", "you"].contains(&w_i.as_ref())) {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", ans);
 }
 
 fn main() {
