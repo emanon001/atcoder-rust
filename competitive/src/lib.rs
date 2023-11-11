@@ -7,6 +7,7 @@ pub mod divisors;
 pub mod dp;
 pub mod geometry;
 pub mod graph;
+pub mod grid;
 pub mod io;
 pub mod lazy_segment_tree;
 pub mod lca;
