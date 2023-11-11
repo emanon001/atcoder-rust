@@ -4,15 +4,14 @@ use cargo_snippet::snippet;
 pub fn rotate90<T: Clone>(grid: Vec<Vec<T>>) -> Vec<Vec<T>> {
     assert!(!grid.is_empty());
 
-    let mut new_res = Vec::new();
-    for col_i in 0..grid[0].len() {
-        let new_row = (0..grid.len())
-            .rev()
-            .map(|row_i| grid[row_i][col_i].clone())
-            .collect::<Vec<_>>();
-        new_res.push(new_row);
-    }
-    new_res
+    (0..grid[0].len())
+        .map(|col_i| {
+            (0..grid.len())
+                .rev()
+                .map(|row_i| grid[row_i][col_i].clone())
+                .collect::<Vec<_>>()
+        })
+        .collect()
 }
 
 #[cfg(test)]
