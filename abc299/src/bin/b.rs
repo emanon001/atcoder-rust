@@ -2,9 +2,9 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
-use proconio::{input, source::line::LineSource};
 #[allow(unused_imports)]
 use proconio::marker::*;
+use proconio::{input, source::line::LineSource};
 #[allow(unused_imports)]
 use std::collections::*;
 use std::io::{stdin, BufReader};
@@ -13,7 +13,23 @@ fn solve() {
     let mut source = LineSource::new(BufReader::new(stdin()));
     macro_rules! input(($($tt:tt)*) => (proconio::input!(from &mut source, $($tt)*)));
     input! {
+        n: usize, t: usize,
+        c: [usize; n],
+        r: [usize; n],
     };
+
+    let mut map = HashMap::new();
+    for i in 0..n {
+        map.entry(c[i])
+            .or_insert(BTreeSet::new())
+            .insert((r[i], i + 1));
+    }
+    let ans = if let Some(set) = map.get(&t) {
+        set.iter().last().unwrap().1
+    } else {
+        map.get(&c[0]).unwrap().iter().last().unwrap().1
+    };
+    println!("{}", ans);
 }
 
 fn main() {
