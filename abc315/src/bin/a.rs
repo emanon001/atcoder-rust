@@ -10,7 +10,14 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        s: Chars
     };
+
+    let ans = s
+        .into_iter()
+        .filter(|ch| !vec!['a', 'e', 'i', 'o', 'u'].contains(ch))
+        .join("");
+    println!("{}", ans);
 }
 
 fn main() {
