@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        n: usize, h: usize, x: usize,
+        p: [usize; n]
     };
+
+    let ans = p
+        .into_iter()
+        .enumerate()
+        .find(|(_, pi)| h + *pi >= x)
+        .unwrap()
+        .0
+        + 1;
+    println!("{}", ans);
 }
 
 fn main() {
