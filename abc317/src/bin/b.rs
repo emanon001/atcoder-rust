@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        n: usize,
+        mut a: [usize; n]
     };
+
+    a.sort();
+    let mut x = a[0];
+    for y in a.into_iter().skip(1) {
+        if x + 1 != y {
+            println!("{}", x + 1);
+            return;
+        }
+        x = y;
+    }
 }
 
 fn main() {
