@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        n: usize, m: usize, p: usize
     };
+
+    let ans = if n >= m { 1 + (n - m) / p } else { 0 };
+    println!("{}", ans);
 }
 
 fn main() {
