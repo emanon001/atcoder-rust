@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        n: usize, d: usize, p: usize,
+        mut f: [usize; n]
     };
+
+    f.sort_by(|a, b| b.cmp(a));
+    let mut ans = 0;
+    for chunk in f.chunks(d) {
+        let sum = chunk.iter().sum::<usize>();
+        ans += sum.min(p);
+    }
+    println!("{}", ans);
 }
 
 fn main() {
