@@ -10,7 +10,27 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        n: usize,
+        rectangles: [(usize, usize, usize, usize); n]
     };
+
+    let mut grid = vec![vec![0; 100]; 100];
+    for (a, b, c, d) in rectangles {
+        for i in a..b {
+            for j in c..d {
+                grid[i][j] += 1;
+            }
+        }
+    }
+    let mut ans = 0;
+    for i in 0..100 {
+        for j in 0..100 {
+            if grid[i][j] > 0 {
+                ans += 1;
+            }
+        }
+    }
+    println!("{}", ans);
 }
 
 fn main() {
