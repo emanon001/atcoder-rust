@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        n: Chars
     };
+    let n = n
+        .into_iter()
+        .map(|ch| ch.to_digit(10).unwrap())
+        .collect::<Vec<_>>();
+
+    let ans = if n.into_iter().tuple_windows().all(|(a, b)| a > b) {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", ans);
 }
 
 fn main() {
