@@ -10,7 +10,17 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        n: usize,
+        s: Chars
     };
+
+    for i in 0..n - 2 {
+        if s[i] == 'A' && s[i + 1] == 'B' && s[i + 2] == 'C' {
+            println!("{}", i + 1);
+            return;
+        }
+    }
+    println!("-1");
 }
 
 fn main() {
