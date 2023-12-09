@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        n: usize, m: usize,
+        a: [usize; m]
     };
+
+    let set = a.into_iter().collect::<BTreeSet<_>>();
+    for i in 1..=n {
+        let day = set.range(i..).next().unwrap();
+        let ans = day - i;
+        println!("{}", ans);
+    }
 }
 
 fn main() {
