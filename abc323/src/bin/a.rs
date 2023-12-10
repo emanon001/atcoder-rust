@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        s: Chars
     };
+
+    let ans = if s.into_iter().skip(1).step_by(2).all(|ch| ch == '0') {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", ans);
 }
 
 fn main() {
