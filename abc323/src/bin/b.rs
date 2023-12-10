@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        n: usize,
+        s: [Chars; n]
     };
+
+    let mut win_table = vec![Vec::new(); n];
+    for (i, s_i) in s.into_iter().enumerate() {
+        let i = i + 1;
+        let win_count = s_i.into_iter().filter(|&ch| ch == 'o').count();
+        win_table[win_count].push(i);
+    }
+    let ans = win_table.into_iter().rev().flatten().join(" ");
+    println!("{}", ans);
 }
 
 fn main() {
