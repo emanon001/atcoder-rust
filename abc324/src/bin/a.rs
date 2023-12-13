@@ -10,7 +10,16 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        n: usize,
+        a: [usize; n],
     };
+
+    let ans = if a.into_iter().unique().count() == 1 {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", ans);
 }
 
 fn main() {
