@@ -10,7 +10,10 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        s: String, _: String
     };
+
+    println!("{} san", s);
 }
 
 fn main() {
