@@ -10,7 +10,20 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        n: usize
     };
+
+    for n in n.. {
+        let n = n
+            .to_string()
+            .chars()
+            .map(|ch| ch.to_digit(10).unwrap() as isize)
+            .collect::<Vec<_>>();
+        if n[0] * n[1] == n[2] {
+            println!("{}", n.into_iter().join(""));
+            return;
+        }
+    }
 }
 
 fn main() {
