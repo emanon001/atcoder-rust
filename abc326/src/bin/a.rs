@@ -10,7 +10,15 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        x: isize, y: isize
     };
+
+    let ans = if (-3..=2).contains(&(y - x)) {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", ans);
 }
 
 fn main() {
