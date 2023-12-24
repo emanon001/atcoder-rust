@@ -10,7 +10,20 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        _: usize,
+        s: Chars
     };
+
+    let ans = if s
+        .into_iter()
+        .tuple_windows()
+        .any(|(a, b)| a == 'a' && b == 'b' || a == 'b' && b == 'a')
+    {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", ans);
 }
 
 fn main() {
