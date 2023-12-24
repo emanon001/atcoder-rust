@@ -10,7 +10,18 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        b: u128
     };
+
+    let mut a = 1;
+    while a.pow(a as u32) <= b {
+        if a.pow(a as u32) == b {
+            println!("{}", a);
+            return;
+        }
+        a += 1;
+    }
+    println!("-1");
 }
 
 fn main() {
