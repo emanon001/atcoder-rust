@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        s: Chars
     };
+
+    let mut ans = Vec::new();
+    for ch in s {
+        if ch == 'C' && ans.len() >= 2 && ans[ans.len() - 1] == 'B' && ans[ans.len() - 2] == 'A' {
+            ans.pop();
+            ans.pop();
+        } else {
+            ans.push(ch);
+        }
+    }
+    println!("{}", ans.into_iter().join(""));
 }
 
 fn main() {
