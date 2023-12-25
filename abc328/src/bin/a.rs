@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        n: usize, x: usize,
+        s: [usize; n]
     };
+
+    let ans = s.into_iter().filter(|&v| v <= x).sum::<usize>();
+    println!("{}", ans);
 }
 
 fn main() {
