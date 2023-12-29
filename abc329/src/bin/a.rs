@@ -10,7 +10,11 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        s: Chars
     };
+
+    let ans = s.into_iter().join(" ");
+    println!("{}", ans);
 }
 
 fn main() {
