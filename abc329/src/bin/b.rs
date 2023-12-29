@@ -10,7 +10,12 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        n: usize,
+        a: [usize; n]
     };
+
+    let ans = a.into_iter().unique().sorted().rev().nth(1).unwrap();
+    println!("{}", ans);
 }
 
 fn main() {
