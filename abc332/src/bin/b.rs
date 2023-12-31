@@ -11,7 +11,23 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        K: isize, G: isize, M: isize,
     };
+
+    let mut glass = 0;
+    let mut mag = 0;
+    for _ in 0..K {
+        if glass == G {
+            glass = 0;
+        } else if mag == 0 {
+            mag = M;
+        } else {
+            let diff = (G - glass).min(mag);
+            glass += diff;
+            mag -= diff;
+        }
+    }
+    println!("{} {}", glass, mag);
 }
 
 fn main() {
