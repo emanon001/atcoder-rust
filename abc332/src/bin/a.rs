@@ -11,7 +11,13 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, S: usize, K: usize,
+        PQ: [(usize, usize); N]
     };
+
+    let ans: usize = PQ.into_iter().map(|(p, q)| p * q).sum();
+    let ans = ans + if ans >= S { 0 } else { K };
+    println!("{}", ans);
 }
 
 fn main() {
