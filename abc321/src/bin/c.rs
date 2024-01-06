@@ -10,7 +10,19 @@ use std::collections::*;
 
 fn solve() {
     input_interactive! {
+        K: usize,
     };
+
+    let mut candidates = vec![];
+    for a in 1..=10 {
+        for mut v in (0..=9).combinations(a) {
+            v.sort_by(|a, b| b.cmp(a));
+            candidates.push(v.into_iter().join("").parse::<i64>().unwrap())
+        }
+    }
+    candidates.sort();
+    let ans = candidates[K];
+    println!("{}", ans);
 }
 
 fn main() {
