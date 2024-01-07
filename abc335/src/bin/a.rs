@@ -11,7 +11,12 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        mut S: Chars
     };
+
+    let len = S.len();
+    S[len - 1] = '4';
+    println!("{}", S.iter().join(""));
 }
 
 fn main() {
