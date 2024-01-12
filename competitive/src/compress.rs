@@ -3,16 +3,21 @@ use cargo_snippet::snippet;
 #[snippet]
 pub fn compress_zahyo<T: Ord + std::hash::Hash + Clone>(
     zahyo: &[T],
-) -> std::collections::HashMap<T, usize> {
+) -> (
+    std::collections::HashMap<T, usize>,
+    std::collections::HashMap<usize, T>,
+) {
     let mut set = std::collections::BTreeSet::new();
     for x in zahyo {
         set.insert(x.clone());
     }
     let mut map = std::collections::HashMap::new();
+    let mut inverse_map = std::collections::HashMap::new();
     for (i, x) in set.into_iter().enumerate() {
-        map.insert(x, i);
+        map.insert(x.clone(), i);
+        inverse_map.insert(i, x);
     }
-    map
+    (map, inverse_map)
 }
 
 #[snippet]
@@ -54,14 +59,20 @@ mod tests {
     #[test]
     fn test_compress_zahyo() {
         let zahyo = vec![10, 0, 4, 2, 3, 3, 5];
-        let res = compress_zahyo(&zahyo);
-        assert_eq!(res.len(), 6);
-        assert_eq!(res[&0], 0);
-        assert_eq!(res[&2], 1);
-        assert_eq!(res[&3], 2);
-        assert_eq!(res[&4], 3);
-        assert_eq!(res[&5], 4);
-        assert_eq!(res[&10], 5);
+        let (map, inverse_map) = compress_zahyo(&zahyo);
+        assert_eq!(map.len(), 6);
+        assert_eq!(map[&0], 0);
+        assert_eq!(inverse_map[&0], 0);
+        assert_eq!(map[&2], 1);
+        assert_eq!(inverse_map[&1], 2);
+        assert_eq!(map[&3], 2);
+        assert_eq!(inverse_map[&2], 3);
+        assert_eq!(map[&4], 3);
+        assert_eq!(inverse_map[&3], 4);
+        assert_eq!(map[&5], 4);
+        assert_eq!(inverse_map[&4], 5);
+        assert_eq!(map[&10], 5);
+        assert_eq!(inverse_map[&5], 10);
     }
 
     #[test]
