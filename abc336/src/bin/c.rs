@@ -11,7 +11,20 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize
     };
+
+    let mut v = Vec::new();
+    let mut n = N - 1;
+    loop {
+        v.push(n % 5);
+        n /= 5;
+        if n == 0 {
+            break;
+        }
+    }
+    let ans = v.into_iter().rev().map(|x| x * 2).join("");
+    println!("{}", ans);
 }
 
 fn main() {
