@@ -17,6 +17,7 @@ pub mod mod_comb;
 pub mod mod_int;
 pub mod monoid;
 pub mod prime;
+pub mod radix_conversion;
 pub mod segment_tree;
 pub mod strings;
 pub mod union_find;
