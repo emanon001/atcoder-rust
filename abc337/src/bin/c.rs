@@ -11,7 +11,25 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [isize; N]
     };
+
+    let mut pos_map = HashMap::new();
+    for (i, a) in A.into_iter().enumerate() {
+        pos_map.insert(a, i + 1);
+    }
+    let mut ans = vec![];
+    let mut pos = pos_map[&-1];
+    loop {
+        ans.push(pos);
+        if let Some(&next_pos) = pos_map.get(&(pos as isize)) {
+            pos = next_pos;
+        } else {
+            break;
+        }
+    }
+    println!("{}", ans.iter().join(" "));
 }
 
 fn main() {
