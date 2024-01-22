@@ -5,13 +5,19 @@ use num::*;
 use proconio::input_interactive;
 #[allow(unused_imports)]
 use proconio::marker::*;
+use regex::Regex;
 #[allow(unused_imports)]
 use std::collections::*;
 
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: String
     };
+
+    let re = Regex::new(r"^A*B*C*$").unwrap();
+    let ans = if re.is_match(&S) { "Yes" } else { "No" };
+    println!("{}", ans);
 }
 
 fn main() {
