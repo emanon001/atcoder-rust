@@ -11,7 +11,23 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: u64, M: u64
     };
+
+    let mut ans = vec![];
+    for k in 1..=M {
+        ans.push(
+            if N.checked_pow(k as u32)
+                .map(|x| x <= 1000000000)
+                .unwrap_or(false)
+            {
+                'o'
+            } else {
+                'x'
+            },
+        );
+    }
+    println!("{}", ans.into_iter().join(""));
 }
 
 fn main() {
