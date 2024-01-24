@@ -11,7 +11,31 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        H: usize, W: usize,
+        mut grid: [[usize; W]; H],
+        N: usize,
+        RC: [(Usize1, Usize1); N]
     };
+
+    for (r, c) in RC {
+        let b = grid[r][c];
+        if b == 0 {
+            continue;
+        }
+
+        grid[r][c] = 0;
+        for r2 in (1..=r).rev() {
+            let t = grid[r2][c];
+            grid[r2][c] = grid[r2 - 1][c];
+            grid[r2 - 1][c] = t;
+        }
+    }
+    println!(
+        "{}",
+        grid.into_iter()
+            .map(|row| row.into_iter().join(" "))
+            .join("\n")
+    );
 }
 
 fn main() {
