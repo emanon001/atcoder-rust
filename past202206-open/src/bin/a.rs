@@ -11,7 +11,17 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        X: i64, A: i64, B: i64, C: i64
     };
+
+    let usagi = (C * A + X) * B;
+    let kame = X * A;
+    let ans = match usagi.cmp(&kame) {
+        std::cmp::Ordering::Less => "Hare",
+        std::cmp::Ordering::Equal => "Tie",
+        std::cmp::Ordering::Greater => "Tortoise",
+    };
+    println!("{ans}");
 }
 
 fn main() {
