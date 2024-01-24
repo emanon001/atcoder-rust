@@ -11,7 +11,23 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: u64
     };
+
+    let mut sum = 0_u64;
+    let mut n = 0;
+    let mut diff = 0;
+    while sum < N {
+        n += 1;
+        diff = N - sum;
+        sum += (n - 1) * 2 + 1;
+    }
+    let ans = if diff <= n {
+        n - (diff - 1)
+    } else {
+        diff - n + 1
+    };
+    println!("{}", ans);
 }
 
 fn main() {
