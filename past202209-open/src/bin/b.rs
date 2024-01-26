@@ -11,7 +11,15 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: String
     };
+
+    let ans = if N.len() <= 2 {
+        "0"
+    } else {
+        &N[0..N.len() - 2]
+    };
+    println!("{}", ans);
 }
 
 fn main() {
