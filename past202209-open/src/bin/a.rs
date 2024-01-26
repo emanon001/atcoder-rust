@@ -11,7 +11,11 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        X: usize, Y: usize, Z: usize
     };
+
+    let ans = (Z + X).max(Y);
+    println!("{}", ans);
 }
 
 fn main() {
