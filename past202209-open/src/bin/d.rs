@@ -11,7 +11,28 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, M: usize,
+        edges: [(usize, usize); M]
     };
+
+    let mut used = HashSet::new();
+    for (u, v) in edges {
+        if u > N || v > N {
+            println!("No");
+            return;
+        }
+        if u == v {
+            println!("No");
+            return;
+        }
+        let edge = (u.min(v), u.max(v));
+        if used.contains(&edge) {
+            println!("No");
+            return;
+        }
+        used.insert(edge);
+    }
+    println!("Yes");
 }
 
 fn main() {
