@@ -1,14 +1,17 @@
 #!/bin/bash -eu
 
-cmd_name="$(basename ${0})"
-if [ $# -ne 1 ]; then
+function usage () {
   echo "Usage: ${cmd_name} <contest-id>"
   exit 0
+}
+
+cmd_name="$(basename ${0})"
+if [ $# -ne 1 ]; then
+  usage
 fi
 contest_id="${1}"
 if [ -z "${contest_id}" ]; then
-  echo "Usage: ${cmd_name} <contest-id>"
-  exit 0
+  usage
 fi
 
 cd "$(dirname ${0})"
