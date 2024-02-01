@@ -11,7 +11,20 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [usize; N]
     };
+
+    let mut set = HashSet::new();
+    for i in 0..N {
+        for j in i + 1..N {
+            for k in j + 1..N {
+                set.insert(A[i] * A[j] * A[k]);
+            }
+        }
+    }
+    let ans = set.len();
+    println!("{}", ans);
 }
 
 fn main() {
