@@ -11,7 +11,27 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: Chars
     };
+
+    let mut stack = vec![];
+    for ch in S {
+        match ch {
+            '(' => {
+                stack.push('(');
+            }
+            ')' => {
+                if stack.is_empty() {
+                    println!("No");
+                    return;
+                }
+                stack.pop();
+            }
+            _ => unreachable!(),
+        }
+    }
+    let ans = if stack.is_empty() { "Yes" } else { "No" };
+    println!("{}", ans);
 }
 
 fn main() {
