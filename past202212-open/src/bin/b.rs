@@ -11,7 +11,17 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        A: i64, B: i64, C: i64, D: i64,
     };
+
+    let x = Rational64::new(A, B);
+    let y = Rational64::new(C, D);
+    let ans = match x.cmp(&y) {
+        std::cmp::Ordering::Less => "<",
+        std::cmp::Ordering::Equal => "=",
+        std::cmp::Ordering::Greater => ">",
+    };
+    println!("{}", ans);
 }
 
 fn main() {
