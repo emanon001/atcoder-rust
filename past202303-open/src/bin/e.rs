@@ -11,7 +11,27 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        H: usize, _: usize,
+        S: [Chars; H],
+        T: [Chars; H],
     };
+
+    for (r1, r2) in S.into_iter().zip(T) {
+        let mut counts1 = HashMap::new();
+        let mut counts2 = HashMap::new();
+        for ch in r1 {
+            *counts1.entry(ch).or_insert(0) += 1;
+        }
+        for ch in r2 {
+            *counts2.entry(ch).or_insert(0) += 1;
+        }
+        if counts1 != counts2 {
+            println!("No");
+            return;
+        }
+    }
+
+    println!("Yes");
 }
 
 fn main() {
