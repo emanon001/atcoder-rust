@@ -11,7 +11,17 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        S: [usize; N],
+        Q: usize,
+        Query: [[usize]; Q],
     };
+
+    let set = S.into_iter().collect::<HashSet<_>>();
+    for query in Query {
+        let ans = set.len() + query.into_iter().filter(|x| !set.contains(x)).count();
+        println!("{}", ans);
+    }
 }
 
 fn main() {
