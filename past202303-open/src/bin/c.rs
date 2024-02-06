@@ -11,7 +11,14 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        P: [usize; N]
     };
+
+    let ans = (1..=N)
+        .map(|x| P.iter().position(|&y| x == y).unwrap() + 1)
+        .join(" ");
+    println!("{}", ans);
 }
 
 fn main() {
