@@ -8,57 +8,62 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
-pub fn compress_list<T: Copy + std::cmp::PartialEq>(list: Vec<T>) -> Vec<(T, usize)> {
-    let mut res = Vec::new();
-    if list.is_empty() {
-        return res;
+pub fn compress_zahyo<T: Ord + std::hash::Hash + Clone>(
+    zahyo: &[T],
+) -> (
+    std::collections::HashMap<T, usize>,
+    std::collections::HashMap<usize, T>,
+) {
+    let mut set = std::collections::BTreeSet::new();
+    for x in zahyo {
+        set.insert(x.clone());
     }
-    let mut cur_v = list[0];
-    let mut count = 1;
-    for v in list.into_iter().skip(1) {
-        if v == cur_v {
-            count += 1;
-        } else {
-            res.push((cur_v, count));
-            count = 1;
-        }
-        cur_v = v;
+    let mut map = std::collections::HashMap::new();
+    let mut inverse_map = std::collections::HashMap::new();
+    for (i, x) in set.into_iter().enumerate() {
+        map.insert(x.clone(), i);
+        inverse_map.insert(i, x);
     }
-    res.push((cur_v, count));
-    res
+    (map, inverse_map)
 }
 
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
         N: usize,
-        mut A: [i64; N],
+        A: [i64; N],
     };
 
-    A.sort();
-    let mut list = compress_list(A);
-    let mut ans = 0;
-    while !list.is_empty() {
-        let mut prev = -1;
-        let mut count = 0;
-        let mut next_list = Vec::new();
-        for (a, c) in list
-            .into_iter()
-            .chain(std::iter::once((i64::max_value(), 1)))
-        {
-            if a == prev + 1 {
-                count += 1;
-            } else {
-                ans += count % 3;
-                count = 1;
-            }
-            prev = a;
-            if c > 1 {
-                next_list.push((a, c - 1));
-            }
-        }
-        list = next_list;
+    let mut counts = HashMap::new();
+    for &a in &A {
+        *counts.entry(a).or_insert(0_isize) += 1;
     }
+    let (zahyo, inverse_zahyo) = compress_zahyo(&A);
+    let mut three_count = 0;
+    for i in 0..zahyo.len() {
+        match (
+            inverse_zahyo.get(&i),
+            inverse_zahyo.get(&(i + 1)),
+            inverse_zahyo.get(&(i + 2)),
+        ) {
+            (Some(&a), Some(&b), Some(&c)) => {
+                if a + 1 == b && b + 1 == c {
+                    loop {
+                        if counts[&a] > 0 && counts[&b] > 0 && counts[&c] > 0 {
+                            three_count += 1;
+                            counts.insert(a, counts[&a] - 1);
+                            counts.insert(b, counts[&b] - 1);
+                            counts.insert(c, counts[&c] - 1);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+            _ => break,
+        }
+    }
+    let ans = N - three_count * 3;
     println!("{}", ans);
 }
 
