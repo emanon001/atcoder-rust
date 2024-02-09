@@ -11,7 +11,12 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: String
     };
+
+    let expected = format!("{}{}", S[..1].to_uppercase(), S[1..].to_lowercase());
+    let ans = if S == expected { "Yes" } else { "No" };
+    println!("{}", ans);
 }
 
 fn main() {
