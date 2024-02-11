@@ -11,7 +11,20 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        Q: usize,
+        queries: [(usize, usize); Q]
     };
+
+    let mut ans = vec![];
+    for (kind, x) in queries {
+        match kind {
+            1 => ans.push(x),
+            2 => {
+                println!("{}", ans[ans.len() - x]);
+            }
+            _ => unreachable!(),
+        }
+    }
 }
 
 fn main() {
