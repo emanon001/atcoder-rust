@@ -11,7 +11,11 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        _: usize, H: usize,
     };
+
+    let ans = if H >= 2800 { "o" } else { "x" };
+    println!("{}", ans);
 }
 
 fn main() {
