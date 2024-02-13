@@ -11,7 +11,16 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [Usize1; N]
     };
+
+    let mut counts = vec![0; 8];
+    for a in A {
+        counts[a] += 1;
+    }
+    let ans = counts.iter().min().unwrap();
+    println!("{}", ans);
 }
 
 fn main() {
