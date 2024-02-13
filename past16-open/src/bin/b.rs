@@ -11,7 +11,11 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        A: usize, B: usize, C: usize,
     };
+
+    let ans = if A == B && B == C { "Yes" } else { "No" };
+    println!("{}", ans);
 }
 
 fn main() {
