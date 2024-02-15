@@ -231,9 +231,9 @@
       "        *self",
       "    }",
       "}",
-      "impl BinarySearchOk<usize> for usize {",
+      "impl BinarySearchOk<isize> for isize {",
       "    fn bs_needs_next_search(&self, ng: &Self) -> bool {",
-      "        (*self as isize - *ng as isize).abs() > 1",
+      "        (*self - *ng).abs() > 1",
       "    }",
       "    fn bs_mid_value(&self, ng: &Self) -> Self {",
       "        (self + ng) / 2",
@@ -346,14 +346,33 @@
     "body": [
       "pub fn compress_zahyo<T: Ord + std::hash::Hash + Clone>(",
       "    zahyo: &[T],",
-      ") -> std::collections::HashMap<T, usize> {",
+      ") -> (",
+      "    std::collections::HashMap<T, usize>,",
+      "    std::collections::HashMap<usize, T>,",
+      ") {",
       "    let mut set = std::collections::BTreeSet::new();",
       "    for x in zahyo {",
       "        set.insert(x.clone());",
       "    }",
       "    let mut map = std::collections::HashMap::new();",
+      "    let mut inverse_map = std::collections::HashMap::new();",
       "    for (i, x) in set.into_iter().enumerate() {",
-      "        map.insert(x, i);",
+      "        map.insert(x.clone(), i);",
+      "        inverse_map.insert(i, x);",
+      "    }",
+      "    (map, inverse_map)",
+      "}"
+    ]
+  },
+  "count_list": {
+    "prefix": "count_list",
+    "body": [
+      "pub fn count_list<T: Ord + std::hash::Hash + Clone>(",
+      "    list: Vec<T>,",
+      ") -> std::collections::HashMap<T, usize> {",
+      "    let mut map = std::collections::HashMap::new();",
+      "    for v in list {",
+      "        *map.entry(v).or_insert(0) += 1;",
       "    }",
       "    map",
       "}"
@@ -736,6 +755,20 @@
       "}"
     ]
   },
+  "invert_hash_map": {
+    "prefix": "invert_hash_map",
+    "body": [
+      "pub fn invert_hash_map<K, V: std::hash::Hash + std::cmp::Eq>(",
+      "    map: std::collections::HashMap<K, V>,",
+      ") -> std::collections::HashMap<V, K> {",
+      "    let mut res = std::collections::HashMap::new();",
+      "    for (k, v) in map {",
+      "        res.insert(v, k);",
+      "    }",
+      "    res",
+      "}"
+    ]
+  },
   "is_lear_year": {
     "prefix": "is_lear_year",
     "body": [
@@ -759,6 +792,17 @@
       "        i += 1;",
       "    }",
       "    true",
+      "}"
+    ]
+  },
+  "is_sections_overlapping": {
+    "prefix": "is_sections_overlapping",
+    "body": [
+      "pub fn is_sections_overlapping(l1: i64, r1: i64, l2: i64, r2: i64) -> bool {",
+      "    (l1 <= l2 && l2 <= r2 && r2 <= r1)",
+      "        || (l1 <= l2 && l2 <= r1 && r1 <= r2)",
+      "        || (l2 <= l1 && l1 <= r1 && r1 <= r2)",
+      "        || (l2 <= l1 && l1 <= r2 && r2 <= r1)",
       "}"
     ]
   },
@@ -1518,6 +1562,24 @@
       "}"
     ]
   },
+  "radix_conversion": {
+    "prefix": "radix_conversion",
+    "body": [
+      "pub fn convert_radix(radix10: u64, base: u64) -> Vec<u64> {",
+      "    let mut x = radix10;",
+      "    let mut ans = Vec::new();",
+      "    loop {",
+      "        ans.push(x % base);",
+      "        x /= base;",
+      "        if x == 0 {",
+      "            break;",
+      "        }",
+      "    }",
+      "    ans.reverse();",
+      "    ans",
+      "}"
+    ]
+  },
   "read_line": {
     "prefix": "read_line",
     "body": [
@@ -1535,6 +1597,22 @@
       "    let c = (b.0 - b.1 + a.1, b.1 + b.0 - a.0);",
       "    let d = (c.0 - c.1 + b.1, c.1 + c.0 - b.0);",
       "    (c, d)",
+      "}"
+    ]
+  },
+  "rotate90": {
+    "prefix": "rotate90",
+    "body": [
+      "pub fn rotate90<T: Clone>(grid: Vec<Vec<T>>) -> Vec<Vec<T>> {",
+      "    assert!(!grid.is_empty());",
+      "    (0..grid[0].len())",
+      "        .map(|col_i| {",
+      "            (0..grid.len())",
+      "                .rev()",
+      "                .map(|row_i| grid[row_i][col_i].clone())",
+      "                .collect::<Vec<_>>()",
+      "        })",
+      "        .collect()",
       "}"
     ]
   },
@@ -1602,6 +1680,26 @@
       "            self.scc_dfs2(v, group, used);",
       "        }",
       "    }",
+      "}"
+    ]
+  },
+  "sections_overlapping_size": {
+    "prefix": "sections_overlapping_size",
+    "body": [
+      "pub fn sections_overlapping_size(l1: i64, r1: i64, l2: i64, r2: i64) -> i64 {",
+      "    if l1 <= l2 && l2 <= r2 && r2 <= r1 {",
+      "        return r2 - l2 + 1;",
+      "    }",
+      "    if l1 <= l2 && l2 <= r1 && r1 <= r2 {",
+      "        return r1 - l2 + 1;",
+      "    }",
+      "    if l2 <= l1 && l1 <= r1 && r1 <= r2 {",
+      "        return r1 - l1 + 1;",
+      "    }",
+      "    if l2 <= l1 && l1 <= r2 && r2 <= r1 {",
+      "        return r2 - l1 + 1;",
+      "    }",
+      "    0",
       "}"
     ]
   },
