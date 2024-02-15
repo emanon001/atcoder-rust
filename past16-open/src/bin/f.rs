@@ -11,7 +11,19 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: String
     };
+
+    let MOD = 998244353_i64;
+
+    let ans = S.split('*').fold(1_i64, |acc, x| {
+        let mut n = 0_i64;
+        for x in x.chars().map(|ch| ch.to_digit(10).unwrap() as i64) {
+            n = (n * 10 + x) % MOD;
+        }
+        (acc * n) % MOD
+    });
+    println!("{}", ans);
 }
 
 fn main() {
