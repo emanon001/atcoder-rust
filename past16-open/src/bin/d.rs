@@ -1,5 +1,6 @@
 #[allow(unused_imports)]
 use itertools::Itertools;
+use num::rational::Rational64;
 #[allow(unused_imports)]
 use num::*;
 use proconio::input_interactive;
@@ -11,7 +12,20 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [i64; N]
     };
+
+    let max = *A.iter().max().unwrap();
+    let ans = A
+        .into_iter()
+        .map(|a| {
+            (Rational64::new(a, max) * Rational64::new(10.pow(9), 1))
+                .round()
+                .to_integer()
+        })
+        .join(" ");
+    println!("{}", ans);
 }
 
 fn main() {
