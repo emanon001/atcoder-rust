@@ -11,7 +11,20 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, M: usize,
+        AB: [[(Usize1, usize)]; M]
     };
+
+    for bits in 0..1 << N {
+        let ok = AB
+            .iter()
+            .all(|ab| ab.iter().any(|(a, b)| (bits >> a) & 1 == *b));
+        if ok {
+            println!("Yes");
+            return;
+        }
+    }
+    println!("No");
 }
 
 fn main() {
