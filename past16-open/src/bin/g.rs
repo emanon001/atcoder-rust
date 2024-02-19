@@ -23,22 +23,26 @@ fn factorial(n: usize) -> usize {
     (1..=n).product()
 }
 
-fn calc(indexes: &[usize], a: &[usize]) -> usize {
+fn calc(indexes: &[usize], av: &[usize]) -> usize {
     if indexes.is_empty() {
         return 1;
     }
     let mut res = 0;
-    for v in indexes.iter().combinations(3) {
-        let v = v.clone().into_iter().sorted().collect_vec();
-        if a[*v[0]] + a[*v[1]] <= a[*v[2]] {
+    for i_comb in indexes.iter().combinations(3) {
+        let idx = i_comb
+            .clone()
+            .into_iter()
+            .sorted_by_key(|&i| av[*i])
+            .collect_vec();
+        if av[*idx[0]] + av[*idx[1]] <= av[*idx[2]] {
             continue;
         }
         let new_indexes = indexes
             .iter()
-            .filter(|&x| x != v[0] && x != v[1] && x != v[2])
+            .filter(|&x| x != idx[0] && x != idx[1] && x != idx[2])
             .copied()
             .collect_vec();
-        res += calc(&new_indexes, a);
+        res += calc(&new_indexes, av);
     }
     res
 }
