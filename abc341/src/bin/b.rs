@@ -11,7 +11,14 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        mut A: [i64; N],
+        ST: [(i64, i64); N - 1],
     };
+    for (i, (s, t)) in ST.into_iter().enumerate() {
+        A[i + 1] += A[i] / s * t;
+    }
+    println!("{}", A[N - 1]);
 }
 
 fn main() {
