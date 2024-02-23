@@ -11,7 +11,18 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        M: usize,
+        A: [usize; N],
+        B: [usize; M],
     };
+
+    let ans = A
+        .into_iter()
+        .collect::<BTreeSet<_>>()
+        .intersection(&B.into_iter().collect::<BTreeSet<_>>())
+        .join(" ");
+    println!("{}", ans);
 }
 
 fn main() {
