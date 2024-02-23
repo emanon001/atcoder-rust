@@ -11,7 +11,11 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        A: i64, B: i64, C: i64, D: i64,
     };
+
+    let ans = (A + B - C).min(D);
+    println!("{}", ans);
 }
 
 fn main() {
