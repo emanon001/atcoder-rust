@@ -11,7 +11,18 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        _: usize,
+        S: String
     };
+
+    let to = "...";
+    let ans = S
+        .replace("axa", to)
+        .replace("ixi", to)
+        .replace("uxu", to)
+        .replace("exe", to)
+        .replace("oxo", to);
+    println!("{}", ans);
 }
 
 fn main() {
