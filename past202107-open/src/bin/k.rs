@@ -121,26 +121,28 @@ impl<Cost> Graph<Cost>
 where
     Cost: PartialOrd + Ord + Copy + num::traits::NumAssign,
 {
-    pub fn shortest_path(&self, start: usize, av: &[i64]) -> Vec<(Cost, i64)> {
-        let mut cost_list = vec![(self.inf, 0); self.vc];
+    pub fn shortest_path(&self, start: usize, av: &[i64]) -> Vec<i64> {
+        let mut cost_list = vec![(self.inf, std::cmp::Reverse(0)); self.vc];
         let mut heap = std::collections::BinaryHeap::new();
-        cost_list[start] = (Cost::zero(), 0);
+        cost_list[start] = (Cost::zero(), std::cmp::Reverse(0));
         heap.push((std::cmp::Reverse(Cost::zero()), av[start], start));
         while let Some((std::cmp::Reverse(cost), a, u)) = heap.pop() {
-            if cost > cost_list[u].0 || cost == cost_list[u].0 && a < cost_list[u].1 {
+            if (cost, std::cmp::Reverse(a)) > cost_list[u] {
                 continue;
             }
             for &(v, w) in &self.graph[u] {
                 let new_cost = cost + w;
                 let new_a = a + av[v];
-                if new_cost == cost_list[v].0 && new_a > cost_list[v].1 || new_cost < cost_list[v].0
-                {
+                if (new_cost, std::cmp::Reverse(new_a)) < cost_list[v] {
                     heap.push((std::cmp::Reverse(new_cost), new_a, v));
-                    cost_list[v] = (new_cost, new_a);
+                    cost_list[v] = (new_cost, std::cmp::Reverse(new_a));
                 }
             }
         }
         cost_list
+            .into_iter()
+            .map(|(_, std::cmp::Reverse(a))| a)
+            .collect()
     }
 }
 
@@ -153,7 +155,7 @@ fn solve() {
     };
 
     let graph = Graph::new_undirected(edges, N, 1_i64 << 60);
-    let ans = graph.shortest_path(0, &A)[N - 1].1;
+    let ans = graph.shortest_path(0, &A)[N - 1];
     println!("{}", ans);
 }
 
