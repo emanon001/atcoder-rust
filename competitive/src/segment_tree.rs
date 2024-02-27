@@ -33,6 +33,11 @@ where
         }
     }
 
+    /// 0-origin
+    pub fn get(&self, a: usize) -> T {
+        self.query(a, a + 1)
+    }
+
     /// [a, b)
     /// 0-origin
     pub fn query(&self, a: usize, b: usize) -> T {
@@ -144,5 +149,29 @@ mod tests {
         assert_eq!(st.query(1, 2), 3);
         assert_eq!(st.query(1, 3), 3);
         assert_eq!(st.query(2, 3), 2);
+    }
+
+    #[test]
+    fn test_update_and_get() {
+        let mut st: SegmentTree<usize> = SegmentTree::new(3);
+
+        assert_eq!(st.get(0), 0);
+        assert_eq!(st.get(1), 0);
+        assert_eq!(st.get(2), 0);
+
+        st.update(0, 1);
+        assert_eq!(st.get(0), 1);
+        assert_eq!(st.get(1), 0);
+        assert_eq!(st.get(2), 0);
+
+        st.update(1, 2);
+        assert_eq!(st.get(0), 1);
+        assert_eq!(st.get(1), 2);
+        assert_eq!(st.get(2), 0);
+
+        st.update(2, 3);
+        assert_eq!(st.get(0), 1);
+        assert_eq!(st.get(1), 2);
+        assert_eq!(st.get(2), 3);
     }
 }
