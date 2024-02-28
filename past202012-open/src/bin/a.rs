@@ -11,7 +11,17 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: String
     };
+
+    let ans = if S.contains("ooo") {
+        "o"
+    } else if S.contains("xxx") {
+        "x"
+    } else {
+        "draw"
+    };
+    println!("{}", ans);
 }
 
 fn main() {
