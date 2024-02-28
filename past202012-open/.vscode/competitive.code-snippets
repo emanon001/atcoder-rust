@@ -66,6 +66,32 @@
       "}"
     ]
   },
+  "balanced_ternary": {
+    "prefix": "balanced_ternary",
+    "body": [
+      "pub fn balanced_ternary(n: i64) -> Vec<i64> {",
+      "    let mut res = vec![];",
+      "    let mut n = n;",
+      "    while n != 0 {",
+      "        let m = (n % 3 + 3) % 3;",
+      "        match m % 3 {",
+      "            0 => res.push(0),",
+      "            1 => {",
+      "                res.push(1);",
+      "                n -= 1;",
+      "            }",
+      "            2 => {",
+      "                res.push(-1);",
+      "                n += 1;",
+      "            }",
+      "            _ => unreachable!(),",
+      "        };",
+      "        n /= 3;",
+      "    }",
+      "    res",
+      "}"
+    ]
+  },
   "bellman_ford": {
     "prefix": "bellman_ford",
     "body": [
@@ -973,6 +999,10 @@
       "            self.data[i] = self.data[i * 2 + 1].mappend(&self.data[i * 2 + 2]);",
       "        }",
       "    }",
+      "    /// 0-origin",
+      "    pub fn get(&self, a: usize) -> T {",
+      "        self.query(a, a + 1)",
+      "    }",
       "    /// [a, b)",
       "    /// 0-origin",
       "    pub fn query(&self, a: usize, b: usize) -> T {",
@@ -1735,6 +1765,10 @@
       "            i = (i - 1) / 2;",
       "            self.data[i] = self.data[i * 2 + 1].mappend(&self.data[i * 2 + 2]);",
       "        }",
+      "    }",
+      "    /// 0-origin",
+      "    pub fn get(&self, a: usize) -> T {",
+      "        self.query(a, a + 1)",
       "    }",
       "    /// [a, b)",
       "    /// 0-origin",

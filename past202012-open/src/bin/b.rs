@@ -2,24 +2,16 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
-use proconio::input;
+use proconio::input_interactive;
 #[allow(unused_imports)]
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[allow(non_snake_case)]
 fn solve() {
-    input! {
-        _: usize,
-        s: String
+    input_interactive! {
     };
-
-    let mut res = "".to_string();
-    for ch in s.chars() {
-        res = res.replace(ch, "");
-        res.push(ch);
-    }
-    println!("{}", res);
 }
 
 fn main() {
