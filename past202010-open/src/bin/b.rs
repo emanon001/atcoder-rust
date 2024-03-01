@@ -11,7 +11,18 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        X: i64, Y: i64,
     };
+
+    let ans = if Y == 0 {
+        "ERROR".to_string()
+    } else {
+        let a = X * 100 / Y;
+        let b = a / 100;
+        let c = a % 100;
+        format!("{}.{:02}", b, c)
+    };
+    println!("{}", ans);
 }
 
 fn main() {
