@@ -2,24 +2,16 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
-use proconio::input;
+use proconio::input_interactive;
 #[allow(unused_imports)]
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[allow(non_snake_case)]
 fn solve() {
-    input! {
-        v: [usize; 3]
+    input_interactive! {
     };
-
-    let mut v = vec![
-        (v[0], 'A'),
-        (v[1], 'B'),
-        (v[2], 'C'),
-    ];
-    v.sort();
-    println!("{}", v[1].1);
 }
 
 fn main() {
