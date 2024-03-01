@@ -11,7 +11,20 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        A: usize, B: usize, C: usize,
     };
+
+    let mut v = vec![A, B, C];
+    v.sort();
+    let mid = v[1];
+    let ans = if A == mid {
+        "A"
+    } else if B == mid {
+        "B"
+    } else {
+        "C"
+    };
+    println!("{}", ans);
 }
 
 fn main() {
