@@ -167,39 +167,39 @@ fn solve() {
             _ => unreachable!(),
         };
     }
-    let mut graph = Graph::new_undirected(ABC, N + 3, 1_i64 << 60);
+    let mut graph = Graph::new_undirected(ABC, N + 3 * 2, 1_i64 << 60);
     for u in warp_a {
-        // AB
-        let v = N;
-        graph.add_directed_edge((u, v, 0));
-        graph.add_directed_edge((v, u, XAB));
-        // AC
-        let v = N + 1;
-        graph.add_directed_edge((u, v, 0));
-        graph.add_directed_edge((v, u, XAC));
+        // A → AB
+        // BA → A
+        graph.add_directed_edge((u, N, 0));
+        graph.add_directed_edge((N + 1, u, XAB));
+        // A → AC
+        // CA → A
+        graph.add_directed_edge((u, N + 2, 0));
+        graph.add_directed_edge((N + 3, u, XAC));
     }
-    // for u in warp_b {
-    //     // AB
-    //     let v = N;
-    //     graph.add_directed_edge((u, v, 0));
-    //     graph.add_directed_edge((v, u, XAB));
-    //     // BC
-    //     let v = N + 2;
-    //     graph.add_directed_edge((u, v, 0));
-    //     graph.add_directed_edge((v, u, XBC));
-    // }
-    // for u in warp_c {
-    //     // AC
-    //     let v = N + 1;
-    //     graph.add_directed_edge((u, v, 0));
-    //     graph.add_directed_edge((v, u, XAC));
-    //     // BC
-    //     let v = N + 2;
-    //     graph.add_directed_edge((u, v, 0));
-    //     graph.add_directed_edge((v, u, XBC));
-    // }
+    for u in warp_b {
+        // B → BA
+        // AB → B
+        graph.add_directed_edge((u, N + 1, 0));
+        graph.add_directed_edge((N, u, XAB));
+        // B → BC
+        // CB → B
+        graph.add_directed_edge((u, N + 4, 0));
+        graph.add_directed_edge((N + 5, u, XBC));
+    }
+    for u in warp_c {
+        // C → CA
+        // AC → C
+        graph.add_directed_edge((u, N + 3, 0));
+        graph.add_directed_edge((N + 2, u, XAC));
+        // C → CB
+        // BC → C
+        graph.add_directed_edge((u, N + 5, 0));
+        graph.add_directed_edge((N + 4, u, XBC));
+    }
     let dist = graph.shortest_path(0);
-    eprintln!("{:?}", dist);
+    // eprintln!("{:?}", dist);
     let ans = dist[N - 1].unwrap();
     println!("{}", ans);
 }
