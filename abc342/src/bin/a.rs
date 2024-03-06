@@ -11,7 +11,20 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: Chars,
     };
+
+    let mut indexes = HashMap::new();
+    for (i, ch) in S.into_iter().enumerate() {
+        let i = i + 1;
+        indexes.entry(ch).or_insert(Vec::new()).push(i);
+    }
+    let ans = indexes
+        .into_iter()
+        .sorted_by_key(|(_, v)| v.len())
+        .collect_vec()[0]
+        .1[0];
+    println!("{}", ans);
 }
 
 fn main() {
