@@ -11,7 +11,20 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        P: [Usize1; N],
+        Q: usize,
+        queries: [(Usize1, Usize1); Q],
     };
+
+    let mut id_to_pos = vec![0; N];
+    for (i, &p) in P.iter().enumerate() {
+        id_to_pos[p] = i;
+    }
+    for (a, b) in queries {
+        let ans = if id_to_pos[a] < id_to_pos[b] { a } else { b } + 1;
+        println!("{}", ans);
+    }
 }
 
 fn main() {
