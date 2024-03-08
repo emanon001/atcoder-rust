@@ -122,13 +122,13 @@ fn solve() {
         A: [usize; N],
     };
 
-    let mut st = SegmentTree::new(N);
-    for (i, a) in A.into_iter().enumerate() {
+    let mut v = vec![];
+    for a in A {
         let mut map = HashMap::new();
         map.insert(a, 1_usize);
-        st.update(i, map);
+        v.push(map);
     }
-
+    let mut st = SegmentTree::from(v);
     for _ in 0..Q {
         input_interactive! {
             kind: usize,
