@@ -11,7 +11,16 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: u64,
     };
+
+    for x in (1..=10_u64.pow(6)).rev() {
+        let xxx = x * x * x;
+        if xxx <= N && xxx.to_string() == xxx.to_string().chars().rev().collect::<String>() {
+            println!("{}", xxx);
+            return;
+        }
+    }
 }
 
 fn main() {
