@@ -24,6 +24,20 @@ impl BinarySearchOk<i64> for i64 {
 
 #[snippet("bsearch")]
 #[snippet]
+impl BinarySearchOk<i128> for i128 {
+    fn bs_needs_next_search(&self, ng: &Self) -> bool {
+        (self - ng).abs() > 1
+    }
+    fn bs_mid_value(&self, ng: &Self) -> Self {
+        (self + ng) / 2
+    }
+    fn bs_into(&self) -> Self {
+        *self
+    }
+}
+
+#[snippet("bsearch")]
+#[snippet]
 impl BinarySearchOk<f64> for f64 {
     fn bs_needs_next_search(&self, ng: &Self) -> bool {
         (self - ng).abs() > 1.0
