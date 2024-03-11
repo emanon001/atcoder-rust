@@ -21,17 +21,6 @@ pub fn compress_zahyo<T: Ord + std::hash::Hash + Clone>(
 }
 
 #[snippet]
-pub fn count_list<T: Ord + std::hash::Hash + Clone>(
-    list: Vec<T>,
-) -> std::collections::HashMap<T, usize> {
-    let mut map = std::collections::HashMap::new();
-    for v in list {
-        *map.entry(v).or_insert(0) += 1;
-    }
-    map
-}
-
-#[snippet]
 pub fn compress_list<T: Copy + std::cmp::PartialEq>(list: Vec<T>) -> Vec<(T, usize)> {
     let mut res = Vec::new();
     if list.is_empty() {
@@ -55,7 +44,7 @@ pub fn compress_list<T: Copy + std::cmp::PartialEq>(list: Vec<T>) -> Vec<(T, usi
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::collections::*;
+
     #[test]
     fn test_compress_zahyo() {
         let zahyo = vec![10, 0, 4, 2, 3, 3, 5];
@@ -73,39 +62,6 @@ mod tests {
         assert_eq!(inverse_map[&4], 5);
         assert_eq!(map[&10], 5);
         assert_eq!(inverse_map[&5], 10);
-    }
-
-    #[test]
-    fn test_count_list_empty() {
-        let list: Vec<usize> = vec![];
-        assert_eq!(count_list(list), HashMap::<usize, usize>::new());
-    }
-
-    #[test]
-    fn test_count_list_string() {
-        let list = vec![
-            "foo".to_owned(),
-            "bar".to_owned(),
-            "foo".to_owned(),
-            "piyo".to_owned(),
-            "bar".to_owned(),
-            "foo".to_owned(),
-        ];
-        let mut expected = HashMap::new();
-        expected.insert("foo".to_owned(), 3);
-        expected.insert("bar".to_owned(), 2);
-        expected.insert("piyo".to_owned(), 1);
-        assert_eq!(count_list(list), expected);
-    }
-
-    #[test]
-    fn test_count_list_number() {
-        let list = vec![1, 2, 1, 3, 1, 2];
-        let mut expected = HashMap::new();
-        expected.insert(1, 3);
-        expected.insert(2, 2);
-        expected.insert(3, 1);
-        assert_eq!(count_list(list), expected);
     }
 
     #[test]
