@@ -11,7 +11,11 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, X: usize, Y: usize,
     };
+
+    let ans = (1..=N).filter(|&n| n % X == 0 || n % Y == 0).count();
+    println!("{}", ans);
 }
 
 fn main() {
