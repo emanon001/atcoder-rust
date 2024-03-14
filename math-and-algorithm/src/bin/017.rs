@@ -8,10 +8,28 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+fn gcd(a: i64, b: i64) -> i64 {
+    if b == 0 {
+        a
+    } else {
+        gcd(b, a % b)
+    }
+}
+
+fn lcm(a: i64, b: i64) -> i64 {
+    let g = gcd(a, b);
+    a / g * b
+}
+
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [i64; N],
     };
+
+    let ans = A.into_iter().fold(1, lcm);
+    println!("{}", ans);
 }
 
 fn main() {
