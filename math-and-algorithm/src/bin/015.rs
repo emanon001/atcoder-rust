@@ -8,10 +8,23 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+fn gcd(a: usize, b: usize) -> usize {
+    let (a, b) = if a >= b { (a, b) } else { (b, a) };
+    if b == 0 {
+        a
+    } else {
+        gcd(b, a % b)
+    }
+}
+
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        A: usize, B: usize,
     };
+
+    let ans = gcd(A, B);
+    println!("{}", ans);
 }
 
 fn main() {
