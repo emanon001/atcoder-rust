@@ -9,7 +9,6 @@ use proconio::marker::*;
 use std::collections::*;
 
 fn gcd(a: i64, b: i64) -> i64 {
-    let (a, b) = if a >= b { (a, b) } else { (b, a) };
     if b == 0 {
         a
     } else {
