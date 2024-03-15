@@ -11,7 +11,11 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: u64, R: u64,
     };
+
+    let ans = (1..=N).product::<u64>() / (1..=N - R).product::<u64>() / (1..=R).product::<u64>();
+    println!("{}", ans);
 }
 
 fn main() {
