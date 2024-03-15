@@ -11,7 +11,17 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [usize; N],
     };
+
+    let ans = A
+        .into_iter()
+        .combinations(5)
+        .map(|v| v.into_iter().sum::<usize>())
+        .filter(|sum| sum == &1000)
+        .count();
+    println!("{}", ans);
 }
 
 fn main() {
