@@ -11,7 +11,11 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
     };
+
+    let ans = (1..=N).rev().map(|x| N as f64 / x as f64).sum::<f64>();
+    println!("{}", ans);
 }
 
 fn main() {
