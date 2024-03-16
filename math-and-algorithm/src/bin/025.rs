@@ -11,7 +11,17 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [f64; N],
+        B: [f64; N],
     };
+
+    let ans = A
+        .into_iter()
+        .zip(B.into_iter())
+        .map(|(a, b)| (a * 2.0 + b * 4.0) / 6.0)
+        .sum::<f64>();
+    println!("{}", ans);
 }
 
 fn main() {
