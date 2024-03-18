@@ -11,7 +11,20 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, M: usize,
+        AB: [(Usize1, Usize1); M],
     };
+
+    let mut counts = vec![0; N];
+    for (u, v) in AB {
+        if u > v {
+            counts[u] += 1;
+        } else if v > u {
+            counts[v] += 1;
+        }
+    }
+    let ans = counts.into_iter().filter(|&c| c == 1).count();
+    println!("{}", ans);
 }
 
 fn main() {
