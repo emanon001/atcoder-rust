@@ -11,7 +11,26 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [i64; N - 1],
+        M: usize,
+        B: [Usize1; M],
     };
+
+    let mut cusum = vec![0; N];
+    for i in 0..N - 1 {
+        cusum[i + 1] = cusum[i] + A[i];
+    }
+    let ans = B
+        .into_iter()
+        .tuple_windows()
+        .map(|(a, b)| {
+            let i = a.min(b);
+            let j = a.max(b);
+            cusum[j] - cusum[i]
+        })
+        .sum::<i64>();
+    println!("{}", ans);
 }
 
 fn main() {
