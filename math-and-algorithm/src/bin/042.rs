@@ -11,7 +11,20 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
     };
+
+    let mut cusum = vec![0; N + 1];
+    let mut ans = 0;
+    for k in 1..=N {
+        let mut x = k;
+        while x <= N {
+            cusum[x] += 1;
+            x += k;
+        }
+        ans += k * cusum[k];
+    }
+    println!("{}", ans);
 }
 
 fn main() {
