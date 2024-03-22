@@ -11,7 +11,20 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        X: i64,
     };
+
+    let ans = match (X % 10 == 0, X / 10) {
+        (true, _) => X / 10,
+        (false, n) => {
+            if X.is_negative() {
+                n
+            } else {
+                n + 1
+            }
+        }
+    };
+    println!("{}", ans);
 }
 
 fn main() {
