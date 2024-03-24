@@ -823,6 +823,17 @@ mod tests {
             let g2 = res[1].iter().copied().collect::<HashSet<usize>>();
             assert_eq!(g2, vec![2].into_iter().collect::<HashSet<_>>());
         }
+
+        #[test]
+        fn test_is_bipartite_graph() {
+            let edges = vec![(0, 1), (1, 2), (2, 3), (3, 0)];
+            let graph = Graph::new_directed(edges, 4, 1_i64 << 60);
+            assert!(graph.is_bipartite_graph());
+
+            let edges = vec![(0, 1), (1, 2), (2, 0)];
+            let graph = Graph::new_directed(edges, 3, 1_i64 << 60);
+            assert!(!graph.is_bipartite_graph());
+        }
     }
 
     mod grid {
