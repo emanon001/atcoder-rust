@@ -414,6 +414,42 @@ where
     }
 }
 
+#[snippet("is_bipartite_graph")]
+impl<Cost> Graph<Cost>
+where
+    Cost: PartialOrd + Copy + num::traits::NumAssign,
+{
+    pub fn is_bipartite_graph(&self) -> bool {
+        let vc = self.vc;
+        let mut colors = vec![None; vc];
+        for u in 0..vc {
+            if colors[u].is_some() {
+                continue;
+            }
+            colors[u] = Some(true);
+            let mut que = std::collections::VecDeque::new();
+            que.push_back((u, true));
+            while let Some((u, c)) = que.pop_front() {
+                for &(v, _) in &self.graph[u] {
+                    match colors[v] {
+                        None => {
+                            let new_color = !c;
+                            colors[v] = Some(new_color);
+                            que.push_back((v, new_color));
+                        }
+                        Some(c2) => {
+                            if c == c2 {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        true
+    }
+}
+
 // grid
 
 #[snippet("grid")]
