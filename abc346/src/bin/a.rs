@@ -11,7 +11,12 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [usize; N],
     };
+
+    let ans = A.into_iter().tuple_windows().map(|(a, b)| a * b).join(" ");
+    println!("{}", ans);
 }
 
 fn main() {
