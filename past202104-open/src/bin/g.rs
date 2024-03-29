@@ -8,9 +8,19 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[allow(non_snake_case)]
 fn solve() {
     input! {
+        N: usize, M: usize, Q: usize,
+        ABC: [(Usize1,Usize1, usize); M],
+        X: [usize; Q],
     };
+
+    let mut graph = vec![vec![]; N];
+    for (a, b, c) in ABC {
+        graph[a].push((b, c));
+        graph[b].push((a, c));
+    }
 }
 
 fn main() {
