@@ -11,7 +11,13 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
     };
+
+    let ans = (0..N)
+        .map(|i| if (i + 1) % 3 == 0 { "x" } else { "o" })
+        .join("");
+    println!("{}", ans);
 }
 
 fn main() {
