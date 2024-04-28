@@ -11,7 +11,12 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [isize; N - 1],
     };
+
+    let ans = -A.into_iter().sum::<isize>();
+    println!("{}", ans);
 }
 
 fn main() {
