@@ -11,7 +11,16 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, Q: usize,
+        T: [Usize1; Q],
     };
+
+    let mut teeth_vec = vec![true; N];
+    for t in T {
+        teeth_vec[t] = !teeth_vec[t];
+    }
+    let ans = teeth_vec.into_iter().filter(|&b| b).count();
+    println!("{}", ans);
 }
 
 fn main() {
