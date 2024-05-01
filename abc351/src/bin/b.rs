@@ -11,7 +11,19 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        Grid1: [Chars; N],
+        Grid2: [Chars; N],
     };
+
+    for i in 0..N {
+        for j in 0..N {
+            if Grid1[i][j] != Grid2[i][j] {
+                println!("{} {}", i + 1, j + 1);
+                return;
+            }
+        }
+    }
 }
 
 fn main() {
