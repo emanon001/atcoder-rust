@@ -11,7 +11,14 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        A: [usize; 9],
+        B: [usize; 8],
     };
+
+    let a_sum = A.iter().sum::<usize>();
+    let b_sum = B.iter().sum::<usize>();
+    let ans = a_sum - b_sum + 1;
+    println!("{}", ans);
 }
 
 fn main() {
