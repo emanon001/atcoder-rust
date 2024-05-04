@@ -14,11 +14,11 @@ fn solve() {
         N: usize,
     };
 
-    let mut ans = 1_f64;
-    for i in 2..=N {
+    let mut ans = 0_f64;
+    for i in 1..N {
         ans += 1_f64 / i as f64;
     }
-    ans = ans * N as f64 - 1_f64;
+    ans *= N as f64;
     println!("{}", ans);
 }
 
