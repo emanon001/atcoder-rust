@@ -8,10 +8,33 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[macro_export]
+macro_rules! chmax {
+    ($ max : expr , $ v : expr ) => {{
+        let v = $v;
+        if $max < v {
+            $max = v;
+            true
+        } else {
+            false
+        }
+    }};
+}
+
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        AB: [(u64, u64); N],
     };
+
+    let sum = AB.iter().fold(0_u64, |acc, (a, _)| acc + a);
+    let mut ans = 0_u64;
+    for i in 0..N {
+        let x = sum - AB[i].0 + AB[i].1;
+        chmax!(ans, x);
+    }
+    println!("{}", ans);
 }
 
 fn main() {
