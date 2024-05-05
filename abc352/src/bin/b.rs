@@ -11,7 +11,22 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: Chars,
+        T: Chars
     };
+
+    let mut ans = vec![];
+    let mut s_i = 0;
+    for (i, ch) in T.into_iter().enumerate() {
+        if s_i >= S.len() {
+            continue;
+        }
+        if S[s_i] == ch {
+            ans.push(i + 1);
+            s_i += 1;
+        }
+    }
+    println!("{}", ans.iter().join(" "));
 }
 
 fn main() {
