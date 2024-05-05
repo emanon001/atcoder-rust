@@ -11,7 +11,15 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        _N: usize, X: usize, Y: usize, Z: usize,
     };
+
+    let ans = if (X.min(Y)..=X.max(Y)).contains(&Z) {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", ans);
 }
 
 fn main() {
