@@ -11,7 +11,18 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        S: [String; N],
     };
+
+    let ans = if S.iter().filter(|&s| s == "Perfect").count() == N {
+        "All Perfect"
+    } else if S.iter().filter(|&s| s == "Perfect" || s == "Great").count() == N {
+        "Full Combo"
+    } else {
+        "Failed"
+    };
+    println!("{}", ans);
 }
 
 fn main() {
