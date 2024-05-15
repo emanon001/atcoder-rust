@@ -11,7 +11,17 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        H: [usize; N],
     };
+
+    for i in 1..N {
+        if H[0] < H[i] {
+            println!("{}", i + 1);
+            return;
+        }
+    }
+    println!("-1");
 }
 
 fn main() {
