@@ -11,7 +11,14 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        mut SC: [(String, usize); N]
     };
+
+    SC.sort();
+    let total_rate = SC.iter().map(|(_, c)| c).sum::<usize>();
+    let ans = SC[total_rate % N].0.clone();
+    println!("{}", ans);
 }
 
 fn main() {
