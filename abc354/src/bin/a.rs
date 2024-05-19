@@ -11,7 +11,19 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        H: u64,
     };
+
+    let mut h = 0;
+    let mut ans = 0;
+    loop {
+        if h > H {
+            break;
+        }
+        h += 2.pow(ans);
+        ans += 1;
+    }
+    println!("{}", ans);
 }
 
 fn main() {
