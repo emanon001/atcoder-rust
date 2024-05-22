@@ -11,7 +11,22 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        K: usize,
+        N: usize,
+        A: [usize; N],
+        M: usize,
+        B: [usize; M],
     };
+
+    let mut ans = 0;
+    for i in 0..N {
+        for j in 0..M {
+            if A[i] + K == B[j] {
+                ans += 1;
+            }
+        }
+    }
+    println!("{}", ans);
 }
 
 fn main() {
