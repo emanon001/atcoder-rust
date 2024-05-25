@@ -11,7 +11,18 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [usize; N],
     };
+
+    let set = A.into_iter().collect::<HashSet<_>>();
+    for &a in &set {
+        if set.contains(&(a + 3)) && set.contains(&(a + 6)) {
+            println!("Yes");
+            return;
+        }
+    }
+    println!("No");
 }
 
 fn main() {
