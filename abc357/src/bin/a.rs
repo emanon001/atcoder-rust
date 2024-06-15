@@ -11,7 +11,20 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, M: usize,
+        H: [usize; N],
     };
+
+    let mut count = M;
+    let mut ans = 0;
+    for h in H {
+        if h > count {
+            break;
+        }
+        ans += 1;
+        count -= h;
+    }
+    println!("{}", ans);
 }
 
 fn main() {
