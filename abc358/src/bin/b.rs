@@ -11,7 +11,15 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, A: usize,
+        T: [usize; N],
     };
+
+    let mut time = 0;
+    for t in T {
+        time = time.max(t) + A;
+        println!("{}", time);
+    }
 }
 
 fn main() {
