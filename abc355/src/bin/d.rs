@@ -8,10 +8,122 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+pub fn compress_zahyo<T: Ord + std::hash::Hash + Clone>(
+    zahyo: &[T],
+) -> (
+    std::collections::HashMap<T, usize>,
+    std::collections::HashMap<usize, T>,
+) {
+    let mut set = std::collections::BTreeSet::new();
+    for x in zahyo {
+        set.insert(x.clone());
+    }
+    let mut map = std::collections::HashMap::new();
+    let mut inverse_map = std::collections::HashMap::new();
+    for (i, x) in set.into_iter().enumerate() {
+        map.insert(x.clone(), i);
+        inverse_map.insert(i, x);
+    }
+    (map, inverse_map)
+}
+
+/// `T` is numeric only
+pub struct Bit<T>
+where
+    T: std::ops::AddAssign + std::ops::SubAssign + std::ops::Sub<Output = T> + num::Zero + Clone,
+{
+    n: usize,
+    data: Vec<T>,
+}
+/// 0-origin
+/// [0, n)
+impl<T> Bit<T>
+where
+    T: std::ops::AddAssign + std::ops::SubAssign + std::ops::Sub<Output = T> + num::Zero + Clone,
+{
+    pub fn new(n: usize) -> Self {
+        Self {
+            n,
+            data: vec![T::zero(); n + 1],
+        }
+    }
+    /// 0-origin
+    pub fn add(&mut self, i: usize, x: T) {
+        if i >= self.n {
+            panic!();
+        }
+        let mut i = i + 1;
+        while i <= self.n {
+            self.data[i] += x.clone();
+            i += ((i as isize) & -(i as isize)) as usize;
+        }
+    }
+    /// 0-origin
+    pub fn sub(&mut self, i: usize, x: T) {
+        if i >= self.n {
+            panic!();
+        }
+        let mut i = i + 1;
+        while i <= self.n {
+            self.data[i] -= x.clone();
+            i += ((i as isize) & -(i as isize)) as usize;
+        }
+    }
+    /// [0, i)
+    pub fn sum(&self, i: usize) -> T {
+        if i > self.n {
+            panic!();
+        }
+        let mut i = i;
+        let mut res = T::zero();
+        while i > 0 {
+            res += self.data[i].clone();
+            i -= ((i as isize) & -(i as isize)) as usize;
+        }
+        res
+    }
+    /// [i, j)
+    pub fn range_sum(&self, i: usize, j: usize) -> T {
+        if i > self.n || j > self.n {
+            panic!();
+        }
+        if i >= j {
+            return T::zero();
+        }
+        self.sum(j) - self.sum(i)
+    }
+}
+
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        mut LR: [(usize, usize); N],
     };
+
+    LR.sort_by_key(|(_, r)| *r);
+
+    let mut v = vec![];
+    for &(l, r) in &LR {
+        v.push(l);
+        v.push(r + 1);
+    }
+    let (zahyo, _) = compress_zahyo(&v);
+
+    let mut bit = Bit::new(zahyo.len());
+    for (l, r) in &LR {
+        bit.add(zahyo[l], 1_i64);
+        bit.sub(zahyo[&(*r + 1)], 1_i64);
+    }
+    let mut ans = 0_i64;
+    for (l, r) in &LR {
+        let c = bit.sum(zahyo[&(*r + 1)]);
+        // eprintln!("[{}, {}) = c: {}", l, r + 1, c);
+        ans += c as i64 - 1;
+        bit.sub(zahyo[&l], 1);
+        bit.add(zahyo[&(r + 1)], 1);
+    }
+    println!("{}", ans);
 }
 
 fn main() {
