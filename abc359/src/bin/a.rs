@@ -11,7 +11,12 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        S: [String; N],
     };
+
+    let ans = S.iter().filter(|&s| s == "Takahashi").count();
+    println!("{}", ans);
 }
 
 fn main() {
