@@ -2,55 +2,16 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
-use proconio::input;
+use proconio::input_interactive;
 #[allow(unused_imports)]
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
-pub fn primes(n: usize) -> Vec<usize> {
-    if n < 2 {
-        return Vec::new();
-    }
-    let mut is_prime = vec![true; n + 1];
-    is_prime[0] = false;
-    is_prime[1] = false;
-    let mut res = Vec::new();
-    for i in 2..=n {
-        if is_prime[i] {
-            res.push(i);
-            let mut j = 2 * i;
-            while j <= n {
-                is_prime[j] = false;
-                j += i;
-            }
-        }
-    }
-    res
-}
-
+#[allow(non_snake_case)]
 fn solve() {
-    input! {
-        n: usize,
-        k: usize
+    input_interactive! {
     };
-
-    let primes = primes(n);
-    let mut counts = vec![0; n + 1];
-    for p in primes {
-        let mut x = p;
-        while x <= n {
-            counts[x] += 1;
-            x += p;
-        }
-    }
-    let mut res = 0;
-    for i in 0..=n {
-        if counts[i] >= k {
-            res += 1;
-        }
-    }
-    println!("{}", res);
 }
 
 fn main() {

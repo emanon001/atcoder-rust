@@ -2,29 +2,16 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
-use proconio::input;
+use proconio::input_interactive;
 #[allow(unused_imports)]
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[allow(non_snake_case)]
 fn solve() {
-    input! {
-        n: usize, k: i64,
-        av: [i64; n],
-        bv: [i64; n],
+    input_interactive! {
     };
-
-    let mut diff = 0;
-    for i in 0..n {
-        diff += (av[i] - bv[i]).abs();
-    }
-    let res = if k >= diff && (k - diff) % 2 == 0 {
-        "Yes"
-    } else {
-        "No"
-    };
-    println!("{}", res);
 }
 
 fn main() {

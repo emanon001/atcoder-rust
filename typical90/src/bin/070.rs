@@ -2,56 +2,16 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
-use proconio::input;
+use proconio::input_interactive;
 #[allow(unused_imports)]
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
-#[macro_export]
-macro_rules! chmax {
-    ($ max : expr , $ v : expr ) => {
-        if $max < $v {
-            $max = $v;
-            true
-        } else {
-            false
-        }
-    };
-}
-
-#[macro_export]
-macro_rules! chmin {
-    ($ min : expr , $ v : expr ) => {
-        if $min > $v {
-            $min = $v;
-            true
-        } else {
-            false
-        }
-    };
-}
-
+#[allow(non_snake_case)]
 fn solve() {
-    input! {
-        n: usize,
-        mut pv: [(i64, i64); n]
+    input_interactive! {
     };
-
-    // x
-    pv.sort_by_key(|p| p.0);
-    let mid = pv[n / 2];
-    let mut sum = 0;
-    for p in pv.iter().copied() {
-        sum += (mid.0 - p.0).abs();
-    }
-    // y
-    pv.sort_by_key(|p| p.1);
-    let mid = pv[n / 2];
-    for p in pv.iter().copied() {
-        sum += (mid.1 - p.1).abs();
-    }
-    println!("{}", sum);
 }
 
 fn main() {

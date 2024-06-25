@@ -2,25 +2,16 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
-use proconio::input;
+use proconio::input_interactive;
 #[allow(unused_imports)]
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[allow(non_snake_case)]
 fn solve() {
-    input! {
-        a: u64, b: u32, c: u64
+    input_interactive! {
     };
-
-    let x = a;
-    let y = c.pow(b);
-    let res = if x < y {
-        "Yes"
-    } else {
-        "No"
-    };
-    println!("{}", res);
 }
 
 fn main() {

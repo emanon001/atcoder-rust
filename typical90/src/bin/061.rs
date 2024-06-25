@@ -2,27 +2,16 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
-use proconio::input;
+use proconio::input_interactive;
 #[allow(unused_imports)]
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[allow(non_snake_case)]
 fn solve() {
-    input! {
-        q: usize,
-        txv: [(usize, usize); q]
+    input_interactive! {
     };
-
-    let mut vec = VecDeque::new();
-    for (t, v) in txv {
-        match t {
-            1 => vec.push_front(v),
-            2 => vec.push_back(v),
-            3 => println!("{}", vec[v - 1]),
-            _ => unreachable!()
-        }
-    }
 }
 
 fn main() {

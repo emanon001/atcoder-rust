@@ -2,25 +2,16 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
-use proconio::input;
+use proconio::input_interactive;
 #[allow(unused_imports)]
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[allow(non_snake_case)]
 fn solve() {
-    input! {
-        n: usize,
-        sv: [String; n]
+    input_interactive! {
     };
-
-    let mut used = HashSet::new();
-    for i in 0..n {
-        if !used.contains(&sv[i]) {
-            used.insert(&sv[i]);
-            println!("{}", i + 1);
-        }
-    }
 }
 
 fn main() {

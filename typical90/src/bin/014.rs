@@ -2,26 +2,16 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
-use proconio::input;
+use proconio::input_interactive;
 #[allow(unused_imports)]
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[allow(non_snake_case)]
 fn solve() {
-    input! {
-        n: usize,
-        mut av: [i64; n],
-        mut bv: [i64; n],
+    input_interactive! {
     };
-
-    av.sort();
-    bv.sort();
-    let mut res = 0;
-    for i in 0..n {
-        res += (av[i] - bv[i]).abs();
-    }
-    println!("{}", res);
 }
 
 fn main() {

@@ -2,25 +2,16 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
-use proconio::input;
+use proconio::input_interactive;
 #[allow(unused_imports)]
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[allow(non_snake_case)]
 fn solve() {
-    input! {
-        h: usize, w: usize
+    input_interactive! {
     };
-
-    if h < 2 || w < 2 {
-        println!("{}", h * w);
-        return;
-    }
-
-    let size = 2;
-    let res = ((h + 1) / size) * ((w + 1) / size);
-    println!("{}", res);
 }
 
 fn main() {

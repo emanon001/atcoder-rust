@@ -2,25 +2,16 @@
 use itertools::Itertools;
 #[allow(unused_imports)]
 use num::*;
-use proconio::input;
+use proconio::input_interactive;
 #[allow(unused_imports)]
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[allow(non_snake_case)]
 fn solve() {
-    input! {
-        a: u128, b: u128
+    input_interactive! {
     };
-
-    // answer1: 
-    // let n = a.lcm(&b);
-    // let res = if n > 10.pow(18) { "Large".to_string() } else { n.to_string() };
-
-    let gcd = a.gcd(&b);
-    let c = b / gcd;
-    let res = if c > 10.pow(18) / a { "Large".to_string() } else { (a * c).to_string() };
-    println!("{}", res);
 }
 
 fn main() {
