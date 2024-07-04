@@ -11,7 +11,13 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: Chars,
     };
+
+    let r_pos = S.iter().position(|&ch| ch == 'R').unwrap();
+    let m_pos = S.iter().position(|&ch| ch == 'M').unwrap();
+    let ans = if r_pos < m_pos { "Yes" } else { "No" };
+    println!("{}", ans);
 }
 
 fn main() {
