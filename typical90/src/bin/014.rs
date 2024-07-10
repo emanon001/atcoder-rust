@@ -11,7 +11,19 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        mut A: [i64; N],
+        mut B: [i64; N],
     };
+
+    A.sort();
+    B.sort();
+    let ans = A
+        .iter()
+        .zip(B.iter())
+        .map(|(a, b)| (a - b).abs())
+        .sum::<i64>();
+    println!("{}", ans);
 }
 
 fn main() {
