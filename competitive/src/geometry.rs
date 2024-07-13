@@ -41,19 +41,33 @@ pub fn is_outside_circle(c1: Circle, c2: Circle) -> bool {
 }
 
 #[snippet]
-pub fn is_sections_overlapping(l1: i64, r1: i64, l2: i64, r2: i64) -> bool {
-    // l1, l2, r2, r1
+pub fn is_sections_overlapping(
+    l1: i64,
+    r1: i64,
+    l2: i64,
+    r2: i64,
+    include_side_by_side: bool,
+) -> bool {
+    assert!(l1 <= r1 && l2 <= r2);
+
+    // l1 <= l2 <= r2 <= r1
     (l1 <= l2 && l2 <= r2 && r2 <= r1) ||
-    // l1, l2, r1, r2
-    (l1 <= l2 && l2 <= r1 && r1 <= r2) ||
-    // l2, l1, r1, r2
+    // l1 <= l2 < r1 <= r2
+    (l1 <= l2 && l2 < r1 && r1 <= r2) ||
+    // l1 <= r1 == l2 <= r2
+    (l1 <= r1 && (include_side_by_side && r1 == l2) && l2 <= r2) ||
+    // l2 <= l1 <= r1 <= r2
     (l2 <= l1 && l1 <= r1 && r1 <= r2) ||
-    // l2, l1, r2, r1
-    (l2 <= l1 && l1 <= r2 && r2 <= r1)
+    // l2 <= l1 < r2 <= r1
+    (l2 <= l1 && l1 < r2 && r2 <= r1) ||
+    // l2 <= r2 == l1 <= r1
+    (l2 <= r2 && (include_side_by_side && r2 == l1) && l1 <= r1)
 }
 
 #[snippet]
 pub fn sections_overlapping_size(l1: i64, r1: i64, l2: i64, r2: i64) -> i64 {
+    assert!(l1 <= r1 && l2 <= r2);
+
     // l1, l2, r2, r1
     if l1 <= l2 && l2 <= r2 && r2 <= r1 {
         return r2 - l2 + 1;
@@ -112,20 +126,24 @@ mod tests {
 
     #[test]
     fn test_is_sections_overlapping() {
-        // l1, l2, r1, r2
-        assert!(is_sections_overlapping(1, 3, 2, 4));
-        assert!(is_sections_overlapping(1, 3, 3, 4));
-        // l2, l1, r2, r1
-        assert!(is_sections_overlapping(2, 4, 1, 3));
-        assert!(is_sections_overlapping(3, 4, 1, 3));
-        // l1, l2, r2, r1
-        assert!(is_sections_overlapping(1, 4, 2, 3));
-        assert!(is_sections_overlapping(1, 4, 1, 4));
-        // l2, l1, r1, r2
-        assert!(is_sections_overlapping(2, 3, 1, 4));
+        // l1 <= l2 <= r1 <= r2
+        assert!(is_sections_overlapping(1, 3, 2, 4, false));
+        // l1 <= l2 == r1 <= r2
+        assert!(is_sections_overlapping(1, 3, 3, 4, true));
+        assert!(!is_sections_overlapping(1, 3, 3, 4, false));
+        // l2 <= l1 <= r2 <= r1
+        assert!(is_sections_overlapping(2, 4, 1, 3, false));
+        // l2 <= r2 == l1 <= r1
+        assert!(is_sections_overlapping(3, 4, 1, 3, true));
+        assert!(!is_sections_overlapping(3, 4, 1, 3, false));
+        // l1 <= l2 <= r2 <= r1
+        assert!(is_sections_overlapping(1, 4, 2, 3, false));
+        assert!(is_sections_overlapping(1, 4, 1, 4, false));
+        // l2 <= l1 <= r1 <= r2
+        assert!(is_sections_overlapping(2, 3, 1, 4, false));
 
-        assert!(!is_sections_overlapping(1, 3, 4, 5));
-        assert!(!is_sections_overlapping(4, 5, 1, 3));
+        assert!(!is_sections_overlapping(1, 3, 4, 5, false));
+        assert!(!is_sections_overlapping(4, 5, 1, 3, false));
     }
 
     #[test]
