@@ -88,6 +88,17 @@ pub fn sections_overlapping_size(l1: i64, r1: i64, l2: i64, r2: i64) -> i64 {
     0
 }
 
+#[snippet]
+pub fn is_right_triangle(p1: (isize, isize), p2: (isize, isize), p3: (isize, isize)) -> bool {
+    // p1, p2間の距離
+    let d1 = (p2.0 - p1.0).pow(2) + (p2.1 - p1.1).pow(2);
+    // p2, p3間の距離
+    let d2 = (p2.0 - p3.0).pow(2) + (p2.1 - p3.1).pow(2);
+    // p3, p1間の距離
+    let d3 = (p3.0 - p1.0).pow(2) + (p3.1 - p1.1).pow(2);
+    d1 + d2 == d3 || d1 + d3 == d2 || d2 + d3 == d1
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -160,5 +171,13 @@ mod tests {
         assert_eq!(sections_overlapping_size(2, 3, 1, 4), 2);
 
         assert_eq!(sections_overlapping_size(1, 3, 4, 5), 0);
+    }
+
+    #[test]
+    fn test_is_right_triangle() {
+        assert!(is_right_triangle((0, 0), (4, 0), (0, 3)));
+        assert!(is_right_triangle((-4, 3), (2, 1), (3, 4)));
+
+        assert!(!is_right_triangle((2, 4), (-3, 2), (1, -2)));
     }
 }
