@@ -11,7 +11,11 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        a: u64, b: u64, c: u64,
     };
+
+    let ans = if a < c.pow(b as u32) { "Yes" } else { "No" };
+    println!("{}", ans);
 }
 
 fn main() {
