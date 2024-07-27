@@ -11,7 +11,22 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, K: i64,
+        A: [i64; N],
+        B: [i64; N],
     };
+
+    let diff = A
+        .into_iter()
+        .zip(B.into_iter())
+        .map(|(a, b)| (a - b).abs())
+        .sum::<i64>();
+    let ans = if diff <= K && (K - diff).is_even() {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", ans);
 }
 
 fn main() {
