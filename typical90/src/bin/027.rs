@@ -11,7 +11,16 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        S: [String; N],
     };
+
+    let mut set = HashSet::new();
+    for (i, s) in S.into_iter().enumerate() {
+        if set.insert(s) {
+            println!("{}", i + 1);
+        }
+    }
 }
 
 fn main() {
