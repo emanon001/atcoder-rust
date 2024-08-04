@@ -11,7 +11,15 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        H: usize, W: usize,
     };
+
+    let ans = if H < 2 || W < 2 {
+        H * W
+    } else {
+        ((H + 1) / 2) * ((W + 1) / 2)
+    };
+    println!("{}", ans);
 }
 
 fn main() {
