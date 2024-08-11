@@ -11,7 +11,16 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        A: u128, B: u128,
     };
+
+    let lcm = A.lcm(&B);
+    let ans = if lcm > 10.pow(18) {
+        "Large".to_owned()
+    } else {
+        lcm.to_string()
+    };
+    println!("{}", ans);
 }
 
 fn main() {
