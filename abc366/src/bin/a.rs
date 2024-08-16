@@ -11,7 +11,11 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, T: usize, A: usize,
     };
+
+    let ans = if T * 2 > N || A * 2 > N { "Yes" } else { "No" };
+    println!("{}", ans);
 }
 
 fn main() {
