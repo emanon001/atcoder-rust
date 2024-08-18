@@ -11,7 +11,19 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        Y: usize
     };
+
+    let ans = if Y % 4 != 0 {
+        365
+    } else if Y % 4 == 0 && Y % 100 != 0 {
+        366
+    } else if Y % 100 == 0 && Y % 400 != 0 {
+        365
+    } else {
+        366
+    };
+    println!("{}", ans);
 }
 
 fn main() {
