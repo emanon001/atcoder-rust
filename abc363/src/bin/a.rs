@@ -11,7 +11,11 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        R: usize,
     };
+
+    let ans = 100 - (R % 100);
+    println!("{}", ans);
 }
 
 fn main() {
