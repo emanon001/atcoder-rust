@@ -11,7 +11,21 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        S: [String; N]
     };
+
+    let mut count = 1;
+    let mut prev = &S[0];
+    for i in 1..N {
+        count += 1;
+        if prev == "sweet" && S[i] == "sweet" {
+            break;
+        }
+        prev = &S[i];
+    }
+    let ans = if count == N { "Yes" } else { "No" };
+    println!("{}", ans);
 }
 
 fn main() {
