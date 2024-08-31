@@ -11,7 +11,15 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        A: isize, B: isize, C: isize,
     };
+
+    let ans = if (B < C && (A < B || C <= A)) || (C < B && (C..B).contains(&A)) {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", ans);
 }
 
 fn main() {
