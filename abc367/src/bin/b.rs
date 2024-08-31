@@ -11,7 +11,16 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        X: String
     };
+
+    let ans = X.trim_end_matches('0');
+    let ans = if ans.ends_with(".") {
+        ans[..ans.len() - 1].to_string()
+    } else {
+        ans.to_string()
+    };
+    println!("{}", ans);
 }
 
 fn main() {
