@@ -11,7 +11,15 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, K: usize,
+        A: [usize; N],
     };
+
+    let v = (A[N - K..].into_iter())
+        .chain(&A[..N - K])
+        .collect::<Vec<_>>();
+    let ans = v.into_iter().join(" ");
+    println!("{}", ans);
 }
 
 fn main() {
