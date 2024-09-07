@@ -11,7 +11,17 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        A: isize, B: isize,
     };
+
+    let ans = if A == B {
+        1
+    } else if (A - B).abs().is_odd() {
+        2
+    } else {
+        3
+    };
+    println!("{}", ans);
 }
 
 fn main() {
