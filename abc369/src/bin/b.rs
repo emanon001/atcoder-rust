@@ -11,7 +11,33 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        AS: [(isize, char); N]
     };
+
+    let mut left = None;
+    let mut right = None;
+    let mut ans = 0;
+    for (a, s) in AS {
+        match (s, left, right) {
+            ('L', None, _) => {
+                left = Some(a);
+            }
+            ('L', Some(i), _) => {
+                ans += (a - i).abs();
+                left = Some(a);
+            }
+            ('R', _, None) => {
+                right = Some(a);
+            }
+            ('R', _, Some(i)) => {
+                ans += (a - i).abs();
+                right = Some(a);
+            }
+            _ => unreachable!(),
+        }
+    }
+    println!("{}", ans);
 }
 
 fn main() {
