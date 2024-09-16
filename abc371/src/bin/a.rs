@@ -11,7 +11,22 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        a: char, b: char, c: char,
     };
+
+    let ans = match (a, b, c) {
+        ('<', '<', '<') => "B",
+        ('<', '<', '>') => "C",
+        ('<', '>', '<') => unreachable!(),
+        ('<', '>', '>') => "A",
+        ('>', '<', '<') => "A",
+        ('>', '<', '>') => unreachable!(),
+        ('>', '>', '<') => "C",
+        ('>', '>', '>') => "B",
+        _ => unreachable!(),
+    };
+
+    println!("{}", ans);
 }
 
 fn main() {
