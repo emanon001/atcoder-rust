@@ -11,7 +11,22 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, M: usize,
+        AB: [(Usize1, char); M],
     };
+
+    let mut is_first_male_child = vec![true; N];
+    for (a, b) in AB {
+        let ans = if b == 'F' {
+            "No"
+        } else if is_first_male_child[a] {
+            is_first_male_child[a] = false;
+            "Yes"
+        } else {
+            "No"
+        };
+        println!("{}", ans);
+    }
 }
 
 fn main() {
