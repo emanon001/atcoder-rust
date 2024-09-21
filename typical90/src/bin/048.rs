@@ -11,7 +11,18 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, K: usize,
+        mut AB: [(u64, u64); N],
     };
+
+    let mut v = Vec::new();
+    for (a, b) in AB {
+        v.push(b);
+        v.push(a - b);
+    }
+    v.sort_by_key(|&x| std::cmp::Reverse(x));
+    let ans = v.into_iter().take(K).sum::<u64>();
+    println!("{}", ans);
 }
 
 fn main() {
