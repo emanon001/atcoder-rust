@@ -11,7 +11,18 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, P: u64, Q: u64,
+        A: [u64; N],
     };
+
+    let mut ans = 0;
+    for comb in A.into_iter().combinations(5) {
+        let product = comb.iter().fold(1, |acc, x| acc * x % P);
+        if product == Q {
+            ans += 1;
+        }
+    }
+    println!("{}", ans);
 }
 
 fn main() {
