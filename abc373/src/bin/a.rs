@@ -11,7 +11,15 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: [String; 12]
     };
+
+    let ans = S
+        .iter()
+        .enumerate()
+        .filter(|(i, s)| s.len() == i + 1)
+        .count();
+    println!("{}", ans);
 }
 
 fn main() {
