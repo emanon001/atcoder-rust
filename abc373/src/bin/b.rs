@@ -11,7 +11,17 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: Chars,
     };
+
+    let mut ans = 0;
+    let mut pos = S.iter().position(|&c| c == 'A').unwrap();
+    for ch in "BCDEFGHIJKLMNOPQRSTUVWXYZ".chars() {
+        let pos2 = S.iter().position(|&c| c == ch).unwrap();
+        ans += (pos as isize - pos2 as isize).abs();
+        pos = pos2;
+    }
+    println!("{}", ans);
 }
 
 fn main() {
