@@ -11,7 +11,13 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [i64; N],
+        B: [i64; N],
     };
+
+    let ans: i64 = A.iter().max().unwrap() + B.iter().max().unwrap();
+    println!("{}", ans);
 }
 
 fn main() {
