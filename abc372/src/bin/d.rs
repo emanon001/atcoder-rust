@@ -100,7 +100,7 @@ fn solve() {
         })
         .unwrap();
         let c = prev_j + 1;
-        eprintln!("{} {}", h, c);
+        // eprintln!("{} {}", h, c);
         ans.push_front(c);
         v[j as usize] = h;
         prev_j = j;
