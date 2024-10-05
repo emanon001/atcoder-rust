@@ -11,7 +11,11 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: String
     };
+
+    let ans = if S.ends_with("san") { "Yes" } else { "No" };
+    println!("{}", ans);
 }
 
 fn main() {
