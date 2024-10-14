@@ -33,14 +33,14 @@ fn solve() {
         let mut count_map = HashMap::new();
         let h_count = bits.count_ones() as usize;
         for j in 0..W {
-            let mut v = vec![];
+            let mut set = HashSet::new();
             for i in 0..H {
                 if (bits >> i) & 1 == 1 {
-                    v.push(Grid[i][j]);
+                    set.insert(Grid[i][j]);
                 }
             }
-            if v.len() > 0 && v.iter().counts().len() == 1 {
-                let x = v[0];
+            if set.len() == 1 {
+                let x = *set.iter().next().unwrap();
                 *count_map.entry(x).or_insert(0_usize) += 1;
             }
         }
