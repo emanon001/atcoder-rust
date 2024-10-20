@@ -11,7 +11,22 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        S: Chars,
     };
+
+    if N < 3 {
+        println!("0");
+        return;
+    }
+
+    let mut ans = 0;
+    for i in 0..N - 2 {
+        if S[i] == '#' && S[i + 1] == '.' && S[i + 2] == '#' {
+            ans += 1;
+        }
+    }
+    println!("{}", ans);
 }
 
 fn main() {
