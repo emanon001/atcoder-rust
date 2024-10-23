@@ -860,11 +860,20 @@
   "is_sections_overlapping": {
     "prefix": "is_sections_overlapping",
     "body": [
-      "pub fn is_sections_overlapping(l1: i64, r1: i64, l2: i64, r2: i64) -> bool {",
+      "pub fn is_sections_overlapping(",
+      "    l1: i64,",
+      "    r1: i64,",
+      "    l2: i64,",
+      "    r2: i64,",
+      "    include_side_by_side: bool,",
+      ") -> bool {",
+      "    assert!(l1 <= r1 && l2 <= r2);",
       "    (l1 <= l2 && l2 <= r2 && r2 <= r1)",
-      "        || (l1 <= l2 && l2 <= r1 && r1 <= r2)",
+      "        || (l1 <= l2 && l2 < r1 && r1 <= r2)",
+      "        || (l1 <= r1 && (include_side_by_side && r1 == l2) && l2 <= r2)",
       "        || (l2 <= l1 && l1 <= r1 && r1 <= r2)",
-      "        || (l2 <= l1 && l1 <= r2 && r2 <= r1)",
+      "        || (l2 <= l1 && l1 < r2 && r2 <= r1)",
+      "        || (l2 <= r2 && (include_side_by_side && r2 == l1) && l1 <= r1)",
       "}"
     ]
   },
@@ -1753,6 +1762,7 @@
     "prefix": "sections_overlapping_size",
     "body": [
       "pub fn sections_overlapping_size(l1: i64, r1: i64, l2: i64, r2: i64) -> i64 {",
+      "    assert!(l1 <= r1 && l2 <= r2);",
       "    if l1 <= l2 && l2 <= r2 && r2 <= r1 {",
       "        return r2 - l2 + 1;",
       "    }",
