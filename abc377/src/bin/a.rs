@@ -11,7 +11,15 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: String,
     };
+
+    let ans = if S.contains("A") && S.contains("B") && S.contains("C") {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", ans);
 }
 
 fn main() {
