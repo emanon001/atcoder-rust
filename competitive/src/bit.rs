@@ -161,15 +161,15 @@ mod tests {
 
     #[test]
     fn test_mod_int() {
-        use crate::mod_int::ModInt;
+        use crate::mod_int::ModInt1000000007;
 
-        let mut bit: Bit<ModInt> = Bit::new(2);
-        bit.add(0, ModInt::one());
-        bit.add(1, ModInt::from(1_000_000_006));
-        assert_eq!(bit.sum(1), ModInt::one());
-        assert_eq!(bit.sum(2), ModInt::zero());
-        assert_eq!(bit.range_sum(0, 1), ModInt::one());
-        assert_eq!(bit.range_sum(0, 2), ModInt::zero());
-        assert_eq!(bit.range_sum(1, 2), ModInt::from(1_000_000_006));
+        let mut bit: Bit<ModInt1000000007> = Bit::new(2);
+        bit.add(0, ModInt1000000007::one());
+        bit.add(1, ModInt1000000007::from(1_000_000_006));
+        assert_eq!(bit.sum(1), ModInt1000000007::one());
+        assert_eq!(bit.sum(2), ModInt1000000007::zero());
+        assert_eq!(bit.range_sum(0, 1), ModInt1000000007::one());
+        assert_eq!(bit.range_sum(0, 2), ModInt1000000007::zero());
+        assert_eq!(bit.range_sum(1, 2), ModInt1000000007::from(1_000_000_006));
     }
 }
