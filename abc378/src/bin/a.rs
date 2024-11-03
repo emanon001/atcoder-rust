@@ -11,7 +11,15 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        A: [usize; 4],
     };
+
+    let map = A.into_iter().counts();
+    let mut ans = 0;
+    for (_, c) in map {
+        ans += c / 2;
+    }
+    println!("{}", ans);
 }
 
 fn main() {
