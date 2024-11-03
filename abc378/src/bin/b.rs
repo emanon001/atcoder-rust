@@ -11,7 +11,19 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        QR: [(usize, usize); N],
+        Q: usize,
+        TD: [(Usize1, usize); Q],
     };
+
+    for (t, d) in TD {
+        let (q, r) = QR[t];
+        let n = d / q;
+        let m = d % q;
+        let ans = if m <= r { q * n + r } else { q * (n + 1) + r };
+        println!("{}", ans);
+    }
 }
 
 fn main() {
