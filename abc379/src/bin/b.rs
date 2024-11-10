@@ -11,7 +11,24 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, K: usize,
+        S: Chars
     };
+
+    let mut ans = 0;
+    let mut ok_count = 0;
+    for i in 0..N {
+        if S[i] == 'O' {
+            ok_count += 1;
+        } else {
+            ok_count = 0;
+        }
+        if ok_count == K {
+            ans += 1;
+            ok_count = 0;
+        }
+    }
+    println!("{}", ans);
 }
 
 fn main() {
