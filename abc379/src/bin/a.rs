@@ -11,7 +11,14 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: Chars
     };
+
+    println!(
+        "{} {}",
+        format!("{}{}{}", N[1], N[2], N[0]),
+        format!("{}{}{}", N[2], N[0], N[1])
+    )
 }
 
 fn main() {
