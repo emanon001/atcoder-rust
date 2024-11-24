@@ -11,7 +11,32 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        S: Chars,
     };
+
+    if N.is_even() {
+        println!("No");
+        return;
+    }
+
+    for i in 0..N / 2 {
+        if S[i] != '1' {
+            println!("No");
+            return;
+        }
+    }
+    if S[N / 2] != '/' {
+        println!("No");
+        return;
+    }
+    for i in (N / 2 + 1)..N {
+        if S[i] != '2' {
+            println!("No");
+            return;
+        }
+    }
+    println!("Yes");
 }
 
 fn main() {
