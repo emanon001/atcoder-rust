@@ -11,7 +11,27 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: Chars,
     };
+
+    if S.len().is_odd() {
+        println!("No");
+        return;
+    }
+
+    let mut set = HashSet::new();
+    for i in 0..S.len() / 2 {
+        if S[2 * i] != S[2 * i + 1] {
+            println!("No");
+            return;
+        }
+        if set.contains(&S[2 * i]) {
+            println!("No");
+            return;
+        }
+        set.insert(S[2 * i]);
+    }
+    println!("Yes");
 }
 
 fn main() {
