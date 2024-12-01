@@ -11,7 +11,13 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, D: usize,
+        S: Chars,
     };
+
+    let empty_count = S.iter().filter(|&c| c == &'.').count();
+    let ans = (empty_count + D).min(N);
+    println!("{}", ans);
 }
 
 fn main() {
