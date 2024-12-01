@@ -11,7 +11,18 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, D: usize,
+        mut S: Chars,
     };
+
+    let mut i = N - 1;
+    for _ in 0..D {
+        while S[i] != '@' {
+            i -= 1;
+        }
+        S[i] = '.';
+    }
+    println!("{}", S.iter().join(""));
 }
 
 fn main() {
