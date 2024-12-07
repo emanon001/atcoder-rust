@@ -11,7 +11,18 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        TV: [(isize, isize); N],
     };
+
+    let mut ans = 0_isize;
+    let mut cur_t = 0_isize;
+    for (t, v) in TV {
+        ans = (ans - (t - cur_t)).max(0);
+        ans += v;
+        cur_t = t;
+    }
+    println!("{}", ans);
 }
 
 fn main() {
