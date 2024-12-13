@@ -11,7 +11,20 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        B1: usize, R1: usize, B2: usize, R2: usize, T: usize,
     };
+
+    let mut ans = 0;
+    for t in 1..=T {
+        let m1 = t % (B1 + R1);
+        let b1 = (1..=B1).contains(&m1);
+        let m2 = t % (B2 + R2);
+        let b2 = (1..=B2).contains(&m2);
+        if b1 && b2 {
+            ans += 1;
+        }
+    }
+    println!("{}", ans);
 }
 
 fn main() {
