@@ -11,7 +11,15 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        X: usize, Y: usize, Z: usize, S: usize,
     };
+
+    let ans = if X >= S || Y >= S || Z >= S {
+        "Yes"
+    } else {
+        "No"
+    };
+    println!("{}", ans);
 }
 
 fn main() {
