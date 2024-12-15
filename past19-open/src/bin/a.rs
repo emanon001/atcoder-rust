@@ -11,7 +11,11 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        X: usize, _: usize, M: usize,
     };
+
+    let ans = if M <= X { X - M } else { 60 - M + X };
+    println!("{}", ans);
 }
 
 fn main() {
