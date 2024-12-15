@@ -11,7 +11,20 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [isize; N],
     };
+
+    let mut ans_in = 0;
+    let mut ans_out = 0;
+    for i in 0..N - 1 {
+        if A[i] < A[i + 1] {
+            ans_in += A[i + 1] - A[i];
+        } else {
+            ans_out += A[i] - A[i + 1];
+        }
+    }
+    println!("{} {}", ans_in, ans_out);
 }
 
 fn main() {
