@@ -21,10 +21,13 @@ fn solve() {
         Q: usize,
     };
 
-    let mut list: Vec<Vec<Item>> = vec![vec![]];
-    let mut top_list: Vec<Option<usize>> = vec![None];
+    let mut list: Vec<Vec<Item>> = vec![vec![Item {
+        v: ' ',
+        prev: None,
+        next: None,
+    }]];
     let mut i = 0;
-    let mut prev_j: Option<usize> = None;
+    let mut prev_j = 0;
     let mut cursor_w = 1;
     for _ in 0..Q {
         input_interactive! {
@@ -41,44 +44,36 @@ fn solve() {
                     next: None,
                 });
                 let new_prev_j = list[i].len() - 1;
-                match prev_j {
-                    None => {
-                        if let Some(top_j) = top_list[i] {
-                            list[i][new_prev_j].next = Some(top_j);
-                            list[i][top_j].prev = Some(new_prev_j);
-                        };
-                        top_list[i] = Some(new_prev_j);
-                    }
-                    Some(prev_j) => {
-                        if let Some(next_j) = list[i][prev_j].next {
-                            list[i][new_prev_j].next = Some(next_j);
-                            list[i][next_j].prev = Some(new_prev_j);
-                        }
-                        list[i][prev_j].next = Some(new_prev_j);
-                        list[i][new_prev_j].prev = Some(prev_j);
-                    }
+                if let Some(next_j) = list[i][prev_j].next {
+                    list[i][new_prev_j].next = Some(next_j);
+                    list[i][next_j].prev = Some(new_prev_j);
                 }
-                prev_j = Some(new_prev_j);
+                list[i][prev_j].next = Some(new_prev_j);
+                list[i][new_prev_j].prev = Some(prev_j);
+                prev_j = new_prev_j;
                 cursor_w += 1;
             }
             2 => {
-                prev_j = None;
+                prev_j = 0;
                 cursor_w = 1;
             }
             3 => {
                 i += 1;
-                prev_j = None;
+                prev_j = 0;
                 cursor_w = 1;
-                top_list.push(None);
-                list.push(vec![]);
+                list.push(vec![Item {
+                    v: ' ',
+                    prev: None,
+                    next: None,
+                }]);
             }
             _ => unreachable!(),
         }
     }
     println!("{} {}", i + 1, cursor_w);
-    for (v, top) in list.into_iter().zip(top_list) {
-        let mut ans = vec!['#', ' '];
-        let mut j = top;
+    for v in list {
+        let mut ans = vec!['#'];
+        let mut j = Some(0);
         while let Some(jj) = j {
             ans.push(v[jj].v);
             j = v[jj].next;
