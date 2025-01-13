@@ -11,7 +11,11 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        A: u64, B: u64,
     };
+
+    let ans = (A + B).pow(2);
+    println!("{}", ans);
 }
 
 fn main() {
