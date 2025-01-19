@@ -11,7 +11,13 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: Chars,
     };
+
+    let a: u32 = S[0].to_digit(10).unwrap();
+    let b: u32 = S[2].to_digit(10).unwrap();
+    let ans = a * b;
+    println!("{}", ans);
 }
 
 fn main() {
