@@ -11,7 +11,13 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [u128; N],
     };
+
+    let is_ok = (1..N - 1).all(|i| A[i].pow(2) == A[i - 1] * A[i + 1]);
+    let ans = if is_ok { "Yes" } else { "No" };
+    println!("{}", ans);
 }
 
 fn main() {
