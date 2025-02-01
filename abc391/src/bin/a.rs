@@ -11,7 +11,20 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        D: Chars
     };
+
+    let ans = D
+        .into_iter()
+        .map(|ch| match ch {
+            'N' => 'S',
+            'S' => 'N',
+            'E' => 'W',
+            'W' => 'E',
+            _ => unreachable!(),
+        })
+        .collect::<String>();
+    println!("{}", ans);
 }
 
 fn main() {
