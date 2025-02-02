@@ -93,19 +93,19 @@ impl Solver {
                         continue;
                     }
 
-                    let mut moves = self.simulate_drop_piece(i, j);
+                    let mut moves = self.simulate_drop_move_piece(i, j);
                     if moves.is_empty() {
-                        let next_moves = self.simulate_random_move_piece(i, j);
-                        if next_moves.is_empty() {
+                        let random_moves = self.simulate_random_move_piece(i, j);
+                        if random_moves.is_empty() {
                             continue;
                         }
-                        if next_moves.len() + count > max_count {
+                        if random_moves.len() + count > max_count {
                             continue;
                         }
-                        count += next_moves.len();
+                        count += random_moves.len();
                         let mut i = i;
                         let mut j = j;
-                        for (d, _) in next_moves {
+                        for (d, _) in random_moves {
                             output.extend(self.move_board(i, j, d, 1));
                             match d {
                                 Direction::Up => {
@@ -214,7 +214,7 @@ impl Solver {
         output
     }
 
-    fn simulate_drop_piece(&self, i: usize, j: usize) -> Vec<(Direction, MoveCost)> {
+    fn simulate_drop_move_piece(&self, i: usize, j: usize) -> Vec<(Direction, MoveCost)> {
         let mut res = Vec::new();
         if (0..i).all(|i| self.board[i][j] != Some(Piece::Fuku)) {
             res.push((Direction::Up, MoveCost(i + 1)));
