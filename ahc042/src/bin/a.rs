@@ -152,7 +152,12 @@ impl Solver {
                         }
                     }
                 }
-                scores.push((self.board.clone(), count, output, self.calc_score(count)));
+                scores.push((
+                    self.board.clone(),
+                    count,
+                    output,
+                    self.calc_score(all_count + count),
+                ));
             }
             if scores.is_empty() {
                 continue;
