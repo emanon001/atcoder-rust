@@ -124,7 +124,7 @@ impl Solver {
                         }
                         continue;
                     }
-                    moves.sort_by_key(|(_, cost)| std::cmp::Reverse(cost.0));
+                    moves.sort_by_key(|(_, cost)| cost.0);
 
                     let (d, cost) = moves.first().unwrap();
                     if count + cost.0 > max_count {
