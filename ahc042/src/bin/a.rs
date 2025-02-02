@@ -7,6 +7,7 @@ use proconio::input_interactive;
 use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
+use std::time;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 enum Piece {
@@ -14,8 +15,36 @@ enum Piece {
     Fuku,
 }
 
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
+impl std::fmt::Display for Direction {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        let s = match self {
+            Direction::Up => "U",
+            Direction::Down => "D",
+            Direction::Left => "L",
+            Direction::Right => "R",
+        };
+        write!(f, "{}", s)
+    }
+}
+
+struct OutputItem {
+    d: Direction,
+    p: usize,
+}
+
+struct Output(Vec<OutputItem>);
+
 struct Solver {
     n: usize,
+    started_at: time::Instant,
     board: Vec<Vec<Option<Piece>>>,
 }
 
@@ -35,10 +64,24 @@ impl Solver {
             })
             .collect_vec();
 
-        Self { n, board }
+        Self {
+            n,
+            board,
+            started_at: time::Instant::now(),
+        }
     }
-    fn solve(&mut self) {
-        todo!();
+    fn solve(&mut self) -> Output {
+        let mut max_count = 4 * self.n.pow(2);
+        let mut count = 0;
+        let mut output = Vec::new();
+        loop {
+            if count == max_count {
+                break;
+            }
+
+            count += 1;
+        }
+        Output(output)
     }
 }
 
@@ -50,7 +93,15 @@ fn solve() {
     };
 
     let mut solver = Solver::new(N, C);
-    solver.solve();
+    let output = solver.solve();
+    println!(
+        "{}",
+        output
+            .0
+            .iter()
+            .map(|item| format!("{} {}", item.d, item.p))
+            .join("\n")
+    );
 }
 
 fn main() {
