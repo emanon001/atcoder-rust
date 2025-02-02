@@ -40,6 +40,8 @@ struct OutputItem {
     p: usize,
 }
 
+struct MoveCost(usize);
+
 struct Output(Vec<OutputItem>);
 
 struct Solver {
@@ -71,17 +73,126 @@ impl Solver {
         }
     }
     fn solve(&mut self) -> Output {
-        let mut max_count = 4 * self.n.pow(2);
+        let max_count = 4 * self.n.pow(2);
         let mut count = 0;
         let mut output = Vec::new();
-        loop {
+        'outer: loop {
             if count == max_count {
                 break;
             }
+            for i in 0..self.n {
+                for j in 0..self.n {
+                    if time::Duration::from_millis(1900) < self.started_at.elapsed() {
+                        break 'outer;
+                    }
 
-            count += 1;
+                    if self.board[i][j] != Some(Piece::Oni) {
+                        continue;
+                    }
+
+                    let mut moves = self.simulate_drop_piece(i, j);
+                    if moves.is_empty() {
+                        continue;
+                    }
+                    moves.sort_by_key(|(_, cost)| cost.0);
+
+                    let (d, cost) = moves.first().unwrap();
+                    if count + cost.0 > max_count {
+                        continue;
+                    }
+                    count += cost.0;
+                    match d {
+                        Direction::Up => {
+                            for ni in 0..self.n {
+                                // update board
+                                self.board[ni][j] = if ni + cost.0 < self.n {
+                                    self.board[ni + cost.0][j]
+                                } else {
+                                    None
+                                };
+                            }
+                            // add output
+                            for _ in 0..cost.0 {
+                                output.push(OutputItem {
+                                    d: Direction::Up,
+                                    p: j,
+                                });
+                            }
+                        }
+                        Direction::Down => {
+                            for ni in 0..self.n {
+                                // update board
+                                self.board[ni][j] = if ni >= cost.0 {
+                                    self.board[ni - cost.0][j]
+                                } else {
+                                    None
+                                };
+                            }
+                            // add output
+                            for _ in 0..cost.0 {
+                                output.push(OutputItem {
+                                    d: Direction::Down,
+                                    p: j,
+                                });
+                            }
+                        }
+                        Direction::Left => {
+                            for nj in 0..self.n {
+                                // update board
+                                self.board[i][nj] = if nj + cost.0 < self.n {
+                                    self.board[i][nj + cost.0]
+                                } else {
+                                    None
+                                };
+                            }
+                            // add output
+                            for _ in 0..cost.0 {
+                                output.push(OutputItem {
+                                    d: Direction::Left,
+                                    p: i,
+                                });
+                            }
+                        }
+                        Direction::Right => {
+                            for nj in 0..self.n {
+                                // update board
+                                self.board[i][nj] = if nj >= cost.0 {
+                                    self.board[i][nj - cost.0]
+                                } else {
+                                    None
+                                };
+                            }
+                            // add output
+                            for _ in 0..cost.0 {
+                                output.push(OutputItem {
+                                    d: Direction::Right,
+                                    p: i,
+                                });
+                            }
+                        }
+                    }
+                    continue 'outer;
+                }
+            }
         }
         Output(output)
+    }
+
+    fn simulate_drop_piece(&self, i: usize, j: usize) -> Vec<(Direction, MoveCost)> {
+        let mut res = Vec::new();
+        if (0..i).all(|i| self.board[i][j] != Some(Piece::Fuku)) {
+            res.push((Direction::Up, MoveCost(i + 1)));
+        }
+        if (i + 1..self.n).all(|i| self.board[i][j] != Some(Piece::Fuku)) {
+            res.push((Direction::Down, MoveCost(self.n - i)));
+        }
+        if (0..j).all(|j| self.board[i][j] != Some(Piece::Fuku)) {
+            res.push((Direction::Left, MoveCost(j + 1)));
+        }
+        if (j + 1..self.n).all(|j| self.board[i][j] != Some(Piece::Fuku)) {
+            res.push((Direction::Right, MoveCost(self.n - j)));
+        }
+        res
     }
 }
 
