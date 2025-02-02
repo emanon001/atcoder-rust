@@ -126,12 +126,14 @@ impl Solver {
                     }
                     moves.sort_by_key(|(_, cost)| cost.0);
 
-                    let (d, cost) = moves.first().unwrap();
-                    if count + cost.0 > max_count {
+                    let (d, MoveCost(cost)) = moves.first().unwrap();
+                    // 移動を制限することで後でもっと短い経路が見つかる可能性を残す
+                    let cost = *cost.min(&self.rng.gen_range(1..=4));
+                    if count + cost > max_count {
                         continue;
                     }
-                    count += cost.0;
-                    output.extend(self.move_board(i, j, *d, cost.0));
+                    count += cost;
+                    output.extend(self.move_board(i, j, *d, cost));
                     continue 'outer;
                 }
             }
@@ -214,6 +216,9 @@ impl Solver {
         output
     }
 
+    /**
+     * 上下左右の一方に移動して鬼を削除する移動方法を返す
+     */
     fn simulate_drop_move_piece(&self, i: usize, j: usize) -> Vec<(Direction, MoveCost)> {
         let mut res = Vec::new();
         if (0..i).all(|i| self.board[i][j] != Some(Piece::Fuku)) {
