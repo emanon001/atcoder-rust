@@ -36,6 +36,7 @@ impl std::fmt::Display for Direction {
     }
 }
 
+#[derive(Debug, Clone)]
 struct OutputItem {
     d: Direction,
     p: usize,
@@ -77,68 +78,92 @@ impl Solver {
     }
     fn solve(&mut self) -> Output {
         let max_count = 4 * self.n.pow(2);
-        let mut count = 0;
-        let mut output = Vec::new();
+        let mut all_count = 0;
+        let mut all_output = Vec::new();
         'outer: loop {
-            if count == max_count {
+            if all_count == max_count {
                 break;
             }
-            for i in 0..self.n {
-                for j in 0..self.n {
-                    if time::Duration::from_millis(1950) < self.started_at.elapsed() {
-                        break 'outer;
-                    }
 
-                    if self.board[i][j] != Some(Piece::Oni) {
-                        continue;
-                    }
-
-                    let mut moves = self.simulate_drop_piece_moves(i, j);
-                    if moves.is_empty() {
-                        let random_moves = self.simulate_piece_random_moves(i, j);
-                        if random_moves.is_empty() {
-                            continue;
-                        }
-                        if random_moves.len() + count > max_count {
-                            continue;
-                        }
-                        count += random_moves.len();
-                        let mut i = i;
-                        let mut j = j;
-                        for (d, _) in random_moves {
-                            output.extend(self.move_pieces(i, j, d, 1));
-                            match d {
-                                Direction::Up => {
-                                    i -= 1;
-                                }
-                                Direction::Down => {
-                                    i += 1;
-                                }
-                                Direction::Left => {
-                                    j -= 1;
-                                }
-                                Direction::Right => {
-                                    j += 1;
-                                }
-                            }
-                        }
-                        continue;
-                    }
-                    moves.sort_by_key(|(_, cost)| cost.0);
-
-                    let (d, MoveCost(cost)) = moves.first().unwrap();
-                    // 移動を制限することで後でもっと短い経路が見つかる可能性を残す
-                    let cost = *cost.min(&self.rng.gen_range(1..=4));
-                    if count + cost > max_count {
-                        continue;
-                    }
-                    count += cost;
-                    output.extend(self.move_pieces(i, j, *d, cost));
-                    continue 'outer;
+            let cloned_board = self.board.clone();
+            let mut scores = Vec::new();
+            // 盤面を3つまでシミュレーションする
+            for _ in 0..3 {
+                if time::Duration::from_millis(1950) < self.started_at.elapsed() {
+                    break 'outer;
                 }
+                self.board = cloned_board.clone();
+                // 3手先までシミュレーションする
+                let mut count = 0;
+                let mut output = Vec::new();
+                'simulate: for _ in 0..3 {
+                    for i in 0..self.n {
+                        for j in 0..self.n {
+                            if time::Duration::from_millis(1950) < self.started_at.elapsed() {
+                                break 'outer;
+                            }
+
+                            if self.board[i][j] != Some(Piece::Oni) {
+                                continue;
+                            }
+
+                            let mut moves = self.simulate_drop_piece_moves(i, j);
+                            if moves.is_empty() {
+                                let random_moves = self.simulate_piece_random_moves(i, j);
+                                if random_moves.is_empty() {
+                                    continue;
+                                }
+                                if random_moves.len() + count > max_count {
+                                    continue;
+                                }
+                                count += random_moves.len();
+                                let mut i = i;
+                                let mut j = j;
+                                for (d, _) in random_moves {
+                                    output.extend(self.move_pieces(i, j, d, 1));
+                                    match d {
+                                        Direction::Up => {
+                                            i -= 1;
+                                        }
+                                        Direction::Down => {
+                                            i += 1;
+                                        }
+                                        Direction::Left => {
+                                            j -= 1;
+                                        }
+                                        Direction::Right => {
+                                            j += 1;
+                                        }
+                                    }
+                                }
+                                continue;
+                            }
+                            moves.sort_by_key(|(_, cost)| cost.0 + self.rng.gen_range(0..=4));
+
+                            let (d, MoveCost(cost)) = moves.first().unwrap();
+                            // 移動を制限することで後でもっと短い経路が見つかる可能性を残す
+                            let cost = *cost.min(&self.rng.gen_range(1..=3));
+                            if all_count + count + cost > max_count {
+                                continue;
+                            }
+                            count += cost;
+                            output.extend(self.move_pieces(i, j, *d, cost));
+                            continue 'simulate;
+                        }
+                    }
+                }
+                scores.push((self.board.clone(), count, output, self.calc_score(count)));
             }
+            if scores.is_empty() {
+                continue;
+            }
+            scores.sort_by_key(|(_, _, _, score)| std::cmp::Reverse(*score));
+            let (board, count, output, _) = scores[0].clone();
+            self.board = board.clone();
+            all_count += count;
+            all_output.extend(output.clone());
         }
-        Output(output)
+        Output(all_output)
     }
 
     fn move_pieces(&mut self, i: usize, j: usize, d: Direction, step: usize) -> Vec<OutputItem> {
@@ -254,6 +279,22 @@ impl Solver {
 
         res.shuffle(&mut self.rng);
         res.into_iter().take(1).collect()
+    }
+
+    fn calc_score(&self, step: usize) -> i64 {
+        let mut oni_count = 0;
+        for i in 0..self.n {
+            for j in 0..self.n {
+                if self.board[i][j] == Some(Piece::Oni) {
+                    oni_count += 1;
+                }
+            }
+        }
+        if oni_count == 0 {
+            (8 * self.n.pow(2)) as i64 - step as i64
+        } else {
+            (4 * self.n.pow(2)) as i64 - self.n as i64 * (oni_count as i64)
+        }
     }
 }
 
