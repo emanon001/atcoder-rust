@@ -93,9 +93,9 @@ impl Solver {
                         continue;
                     }
 
-                    let mut moves = self.simulate_drop_move_piece(i, j);
+                    let mut moves = self.simulate_drop_piece_moves(i, j);
                     if moves.is_empty() {
-                        let random_moves = self.simulate_random_move_piece(i, j);
+                        let random_moves = self.simulate_piece_random_moves(i, j);
                         if random_moves.is_empty() {
                             continue;
                         }
@@ -106,7 +106,7 @@ impl Solver {
                         let mut i = i;
                         let mut j = j;
                         for (d, _) in random_moves {
-                            output.extend(self.move_board(i, j, d, 1));
+                            output.extend(self.move_pieces(i, j, d, 1));
                             match d {
                                 Direction::Up => {
                                     i -= 1;
@@ -133,7 +133,7 @@ impl Solver {
                         continue;
                     }
                     count += cost;
-                    output.extend(self.move_board(i, j, *d, cost));
+                    output.extend(self.move_pieces(i, j, *d, cost));
                     continue 'outer;
                 }
             }
@@ -141,7 +141,7 @@ impl Solver {
         Output(output)
     }
 
-    fn move_board(&mut self, i: usize, j: usize, d: Direction, step: usize) -> Vec<OutputItem> {
+    fn move_pieces(&mut self, i: usize, j: usize, d: Direction, step: usize) -> Vec<OutputItem> {
         let mut output = Vec::new();
         match d {
             Direction::Up => {
@@ -217,9 +217,9 @@ impl Solver {
     }
 
     /**
-     * 上下左右の一方に移動して鬼を削除する移動方法を返す
+     * 上下左右の一方向に移動して鬼を削除する移動方法を返す
      */
-    fn simulate_drop_move_piece(&self, i: usize, j: usize) -> Vec<(Direction, MoveCost)> {
+    fn simulate_drop_piece_moves(&self, i: usize, j: usize) -> Vec<(Direction, MoveCost)> {
         let mut res = Vec::new();
         if (0..i).all(|i| self.board[i][j] != Some(Piece::Fuku)) {
             res.push((Direction::Up, MoveCost(i + 1)));
@@ -236,38 +236,21 @@ impl Solver {
         res
     }
 
-    fn simulate_random_move_piece(&mut self, i: usize, j: usize) -> Vec<(Direction, usize)> {
+    fn simulate_piece_random_moves(&mut self, i: usize, j: usize) -> Vec<(Direction, usize)> {
         // 鬼を削除できる位置に移動させる
         let mut res = Vec::new();
-        // let d = match self.rng.gen_range(0..4) {
-        //     0 => Direction::Up,
-        //     1 => Direction::Down,
-        //     2 => Direction::Left,
-        //     3 => Direction::Right,
-        //     _ => unreachable!(),
-        // };
-        // match d {
-        // Direction::Up => {
         if self.board[0][j] != Some(Piece::Fuku) {
             res.push((Direction::Up, j));
         }
-        // }
-        // Direction::Down => {
         if self.board[self.n - 1][j] != Some(Piece::Fuku) {
             res.push((Direction::Down, j));
         }
-        // }
-        // Direction::Left => {
         if self.board[i][0] != Some(Piece::Fuku) {
             res.push((Direction::Left, i));
         }
-        // }
-        // Direction::Right => {
         if self.board[i][self.n - 1] != Some(Piece::Fuku) {
             res.push((Direction::Right, i));
         }
-        // }
-        // }
 
         res.shuffle(&mut self.rng);
         res.into_iter().take(1).collect()
