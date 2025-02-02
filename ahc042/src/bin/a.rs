@@ -8,13 +8,33 @@ use proconio::marker::*;
 #[allow(unused_imports)]
 use std::collections::*;
 
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+enum Piece {
+    Oni,
+    Fuku,
+}
+
 struct Solver {
     n: usize,
-    board: Vec<Vec<char>>,
+    board: Vec<Vec<Option<Piece>>>,
 }
 
 impl Solver {
     fn new(n: usize, board: Vec<Vec<char>>) -> Self {
+        let board = board
+            .into_iter()
+            .map(|row| {
+                row.into_iter()
+                    .map(|c| match c {
+                        'x' => Some(Piece::Oni),
+                        'o' => Some(Piece::Fuku),
+                        '.' => None,
+                        _ => unreachable!(),
+                    })
+                    .collect_vec()
+            })
+            .collect_vec();
+
         Self { n, board }
     }
     fn solve(&mut self) {
