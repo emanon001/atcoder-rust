@@ -85,7 +85,7 @@ impl Solver {
             }
             for i in 0..self.n {
                 for j in 0..self.n {
-                    if time::Duration::from_millis(1900) < self.started_at.elapsed() {
+                    if time::Duration::from_millis(1950) < self.started_at.elapsed() {
                         break 'outer;
                     }
 
