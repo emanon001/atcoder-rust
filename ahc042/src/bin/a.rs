@@ -120,7 +120,7 @@ impl Solver {
                             }
                         }
                         Direction::Down => {
-                            for ni in 0..self.n {
+                            for ni in (0..self.n).rev() {
                                 // update board
                                 self.board[ni][j] = if ni >= cost.0 {
                                     self.board[ni - cost.0][j]
@@ -154,7 +154,7 @@ impl Solver {
                             }
                         }
                         Direction::Right => {
-                            for nj in 0..self.n {
+                            for nj in (0..self.n).rev() {
                                 // update board
                                 self.board[i][nj] = if nj >= cost.0 {
                                     self.board[i][nj - cost.0]
