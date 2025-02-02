@@ -95,7 +95,7 @@ impl Solver {
 
                     let mut moves = self.simulate_drop_piece(i, j);
                     if moves.is_empty() {
-                        let next_moves = self.simulate_next_drop_piece(i, j);
+                        let next_moves = self.simulate_random_move_piece(i, j);
                         if next_moves.is_empty() {
                             continue;
                         }
@@ -231,7 +231,7 @@ impl Solver {
         res
     }
 
-    fn simulate_next_drop_piece(&mut self, i: usize, j: usize) -> Vec<(Direction, usize)> {
+    fn simulate_random_move_piece(&mut self, i: usize, j: usize) -> Vec<(Direction, usize)> {
         // 鬼を削除できる位置に移動させる
         let mut res = Vec::new();
         // let d = match self.rng.gen_range(0..4) {
