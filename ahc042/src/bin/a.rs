@@ -245,30 +245,27 @@ impl Solver {
         // Direction::Up => {
         if self.board[0][j] != Some(Piece::Fuku) {
             res.push((Direction::Up, j));
-            return res;
         }
         // }
         // Direction::Down => {
         if self.board[self.n - 1][j] != Some(Piece::Fuku) {
             res.push((Direction::Down, j));
-            return res;
         }
         // }
         // Direction::Left => {
         if self.board[i][0] != Some(Piece::Fuku) {
             res.push((Direction::Left, i));
-            return res;
         }
         // }
         // Direction::Right => {
         if self.board[i][self.n - 1] != Some(Piece::Fuku) {
             res.push((Direction::Right, i));
-            return res;
         }
         // }
         // }
 
-        res
+        res.shuffle(&mut self.rng);
+        res.into_iter().take(1).collect()
     }
 }
 
