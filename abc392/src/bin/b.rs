@@ -11,7 +11,16 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize, M: usize,
+        A: [usize; M],
     };
+
+    let mut set = (1..=N).collect::<BTreeSet<_>>();
+    for a in A {
+        set.remove(&a);
+    }
+    println!("{}", set.len());
+    println!("{}", set.iter().join(" "));
 }
 
 fn main() {
