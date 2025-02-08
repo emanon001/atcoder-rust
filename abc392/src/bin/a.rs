@@ -11,7 +11,24 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        A: [usize; 3],
     };
+
+    for (a, b, c) in [
+        (A[0], A[1], A[2]),
+        (A[0], A[2], A[1]),
+        (A[1], A[0], A[2]),
+        (A[1], A[2], A[0]),
+        (A[2], A[0], A[1]),
+        (A[2], A[1], A[0]),
+    ] {
+        if a * b == c {
+            println!("Yes");
+            return;
+        }
+    }
+
+    println!("No");
 }
 
 fn main() {
