@@ -1,6 +1,6 @@
 # atcoder-rust
 
-[AtCoder](https://atcoder.jp)の解答一覧。
+Rustによる[AtCoder](https://atcoder.jp)の解答一覧。
 
 ## Usage
 
