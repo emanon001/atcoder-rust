@@ -11,7 +11,17 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: String, S2: String,
     };
+
+    let ans = match (S.as_str(), S2.as_str()) {
+        ("sick", "sick") => 1,
+        ("sick", "fine") => 2,
+        ("fine", "sick") => 3,
+        ("fine", "fine") => 4,
+        _ => unreachable!(),
+    };
+    println!("{}", ans);
 }
 
 fn main() {
