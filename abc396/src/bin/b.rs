@@ -11,7 +11,29 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        Q: usize,
     };
+
+    let mut stack = vec![0].repeat(100);
+    for _ in 0..Q {
+        input_interactive! {
+            t: usize,
+        };
+
+        match t {
+            1 => {
+                input_interactive! {
+                    x: usize,
+                };
+                stack.push(x);
+            }
+            2 => {
+                let x = stack.pop().unwrap();
+                println!("{}", x);
+            }
+            _ => unreachable!(),
+        }
+    }
 }
 
 fn main() {
