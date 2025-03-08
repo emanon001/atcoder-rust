@@ -11,7 +11,18 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [usize; N],
     };
+
+    let is_ok = A
+        .into_iter()
+        .tuple_windows()
+        .filter(|(a, b, c)| a == b && b == c)
+        .count()
+        > 0;
+    let ans = if is_ok { "Yes" } else { "No" };
+    println!("{}", ans);
 }
 
 fn main() {
