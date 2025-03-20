@@ -11,7 +11,21 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        X: String,
     };
+
+    let x = X.split(".").collect_vec();
+    let a = x[0].parse::<i32>().unwrap();
+    let b = x[1].parse::<i32>().unwrap();
+    let c = a * 10 + b;
+    let ans = if c >= 380 {
+        1
+    } else if c >= 375 {
+        2
+    } else {
+        3
+    };
+    println!("{}", ans);
 }
 
 fn main() {
