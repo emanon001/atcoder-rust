@@ -11,7 +11,19 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
     };
+
+    let ans = if N.is_odd() {
+        let m = (N - 1) / 2;
+        let s = "-".repeat(m);
+        format!("{}={}", s, s)
+    } else {
+        let m = (N - 2) / 2;
+        let s = "-".repeat(m);
+        format!("{}=={}", s, s)
+    };
+    println!("{}", ans);
 }
 
 fn main() {
