@@ -11,7 +11,31 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        A: [usize; N],
     };
+
+    let max = A
+        .iter()
+        .counts()
+        .iter()
+        .filter(|(_, &c)| c == 1)
+        .map(|(&a, _)| *a)
+        .max();
+    match max {
+        Some(max) => {
+            for (i, a) in A.into_iter().enumerate() {
+                let i = i + 1;
+                if a == max {
+                    println!("{}", i);
+                    return;
+                }
+            }
+        }
+        None => {
+            println!("-1");
+        }
+    }
 }
 
 fn main() {
