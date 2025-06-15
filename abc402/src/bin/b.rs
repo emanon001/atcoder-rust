@@ -11,7 +11,30 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        Q: usize,
     };
+
+    let mut deque = VecDeque::new();
+    for _ in 0..Q {
+        input_interactive! {
+            kind: usize,
+        }
+
+        match kind {
+            1 => {
+                input_interactive! {
+                    x: usize,
+                }
+
+                deque.push_back(x);
+            }
+            2 => {
+                let ans = deque.pop_front().unwrap();
+                println!("{}", ans);
+            }
+            _ => unreachable!(),
+        }
+    }
 }
 
 fn main() {
