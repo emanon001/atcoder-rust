@@ -11,7 +11,25 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        N: usize,
+        S: [String; N]
     };
+
+    let mut ans = 0;
+    let mut logged_in = false;
+    for s in S {
+        match s.as_str() {
+            "login" => logged_in = true,
+            "logout" => logged_in = false,
+            "private" => {
+                if !logged_in {
+                    ans += 1;
+                }
+            }
+            _ => {}
+        }
+    }
+    println!("{}", ans);
 }
 
 fn main() {
