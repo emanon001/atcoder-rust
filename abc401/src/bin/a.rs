@@ -11,7 +11,15 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn solve() {
     input_interactive! {
+        S: usize,
     };
+
+    let ans = if (200..=299).contains(&S) {
+        "Success"
+    } else {
+        "Failure"
+    };
+    println!("{}", ans)
 }
 
 fn main() {
