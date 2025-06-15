@@ -1,0 +1,23 @@
+#!/bin/bash -eu
+
+function usage () {
+  echo "Usage: ${cmd_name} <problem-id>"
+  exit 0
+}
+
+cmd_name="$(basename ${0})"
+if [ $# -ne 1 ]; then
+  usage
+  exit 0
+fi
+problem_id="${1}"
+if [ -z "${problem_id}" ]; then
+  usage
+  exit 0
+fi
+
+dir="$(pwd)"
+contest_id="$(basename "${dir}")"
+
+pbcopy < "src/bin/${problem_id}.rs"
+open "https://atcoder.jp/contests/${contest_id}/submit?taskScreenName=${contest_id}_${problem_id}"
