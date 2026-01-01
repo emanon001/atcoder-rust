@@ -4,6 +4,17 @@ version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "joi2014yo-a", problem = "https://atcoder.jp/contests/joi2014yo/<FIXME: screen name of the problem>"}
+b = { name = "joi2014yo-b", problem = "https://atcoder.jp/contests/joi2014yo/<FIXME: screen name of the problem>"}
+c = { name = "joi2014yo-c", problem = "https://atcoder.jp/contests/joi2014yo/<FIXME: screen name of the problem>"}
+d = { name = "joi2014yo-d", problem = "https://atcoder.jp/contests/joi2014yo/<FIXME: screen name of the problem>"}
+e = { name = "joi2014yo-e", problem = "https://atcoder.jp/contests/joi2014yo/<FIXME: screen name of the problem>"}
+f = { name = "joi2014yo-f", problem = "https://atcoder.jp/contests/joi2014yo/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 proconio = "*"
@@ -11,3 +22,27 @@ proconio = "*"
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "joi2014yo-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "joi2014yo-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "joi2014yo-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "joi2014yo-d"
+path = "./src/bin/d.rs"
+
+[[bin]]
+name = "joi2014yo-e"
+path = "./src/bin/e.rs"
+
+[[bin]]
+name = "joi2014yo-f"
+path = "./src/bin/f.rs"

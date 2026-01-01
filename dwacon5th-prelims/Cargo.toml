@@ -4,6 +4,16 @@ version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "dwacon5th-prelims-a", problem = "https://atcoder.jp/contests/dwacon5th-prelims/<FIXME: screen name of the problem>"}
+b = { name = "dwacon5th-prelims-b", problem = "https://atcoder.jp/contests/dwacon5th-prelims/<FIXME: screen name of the problem>"}
+c = { name = "dwacon5th-prelims-c", problem = "https://atcoder.jp/contests/dwacon5th-prelims/<FIXME: screen name of the problem>"}
+d = { name = "dwacon5th-prelims-d", problem = "https://atcoder.jp/contests/dwacon5th-prelims/<FIXME: screen name of the problem>"}
+e = { name = "dwacon5th-prelims-e", problem = "https://atcoder.jp/contests/dwacon5th-prelims/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 proconio = "*"
@@ -11,3 +21,23 @@ proconio = "*"
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "dwacon5th-prelims-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "dwacon5th-prelims-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "dwacon5th-prelims-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "dwacon5th-prelims-d"
+path = "./src/bin/d.rs"
+
+[[bin]]
+name = "dwacon5th-prelims-e"
+path = "./src/bin/e.rs"

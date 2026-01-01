@@ -4,6 +4,19 @@ version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "pakencamp-2019-day3-a", problem = "https://atcoder.jp/contests/pakencamp-2019-day3/<FIXME: screen name of the problem>"}
+b = { name = "pakencamp-2019-day3-b", problem = "https://atcoder.jp/contests/pakencamp-2019-day3/<FIXME: screen name of the problem>"}
+c = { name = "pakencamp-2019-day3-c", problem = "https://atcoder.jp/contests/pakencamp-2019-day3/<FIXME: screen name of the problem>"}
+d = { name = "pakencamp-2019-day3-d", problem = "https://atcoder.jp/contests/pakencamp-2019-day3/<FIXME: screen name of the problem>"}
+e = { name = "pakencamp-2019-day3-e", problem = "https://atcoder.jp/contests/pakencamp-2019-day3/<FIXME: screen name of the problem>"}
+f = { name = "pakencamp-2019-day3-f", problem = "https://atcoder.jp/contests/pakencamp-2019-day3/<FIXME: screen name of the problem>"}
+g = { name = "pakencamp-2019-day3-g", problem = "https://atcoder.jp/contests/pakencamp-2019-day3/<FIXME: screen name of the problem>"}
+h = { name = "pakencamp-2019-day3-h", problem = "https://atcoder.jp/contests/pakencamp-2019-day3/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 proconio = "*"
@@ -11,3 +24,35 @@ proconio = "*"
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "pakencamp-2019-day3-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "pakencamp-2019-day3-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "pakencamp-2019-day3-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "pakencamp-2019-day3-d"
+path = "./src/bin/d.rs"
+
+[[bin]]
+name = "pakencamp-2019-day3-e"
+path = "./src/bin/e.rs"
+
+[[bin]]
+name = "pakencamp-2019-day3-f"
+path = "./src/bin/f.rs"
+
+[[bin]]
+name = "pakencamp-2019-day3-g"
+path = "./src/bin/g.rs"
+
+[[bin]]
+name = "pakencamp-2019-day3-h"
+path = "./src/bin/h.rs"

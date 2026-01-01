@@ -4,6 +4,15 @@ version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "code-festival-2014-quala-a", problem = "https://atcoder.jp/contests/code-festival-2014-quala/<FIXME: screen name of the problem>"}
+b = { name = "code-festival-2014-quala-b", problem = "https://atcoder.jp/contests/code-festival-2014-quala/<FIXME: screen name of the problem>"}
+c = { name = "code-festival-2014-quala-c", problem = "https://atcoder.jp/contests/code-festival-2014-quala/<FIXME: screen name of the problem>"}
+d = { name = "code-festival-2014-quala-d", problem = "https://atcoder.jp/contests/code-festival-2014-quala/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 alga = "=0.9.3"
@@ -37,3 +46,19 @@ whiteread = "=0.5.0"
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "code-festival-2014-quala-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "code-festival-2014-quala-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "code-festival-2014-quala-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "code-festival-2014-quala-d"
+path = "./src/bin/d.rs"

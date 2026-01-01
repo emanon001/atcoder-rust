@@ -4,6 +4,162 @@ version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a01 = { name = "tessoku-book-a01", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a02 = { name = "tessoku-book-a02", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a03 = { name = "tessoku-book-a03", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a04 = { name = "tessoku-book-a04", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a05 = { name = "tessoku-book-a05", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a06 = { name = "tessoku-book-a06", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a07 = { name = "tessoku-book-a07", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a08 = { name = "tessoku-book-a08", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a09 = { name = "tessoku-book-a09", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a10 = { name = "tessoku-book-a10", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a11 = { name = "tessoku-book-a11", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a12 = { name = "tessoku-book-a12", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a13 = { name = "tessoku-book-a13", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a14 = { name = "tessoku-book-a14", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a15 = { name = "tessoku-book-a15", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a16 = { name = "tessoku-book-a16", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a17 = { name = "tessoku-book-a17", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a18 = { name = "tessoku-book-a18", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a19 = { name = "tessoku-book-a19", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a20 = { name = "tessoku-book-a20", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a21 = { name = "tessoku-book-a21", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a22 = { name = "tessoku-book-a22", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a23 = { name = "tessoku-book-a23", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a24 = { name = "tessoku-book-a24", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a25 = { name = "tessoku-book-a25", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a26 = { name = "tessoku-book-a26", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a27 = { name = "tessoku-book-a27", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a28 = { name = "tessoku-book-a28", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a29 = { name = "tessoku-book-a29", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a30 = { name = "tessoku-book-a30", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a31 = { name = "tessoku-book-a31", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a32 = { name = "tessoku-book-a32", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a33 = { name = "tessoku-book-a33", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a34 = { name = "tessoku-book-a34", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a35 = { name = "tessoku-book-a35", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a36 = { name = "tessoku-book-a36", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a37 = { name = "tessoku-book-a37", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a38 = { name = "tessoku-book-a38", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a39 = { name = "tessoku-book-a39", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a40 = { name = "tessoku-book-a40", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a41 = { name = "tessoku-book-a41", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a42 = { name = "tessoku-book-a42", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a43 = { name = "tessoku-book-a43", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a44 = { name = "tessoku-book-a44", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a45 = { name = "tessoku-book-a45", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a46 = { name = "tessoku-book-a46", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a49 = { name = "tessoku-book-a49", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a50 = { name = "tessoku-book-a50", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a51 = { name = "tessoku-book-a51", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a52 = { name = "tessoku-book-a52", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a53 = { name = "tessoku-book-a53", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a54 = { name = "tessoku-book-a54", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a55 = { name = "tessoku-book-a55", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a56 = { name = "tessoku-book-a56", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a57 = { name = "tessoku-book-a57", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a58 = { name = "tessoku-book-a58", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a59 = { name = "tessoku-book-a59", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a60 = { name = "tessoku-book-a60", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a61 = { name = "tessoku-book-a61", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a62 = { name = "tessoku-book-a62", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a63 = { name = "tessoku-book-a63", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a64 = { name = "tessoku-book-a64", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a65 = { name = "tessoku-book-a65", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a66 = { name = "tessoku-book-a66", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a67 = { name = "tessoku-book-a67", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a68 = { name = "tessoku-book-a68", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a69 = { name = "tessoku-book-a69", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a70 = { name = "tessoku-book-a70", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a71 = { name = "tessoku-book-a71", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a72 = { name = "tessoku-book-a72", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a73 = { name = "tessoku-book-a73", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a74 = { name = "tessoku-book-a74", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a75 = { name = "tessoku-book-a75", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a76 = { name = "tessoku-book-a76", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+a77 = { name = "tessoku-book-a77", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b01 = { name = "tessoku-book-b01", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b02 = { name = "tessoku-book-b02", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b03 = { name = "tessoku-book-b03", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b04 = { name = "tessoku-book-b04", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b06 = { name = "tessoku-book-b06", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b07 = { name = "tessoku-book-b07", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b08 = { name = "tessoku-book-b08", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b09 = { name = "tessoku-book-b09", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b11 = { name = "tessoku-book-b11", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b12 = { name = "tessoku-book-b12", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b13 = { name = "tessoku-book-b13", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b14 = { name = "tessoku-book-b14", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b16 = { name = "tessoku-book-b16", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b17 = { name = "tessoku-book-b17", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b18 = { name = "tessoku-book-b18", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b19 = { name = "tessoku-book-b19", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b20 = { name = "tessoku-book-b20", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b21 = { name = "tessoku-book-b21", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b23 = { name = "tessoku-book-b23", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b24 = { name = "tessoku-book-b24", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b26 = { name = "tessoku-book-b26", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b27 = { name = "tessoku-book-b27", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b28 = { name = "tessoku-book-b28", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b29 = { name = "tessoku-book-b29", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b30 = { name = "tessoku-book-b30", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b31 = { name = "tessoku-book-b31", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b32 = { name = "tessoku-book-b32", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b33 = { name = "tessoku-book-b33", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b34 = { name = "tessoku-book-b34", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b36 = { name = "tessoku-book-b36", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b37 = { name = "tessoku-book-b37", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b38 = { name = "tessoku-book-b38", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b39 = { name = "tessoku-book-b39", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b40 = { name = "tessoku-book-b40", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b41 = { name = "tessoku-book-b41", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b42 = { name = "tessoku-book-b42", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b43 = { name = "tessoku-book-b43", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b44 = { name = "tessoku-book-b44", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b45 = { name = "tessoku-book-b45", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b51 = { name = "tessoku-book-b51", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b52 = { name = "tessoku-book-b52", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b54 = { name = "tessoku-book-b54", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b55 = { name = "tessoku-book-b55", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b56 = { name = "tessoku-book-b56", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b57 = { name = "tessoku-book-b57", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b58 = { name = "tessoku-book-b58", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b59 = { name = "tessoku-book-b59", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b61 = { name = "tessoku-book-b61", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b62 = { name = "tessoku-book-b62", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b63 = { name = "tessoku-book-b63", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b64 = { name = "tessoku-book-b64", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b65 = { name = "tessoku-book-b65", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b66 = { name = "tessoku-book-b66", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b67 = { name = "tessoku-book-b67", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b68 = { name = "tessoku-book-b68", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+b69 = { name = "tessoku-book-b69", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c01 = { name = "tessoku-book-c01", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c02 = { name = "tessoku-book-c02", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c03 = { name = "tessoku-book-c03", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c04 = { name = "tessoku-book-c04", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c05 = { name = "tessoku-book-c05", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c06 = { name = "tessoku-book-c06", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c07 = { name = "tessoku-book-c07", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c08 = { name = "tessoku-book-c08", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c09 = { name = "tessoku-book-c09", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c10 = { name = "tessoku-book-c10", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c11 = { name = "tessoku-book-c11", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c12 = { name = "tessoku-book-c12", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c13 = { name = "tessoku-book-c13", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c14 = { name = "tessoku-book-c14", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c15 = { name = "tessoku-book-c15", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c16 = { name = "tessoku-book-c16", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c17 = { name = "tessoku-book-c17", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c18 = { name = "tessoku-book-c18", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c19 = { name = "tessoku-book-c19", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+c20 = { name = "tessoku-book-c20", problem = "https://atcoder.jp/contests/tessoku-book/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 alga = "=0.9.3"
@@ -37,3 +193,607 @@ whiteread = "=0.5.0"
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "tessoku-book-a01"
+path = "./src/bin/a01.rs"
+
+[[bin]]
+name = "tessoku-book-a02"
+path = "./src/bin/a02.rs"
+
+[[bin]]
+name = "tessoku-book-a03"
+path = "./src/bin/a03.rs"
+
+[[bin]]
+name = "tessoku-book-a04"
+path = "./src/bin/a04.rs"
+
+[[bin]]
+name = "tessoku-book-a05"
+path = "./src/bin/a05.rs"
+
+[[bin]]
+name = "tessoku-book-a06"
+path = "./src/bin/a06.rs"
+
+[[bin]]
+name = "tessoku-book-a07"
+path = "./src/bin/a07.rs"
+
+[[bin]]
+name = "tessoku-book-a08"
+path = "./src/bin/a08.rs"
+
+[[bin]]
+name = "tessoku-book-a09"
+path = "./src/bin/a09.rs"
+
+[[bin]]
+name = "tessoku-book-a10"
+path = "./src/bin/a10.rs"
+
+[[bin]]
+name = "tessoku-book-a11"
+path = "./src/bin/a11.rs"
+
+[[bin]]
+name = "tessoku-book-a12"
+path = "./src/bin/a12.rs"
+
+[[bin]]
+name = "tessoku-book-a13"
+path = "./src/bin/a13.rs"
+
+[[bin]]
+name = "tessoku-book-a14"
+path = "./src/bin/a14.rs"
+
+[[bin]]
+name = "tessoku-book-a15"
+path = "./src/bin/a15.rs"
+
+[[bin]]
+name = "tessoku-book-a16"
+path = "./src/bin/a16.rs"
+
+[[bin]]
+name = "tessoku-book-a17"
+path = "./src/bin/a17.rs"
+
+[[bin]]
+name = "tessoku-book-a18"
+path = "./src/bin/a18.rs"
+
+[[bin]]
+name = "tessoku-book-a19"
+path = "./src/bin/a19.rs"
+
+[[bin]]
+name = "tessoku-book-a20"
+path = "./src/bin/a20.rs"
+
+[[bin]]
+name = "tessoku-book-a21"
+path = "./src/bin/a21.rs"
+
+[[bin]]
+name = "tessoku-book-a22"
+path = "./src/bin/a22.rs"
+
+[[bin]]
+name = "tessoku-book-a23"
+path = "./src/bin/a23.rs"
+
+[[bin]]
+name = "tessoku-book-a24"
+path = "./src/bin/a24.rs"
+
+[[bin]]
+name = "tessoku-book-a25"
+path = "./src/bin/a25.rs"
+
+[[bin]]
+name = "tessoku-book-a26"
+path = "./src/bin/a26.rs"
+
+[[bin]]
+name = "tessoku-book-a27"
+path = "./src/bin/a27.rs"
+
+[[bin]]
+name = "tessoku-book-a28"
+path = "./src/bin/a28.rs"
+
+[[bin]]
+name = "tessoku-book-a29"
+path = "./src/bin/a29.rs"
+
+[[bin]]
+name = "tessoku-book-a30"
+path = "./src/bin/a30.rs"
+
+[[bin]]
+name = "tessoku-book-a31"
+path = "./src/bin/a31.rs"
+
+[[bin]]
+name = "tessoku-book-a32"
+path = "./src/bin/a32.rs"
+
+[[bin]]
+name = "tessoku-book-a33"
+path = "./src/bin/a33.rs"
+
+[[bin]]
+name = "tessoku-book-a34"
+path = "./src/bin/a34.rs"
+
+[[bin]]
+name = "tessoku-book-a35"
+path = "./src/bin/a35.rs"
+
+[[bin]]
+name = "tessoku-book-a36"
+path = "./src/bin/a36.rs"
+
+[[bin]]
+name = "tessoku-book-a37"
+path = "./src/bin/a37.rs"
+
+[[bin]]
+name = "tessoku-book-a38"
+path = "./src/bin/a38.rs"
+
+[[bin]]
+name = "tessoku-book-a39"
+path = "./src/bin/a39.rs"
+
+[[bin]]
+name = "tessoku-book-a40"
+path = "./src/bin/a40.rs"
+
+[[bin]]
+name = "tessoku-book-a41"
+path = "./src/bin/a41.rs"
+
+[[bin]]
+name = "tessoku-book-a42"
+path = "./src/bin/a42.rs"
+
+[[bin]]
+name = "tessoku-book-a43"
+path = "./src/bin/a43.rs"
+
+[[bin]]
+name = "tessoku-book-a44"
+path = "./src/bin/a44.rs"
+
+[[bin]]
+name = "tessoku-book-a45"
+path = "./src/bin/a45.rs"
+
+[[bin]]
+name = "tessoku-book-a46"
+path = "./src/bin/a46.rs"
+
+[[bin]]
+name = "tessoku-book-a49"
+path = "./src/bin/a49.rs"
+
+[[bin]]
+name = "tessoku-book-a50"
+path = "./src/bin/a50.rs"
+
+[[bin]]
+name = "tessoku-book-a51"
+path = "./src/bin/a51.rs"
+
+[[bin]]
+name = "tessoku-book-a52"
+path = "./src/bin/a52.rs"
+
+[[bin]]
+name = "tessoku-book-a53"
+path = "./src/bin/a53.rs"
+
+[[bin]]
+name = "tessoku-book-a54"
+path = "./src/bin/a54.rs"
+
+[[bin]]
+name = "tessoku-book-a55"
+path = "./src/bin/a55.rs"
+
+[[bin]]
+name = "tessoku-book-a56"
+path = "./src/bin/a56.rs"
+
+[[bin]]
+name = "tessoku-book-a57"
+path = "./src/bin/a57.rs"
+
+[[bin]]
+name = "tessoku-book-a58"
+path = "./src/bin/a58.rs"
+
+[[bin]]
+name = "tessoku-book-a59"
+path = "./src/bin/a59.rs"
+
+[[bin]]
+name = "tessoku-book-a60"
+path = "./src/bin/a60.rs"
+
+[[bin]]
+name = "tessoku-book-a61"
+path = "./src/bin/a61.rs"
+
+[[bin]]
+name = "tessoku-book-a62"
+path = "./src/bin/a62.rs"
+
+[[bin]]
+name = "tessoku-book-a63"
+path = "./src/bin/a63.rs"
+
+[[bin]]
+name = "tessoku-book-a64"
+path = "./src/bin/a64.rs"
+
+[[bin]]
+name = "tessoku-book-a65"
+path = "./src/bin/a65.rs"
+
+[[bin]]
+name = "tessoku-book-a66"
+path = "./src/bin/a66.rs"
+
+[[bin]]
+name = "tessoku-book-a67"
+path = "./src/bin/a67.rs"
+
+[[bin]]
+name = "tessoku-book-a68"
+path = "./src/bin/a68.rs"
+
+[[bin]]
+name = "tessoku-book-a69"
+path = "./src/bin/a69.rs"
+
+[[bin]]
+name = "tessoku-book-a70"
+path = "./src/bin/a70.rs"
+
+[[bin]]
+name = "tessoku-book-a71"
+path = "./src/bin/a71.rs"
+
+[[bin]]
+name = "tessoku-book-a72"
+path = "./src/bin/a72.rs"
+
+[[bin]]
+name = "tessoku-book-a73"
+path = "./src/bin/a73.rs"
+
+[[bin]]
+name = "tessoku-book-a74"
+path = "./src/bin/a74.rs"
+
+[[bin]]
+name = "tessoku-book-a75"
+path = "./src/bin/a75.rs"
+
+[[bin]]
+name = "tessoku-book-a76"
+path = "./src/bin/a76.rs"
+
+[[bin]]
+name = "tessoku-book-a77"
+path = "./src/bin/a77.rs"
+
+[[bin]]
+name = "tessoku-book-b01"
+path = "./src/bin/b01.rs"
+
+[[bin]]
+name = "tessoku-book-b02"
+path = "./src/bin/b02.rs"
+
+[[bin]]
+name = "tessoku-book-b03"
+path = "./src/bin/b03.rs"
+
+[[bin]]
+name = "tessoku-book-b04"
+path = "./src/bin/b04.rs"
+
+[[bin]]
+name = "tessoku-book-b06"
+path = "./src/bin/b06.rs"
+
+[[bin]]
+name = "tessoku-book-b07"
+path = "./src/bin/b07.rs"
+
+[[bin]]
+name = "tessoku-book-b08"
+path = "./src/bin/b08.rs"
+
+[[bin]]
+name = "tessoku-book-b09"
+path = "./src/bin/b09.rs"
+
+[[bin]]
+name = "tessoku-book-b11"
+path = "./src/bin/b11.rs"
+
+[[bin]]
+name = "tessoku-book-b12"
+path = "./src/bin/b12.rs"
+
+[[bin]]
+name = "tessoku-book-b13"
+path = "./src/bin/b13.rs"
+
+[[bin]]
+name = "tessoku-book-b14"
+path = "./src/bin/b14.rs"
+
+[[bin]]
+name = "tessoku-book-b16"
+path = "./src/bin/b16.rs"
+
+[[bin]]
+name = "tessoku-book-b17"
+path = "./src/bin/b17.rs"
+
+[[bin]]
+name = "tessoku-book-b18"
+path = "./src/bin/b18.rs"
+
+[[bin]]
+name = "tessoku-book-b19"
+path = "./src/bin/b19.rs"
+
+[[bin]]
+name = "tessoku-book-b20"
+path = "./src/bin/b20.rs"
+
+[[bin]]
+name = "tessoku-book-b21"
+path = "./src/bin/b21.rs"
+
+[[bin]]
+name = "tessoku-book-b23"
+path = "./src/bin/b23.rs"
+
+[[bin]]
+name = "tessoku-book-b24"
+path = "./src/bin/b24.rs"
+
+[[bin]]
+name = "tessoku-book-b26"
+path = "./src/bin/b26.rs"
+
+[[bin]]
+name = "tessoku-book-b27"
+path = "./src/bin/b27.rs"
+
+[[bin]]
+name = "tessoku-book-b28"
+path = "./src/bin/b28.rs"
+
+[[bin]]
+name = "tessoku-book-b29"
+path = "./src/bin/b29.rs"
+
+[[bin]]
+name = "tessoku-book-b30"
+path = "./src/bin/b30.rs"
+
+[[bin]]
+name = "tessoku-book-b31"
+path = "./src/bin/b31.rs"
+
+[[bin]]
+name = "tessoku-book-b32"
+path = "./src/bin/b32.rs"
+
+[[bin]]
+name = "tessoku-book-b33"
+path = "./src/bin/b33.rs"
+
+[[bin]]
+name = "tessoku-book-b34"
+path = "./src/bin/b34.rs"
+
+[[bin]]
+name = "tessoku-book-b36"
+path = "./src/bin/b36.rs"
+
+[[bin]]
+name = "tessoku-book-b37"
+path = "./src/bin/b37.rs"
+
+[[bin]]
+name = "tessoku-book-b38"
+path = "./src/bin/b38.rs"
+
+[[bin]]
+name = "tessoku-book-b39"
+path = "./src/bin/b39.rs"
+
+[[bin]]
+name = "tessoku-book-b40"
+path = "./src/bin/b40.rs"
+
+[[bin]]
+name = "tessoku-book-b41"
+path = "./src/bin/b41.rs"
+
+[[bin]]
+name = "tessoku-book-b42"
+path = "./src/bin/b42.rs"
+
+[[bin]]
+name = "tessoku-book-b43"
+path = "./src/bin/b43.rs"
+
+[[bin]]
+name = "tessoku-book-b44"
+path = "./src/bin/b44.rs"
+
+[[bin]]
+name = "tessoku-book-b45"
+path = "./src/bin/b45.rs"
+
+[[bin]]
+name = "tessoku-book-b51"
+path = "./src/bin/b51.rs"
+
+[[bin]]
+name = "tessoku-book-b52"
+path = "./src/bin/b52.rs"
+
+[[bin]]
+name = "tessoku-book-b54"
+path = "./src/bin/b54.rs"
+
+[[bin]]
+name = "tessoku-book-b55"
+path = "./src/bin/b55.rs"
+
+[[bin]]
+name = "tessoku-book-b56"
+path = "./src/bin/b56.rs"
+
+[[bin]]
+name = "tessoku-book-b57"
+path = "./src/bin/b57.rs"
+
+[[bin]]
+name = "tessoku-book-b58"
+path = "./src/bin/b58.rs"
+
+[[bin]]
+name = "tessoku-book-b59"
+path = "./src/bin/b59.rs"
+
+[[bin]]
+name = "tessoku-book-b61"
+path = "./src/bin/b61.rs"
+
+[[bin]]
+name = "tessoku-book-b62"
+path = "./src/bin/b62.rs"
+
+[[bin]]
+name = "tessoku-book-b63"
+path = "./src/bin/b63.rs"
+
+[[bin]]
+name = "tessoku-book-b64"
+path = "./src/bin/b64.rs"
+
+[[bin]]
+name = "tessoku-book-b65"
+path = "./src/bin/b65.rs"
+
+[[bin]]
+name = "tessoku-book-b66"
+path = "./src/bin/b66.rs"
+
+[[bin]]
+name = "tessoku-book-b67"
+path = "./src/bin/b67.rs"
+
+[[bin]]
+name = "tessoku-book-b68"
+path = "./src/bin/b68.rs"
+
+[[bin]]
+name = "tessoku-book-b69"
+path = "./src/bin/b69.rs"
+
+[[bin]]
+name = "tessoku-book-c01"
+path = "./src/bin/c01.rs"
+
+[[bin]]
+name = "tessoku-book-c02"
+path = "./src/bin/c02.rs"
+
+[[bin]]
+name = "tessoku-book-c03"
+path = "./src/bin/c03.rs"
+
+[[bin]]
+name = "tessoku-book-c04"
+path = "./src/bin/c04.rs"
+
+[[bin]]
+name = "tessoku-book-c05"
+path = "./src/bin/c05.rs"
+
+[[bin]]
+name = "tessoku-book-c06"
+path = "./src/bin/c06.rs"
+
+[[bin]]
+name = "tessoku-book-c07"
+path = "./src/bin/c07.rs"
+
+[[bin]]
+name = "tessoku-book-c08"
+path = "./src/bin/c08.rs"
+
+[[bin]]
+name = "tessoku-book-c09"
+path = "./src/bin/c09.rs"
+
+[[bin]]
+name = "tessoku-book-c10"
+path = "./src/bin/c10.rs"
+
+[[bin]]
+name = "tessoku-book-c11"
+path = "./src/bin/c11.rs"
+
+[[bin]]
+name = "tessoku-book-c12"
+path = "./src/bin/c12.rs"
+
+[[bin]]
+name = "tessoku-book-c13"
+path = "./src/bin/c13.rs"
+
+[[bin]]
+name = "tessoku-book-c14"
+path = "./src/bin/c14.rs"
+
+[[bin]]
+name = "tessoku-book-c15"
+path = "./src/bin/c15.rs"
+
+[[bin]]
+name = "tessoku-book-c16"
+path = "./src/bin/c16.rs"
+
+[[bin]]
+name = "tessoku-book-c17"
+path = "./src/bin/c17.rs"
+
+[[bin]]
+name = "tessoku-book-c18"
+path = "./src/bin/c18.rs"
+
+[[bin]]
+name = "tessoku-book-c19"
+path = "./src/bin/c19.rs"
+
+[[bin]]
+name = "tessoku-book-c20"
+path = "./src/bin/c20.rs"

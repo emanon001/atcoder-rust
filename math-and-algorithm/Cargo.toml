@@ -3,6 +3,115 @@ name = "math-and-algorithm"
 version = "0.1.0"
 edition = "2021"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+001 = { name = "math-and-algorithm-001", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+002 = { name = "math-and-algorithm-002", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+003 = { name = "math-and-algorithm-003", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+004 = { name = "math-and-algorithm-004", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+005 = { name = "math-and-algorithm-005", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+006 = { name = "math-and-algorithm-006", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+007 = { name = "math-and-algorithm-007", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+008 = { name = "math-and-algorithm-008", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+009 = { name = "math-and-algorithm-009", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+010 = { name = "math-and-algorithm-010", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+011 = { name = "math-and-algorithm-011", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+012 = { name = "math-and-algorithm-012", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+013 = { name = "math-and-algorithm-013", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+014 = { name = "math-and-algorithm-014", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+015 = { name = "math-and-algorithm-015", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+016 = { name = "math-and-algorithm-016", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+017 = { name = "math-and-algorithm-017", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+018 = { name = "math-and-algorithm-018", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+019 = { name = "math-and-algorithm-019", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+020 = { name = "math-and-algorithm-020", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+021 = { name = "math-and-algorithm-021", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+022 = { name = "math-and-algorithm-022", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+023 = { name = "math-and-algorithm-023", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+024 = { name = "math-and-algorithm-024", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+025 = { name = "math-and-algorithm-025", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+026 = { name = "math-and-algorithm-026", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+027 = { name = "math-and-algorithm-027", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+028 = { name = "math-and-algorithm-028", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+029 = { name = "math-and-algorithm-029", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+030 = { name = "math-and-algorithm-030", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+031 = { name = "math-and-algorithm-031", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+032 = { name = "math-and-algorithm-032", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+033 = { name = "math-and-algorithm-033", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+034 = { name = "math-and-algorithm-034", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+035 = { name = "math-and-algorithm-035", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+036 = { name = "math-and-algorithm-036", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+037 = { name = "math-and-algorithm-037", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+038 = { name = "math-and-algorithm-038", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+039 = { name = "math-and-algorithm-039", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+040 = { name = "math-and-algorithm-040", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+041 = { name = "math-and-algorithm-041", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+042 = { name = "math-and-algorithm-042", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+043 = { name = "math-and-algorithm-043", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+044 = { name = "math-and-algorithm-044", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+045 = { name = "math-and-algorithm-045", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+046 = { name = "math-and-algorithm-046", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+047 = { name = "math-and-algorithm-047", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+048 = { name = "math-and-algorithm-048", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+049 = { name = "math-and-algorithm-049", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+050 = { name = "math-and-algorithm-050", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+051 = { name = "math-and-algorithm-051", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+052 = { name = "math-and-algorithm-052", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+053 = { name = "math-and-algorithm-053", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+054 = { name = "math-and-algorithm-054", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+055 = { name = "math-and-algorithm-055", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+056 = { name = "math-and-algorithm-056", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+057 = { name = "math-and-algorithm-057", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+058 = { name = "math-and-algorithm-058", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+059 = { name = "math-and-algorithm-059", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+060 = { name = "math-and-algorithm-060", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+061 = { name = "math-and-algorithm-061", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+062 = { name = "math-and-algorithm-062", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+063 = { name = "math-and-algorithm-063", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+064 = { name = "math-and-algorithm-064", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+065 = { name = "math-and-algorithm-065", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+066 = { name = "math-and-algorithm-066", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+067 = { name = "math-and-algorithm-067", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+068 = { name = "math-and-algorithm-068", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+069 = { name = "math-and-algorithm-069", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+070 = { name = "math-and-algorithm-070", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+071 = { name = "math-and-algorithm-071", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+072 = { name = "math-and-algorithm-072", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+073 = { name = "math-and-algorithm-073", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+074 = { name = "math-and-algorithm-074", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+075 = { name = "math-and-algorithm-075", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+076 = { name = "math-and-algorithm-076", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+077 = { name = "math-and-algorithm-077", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+078 = { name = "math-and-algorithm-078", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+079 = { name = "math-and-algorithm-079", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+080 = { name = "math-and-algorithm-080", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+081 = { name = "math-and-algorithm-081", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+082 = { name = "math-and-algorithm-082", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+083 = { name = "math-and-algorithm-083", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+084 = { name = "math-and-algorithm-084", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+085 = { name = "math-and-algorithm-085", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+086 = { name = "math-and-algorithm-086", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+087 = { name = "math-and-algorithm-087", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+088 = { name = "math-and-algorithm-088", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+089 = { name = "math-and-algorithm-089", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+090 = { name = "math-and-algorithm-090", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+091 = { name = "math-and-algorithm-091", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+092 = { name = "math-and-algorithm-092", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+093 = { name = "math-and-algorithm-093", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+094 = { name = "math-and-algorithm-094", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+095 = { name = "math-and-algorithm-095", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+096 = { name = "math-and-algorithm-096", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+097 = { name = "math-and-algorithm-097", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+098 = { name = "math-and-algorithm-098", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+099 = { name = "math-and-algorithm-099", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+100 = { name = "math-and-algorithm-100", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+101 = { name = "math-and-algorithm-101", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+102 = { name = "math-and-algorithm-102", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+103 = { name = "math-and-algorithm-103", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+104 = { name = "math-and-algorithm-104", problem = "https://atcoder.jp/contests/math-and-algorithm/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 ac-library-rs = "=0.1.1"
@@ -72,3 +181,419 @@ smallvec = { version = "=1.11.0", features = ["const_generics", "const_new", "wr
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "math-and-algorithm-001"
+path = "./src/bin/001.rs"
+
+[[bin]]
+name = "math-and-algorithm-002"
+path = "./src/bin/002.rs"
+
+[[bin]]
+name = "math-and-algorithm-003"
+path = "./src/bin/003.rs"
+
+[[bin]]
+name = "math-and-algorithm-004"
+path = "./src/bin/004.rs"
+
+[[bin]]
+name = "math-and-algorithm-005"
+path = "./src/bin/005.rs"
+
+[[bin]]
+name = "math-and-algorithm-006"
+path = "./src/bin/006.rs"
+
+[[bin]]
+name = "math-and-algorithm-007"
+path = "./src/bin/007.rs"
+
+[[bin]]
+name = "math-and-algorithm-008"
+path = "./src/bin/008.rs"
+
+[[bin]]
+name = "math-and-algorithm-009"
+path = "./src/bin/009.rs"
+
+[[bin]]
+name = "math-and-algorithm-010"
+path = "./src/bin/010.rs"
+
+[[bin]]
+name = "math-and-algorithm-011"
+path = "./src/bin/011.rs"
+
+[[bin]]
+name = "math-and-algorithm-012"
+path = "./src/bin/012.rs"
+
+[[bin]]
+name = "math-and-algorithm-013"
+path = "./src/bin/013.rs"
+
+[[bin]]
+name = "math-and-algorithm-014"
+path = "./src/bin/014.rs"
+
+[[bin]]
+name = "math-and-algorithm-015"
+path = "./src/bin/015.rs"
+
+[[bin]]
+name = "math-and-algorithm-016"
+path = "./src/bin/016.rs"
+
+[[bin]]
+name = "math-and-algorithm-017"
+path = "./src/bin/017.rs"
+
+[[bin]]
+name = "math-and-algorithm-018"
+path = "./src/bin/018.rs"
+
+[[bin]]
+name = "math-and-algorithm-019"
+path = "./src/bin/019.rs"
+
+[[bin]]
+name = "math-and-algorithm-020"
+path = "./src/bin/020.rs"
+
+[[bin]]
+name = "math-and-algorithm-021"
+path = "./src/bin/021.rs"
+
+[[bin]]
+name = "math-and-algorithm-022"
+path = "./src/bin/022.rs"
+
+[[bin]]
+name = "math-and-algorithm-023"
+path = "./src/bin/023.rs"
+
+[[bin]]
+name = "math-and-algorithm-024"
+path = "./src/bin/024.rs"
+
+[[bin]]
+name = "math-and-algorithm-025"
+path = "./src/bin/025.rs"
+
+[[bin]]
+name = "math-and-algorithm-026"
+path = "./src/bin/026.rs"
+
+[[bin]]
+name = "math-and-algorithm-027"
+path = "./src/bin/027.rs"
+
+[[bin]]
+name = "math-and-algorithm-028"
+path = "./src/bin/028.rs"
+
+[[bin]]
+name = "math-and-algorithm-029"
+path = "./src/bin/029.rs"
+
+[[bin]]
+name = "math-and-algorithm-030"
+path = "./src/bin/030.rs"
+
+[[bin]]
+name = "math-and-algorithm-031"
+path = "./src/bin/031.rs"
+
+[[bin]]
+name = "math-and-algorithm-032"
+path = "./src/bin/032.rs"
+
+[[bin]]
+name = "math-and-algorithm-033"
+path = "./src/bin/033.rs"
+
+[[bin]]
+name = "math-and-algorithm-034"
+path = "./src/bin/034.rs"
+
+[[bin]]
+name = "math-and-algorithm-035"
+path = "./src/bin/035.rs"
+
+[[bin]]
+name = "math-and-algorithm-036"
+path = "./src/bin/036.rs"
+
+[[bin]]
+name = "math-and-algorithm-037"
+path = "./src/bin/037.rs"
+
+[[bin]]
+name = "math-and-algorithm-038"
+path = "./src/bin/038.rs"
+
+[[bin]]
+name = "math-and-algorithm-039"
+path = "./src/bin/039.rs"
+
+[[bin]]
+name = "math-and-algorithm-040"
+path = "./src/bin/040.rs"
+
+[[bin]]
+name = "math-and-algorithm-041"
+path = "./src/bin/041.rs"
+
+[[bin]]
+name = "math-and-algorithm-042"
+path = "./src/bin/042.rs"
+
+[[bin]]
+name = "math-and-algorithm-043"
+path = "./src/bin/043.rs"
+
+[[bin]]
+name = "math-and-algorithm-044"
+path = "./src/bin/044.rs"
+
+[[bin]]
+name = "math-and-algorithm-045"
+path = "./src/bin/045.rs"
+
+[[bin]]
+name = "math-and-algorithm-046"
+path = "./src/bin/046.rs"
+
+[[bin]]
+name = "math-and-algorithm-047"
+path = "./src/bin/047.rs"
+
+[[bin]]
+name = "math-and-algorithm-048"
+path = "./src/bin/048.rs"
+
+[[bin]]
+name = "math-and-algorithm-049"
+path = "./src/bin/049.rs"
+
+[[bin]]
+name = "math-and-algorithm-050"
+path = "./src/bin/050.rs"
+
+[[bin]]
+name = "math-and-algorithm-051"
+path = "./src/bin/051.rs"
+
+[[bin]]
+name = "math-and-algorithm-052"
+path = "./src/bin/052.rs"
+
+[[bin]]
+name = "math-and-algorithm-053"
+path = "./src/bin/053.rs"
+
+[[bin]]
+name = "math-and-algorithm-054"
+path = "./src/bin/054.rs"
+
+[[bin]]
+name = "math-and-algorithm-055"
+path = "./src/bin/055.rs"
+
+[[bin]]
+name = "math-and-algorithm-056"
+path = "./src/bin/056.rs"
+
+[[bin]]
+name = "math-and-algorithm-057"
+path = "./src/bin/057.rs"
+
+[[bin]]
+name = "math-and-algorithm-058"
+path = "./src/bin/058.rs"
+
+[[bin]]
+name = "math-and-algorithm-059"
+path = "./src/bin/059.rs"
+
+[[bin]]
+name = "math-and-algorithm-060"
+path = "./src/bin/060.rs"
+
+[[bin]]
+name = "math-and-algorithm-061"
+path = "./src/bin/061.rs"
+
+[[bin]]
+name = "math-and-algorithm-062"
+path = "./src/bin/062.rs"
+
+[[bin]]
+name = "math-and-algorithm-063"
+path = "./src/bin/063.rs"
+
+[[bin]]
+name = "math-and-algorithm-064"
+path = "./src/bin/064.rs"
+
+[[bin]]
+name = "math-and-algorithm-065"
+path = "./src/bin/065.rs"
+
+[[bin]]
+name = "math-and-algorithm-066"
+path = "./src/bin/066.rs"
+
+[[bin]]
+name = "math-and-algorithm-067"
+path = "./src/bin/067.rs"
+
+[[bin]]
+name = "math-and-algorithm-068"
+path = "./src/bin/068.rs"
+
+[[bin]]
+name = "math-and-algorithm-069"
+path = "./src/bin/069.rs"
+
+[[bin]]
+name = "math-and-algorithm-070"
+path = "./src/bin/070.rs"
+
+[[bin]]
+name = "math-and-algorithm-071"
+path = "./src/bin/071.rs"
+
+[[bin]]
+name = "math-and-algorithm-072"
+path = "./src/bin/072.rs"
+
+[[bin]]
+name = "math-and-algorithm-073"
+path = "./src/bin/073.rs"
+
+[[bin]]
+name = "math-and-algorithm-074"
+path = "./src/bin/074.rs"
+
+[[bin]]
+name = "math-and-algorithm-075"
+path = "./src/bin/075.rs"
+
+[[bin]]
+name = "math-and-algorithm-076"
+path = "./src/bin/076.rs"
+
+[[bin]]
+name = "math-and-algorithm-077"
+path = "./src/bin/077.rs"
+
+[[bin]]
+name = "math-and-algorithm-078"
+path = "./src/bin/078.rs"
+
+[[bin]]
+name = "math-and-algorithm-079"
+path = "./src/bin/079.rs"
+
+[[bin]]
+name = "math-and-algorithm-080"
+path = "./src/bin/080.rs"
+
+[[bin]]
+name = "math-and-algorithm-081"
+path = "./src/bin/081.rs"
+
+[[bin]]
+name = "math-and-algorithm-082"
+path = "./src/bin/082.rs"
+
+[[bin]]
+name = "math-and-algorithm-083"
+path = "./src/bin/083.rs"
+
+[[bin]]
+name = "math-and-algorithm-084"
+path = "./src/bin/084.rs"
+
+[[bin]]
+name = "math-and-algorithm-085"
+path = "./src/bin/085.rs"
+
+[[bin]]
+name = "math-and-algorithm-086"
+path = "./src/bin/086.rs"
+
+[[bin]]
+name = "math-and-algorithm-087"
+path = "./src/bin/087.rs"
+
+[[bin]]
+name = "math-and-algorithm-088"
+path = "./src/bin/088.rs"
+
+[[bin]]
+name = "math-and-algorithm-089"
+path = "./src/bin/089.rs"
+
+[[bin]]
+name = "math-and-algorithm-090"
+path = "./src/bin/090.rs"
+
+[[bin]]
+name = "math-and-algorithm-091"
+path = "./src/bin/091.rs"
+
+[[bin]]
+name = "math-and-algorithm-092"
+path = "./src/bin/092.rs"
+
+[[bin]]
+name = "math-and-algorithm-093"
+path = "./src/bin/093.rs"
+
+[[bin]]
+name = "math-and-algorithm-094"
+path = "./src/bin/094.rs"
+
+[[bin]]
+name = "math-and-algorithm-095"
+path = "./src/bin/095.rs"
+
+[[bin]]
+name = "math-and-algorithm-096"
+path = "./src/bin/096.rs"
+
+[[bin]]
+name = "math-and-algorithm-097"
+path = "./src/bin/097.rs"
+
+[[bin]]
+name = "math-and-algorithm-098"
+path = "./src/bin/098.rs"
+
+[[bin]]
+name = "math-and-algorithm-099"
+path = "./src/bin/099.rs"
+
+[[bin]]
+name = "math-and-algorithm-100"
+path = "./src/bin/100.rs"
+
+[[bin]]
+name = "math-and-algorithm-101"
+path = "./src/bin/101.rs"
+
+[[bin]]
+name = "math-and-algorithm-102"
+path = "./src/bin/102.rs"
+
+[[bin]]
+name = "math-and-algorithm-103"
+path = "./src/bin/103.rs"
+
+[[bin]]
+name = "math-and-algorithm-104"
+path = "./src/bin/104.rs"

@@ -4,6 +4,18 @@ version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "agc028-a", problem = "https://atcoder.jp/contests/agc028/<FIXME: screen name of the problem>"}
+b = { name = "agc028-b", problem = "https://atcoder.jp/contests/agc028/<FIXME: screen name of the problem>"}
+c = { name = "agc028-c", problem = "https://atcoder.jp/contests/agc028/<FIXME: screen name of the problem>"}
+d = { name = "agc028-d", problem = "https://atcoder.jp/contests/agc028/<FIXME: screen name of the problem>"}
+e = { name = "agc028-e", problem = "https://atcoder.jp/contests/agc028/<FIXME: screen name of the problem>"}
+f = { name = "agc028-f", problem = "https://atcoder.jp/contests/agc028/<FIXME: screen name of the problem>"}
+f2 = { name = "agc028-f2", problem = "https://atcoder.jp/contests/agc028/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 proconio = "*"
@@ -12,3 +24,31 @@ num = "=0.2.1"
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "agc028-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "agc028-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "agc028-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "agc028-d"
+path = "./src/bin/d.rs"
+
+[[bin]]
+name = "agc028-e"
+path = "./src/bin/e.rs"
+
+[[bin]]
+name = "agc028-f"
+path = "./src/bin/f.rs"
+
+[[bin]]
+name = "agc028-f2"
+path = "./src/bin/f2.rs"

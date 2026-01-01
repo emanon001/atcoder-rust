@@ -3,6 +3,16 @@ name = "joi2024yo2"
 version = "0.1.0"
 edition = "2021"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "joi2024yo2-a", problem = "https://atcoder.jp/contests/joi2024yo2/<FIXME: screen name of the problem>"}
+b = { name = "joi2024yo2-b", problem = "https://atcoder.jp/contests/joi2024yo2/<FIXME: screen name of the problem>"}
+c = { name = "joi2024yo2-c", problem = "https://atcoder.jp/contests/joi2024yo2/<FIXME: screen name of the problem>"}
+d = { name = "joi2024yo2-d", problem = "https://atcoder.jp/contests/joi2024yo2/<FIXME: screen name of the problem>"}
+e = { name = "joi2024yo2-e", problem = "https://atcoder.jp/contests/joi2024yo2/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 ac-library-rs = "=0.1.1"
@@ -72,3 +82,23 @@ smallvec = { version = "=1.11.0", features = ["const_generics", "const_new", "wr
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "joi2024yo2-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "joi2024yo2-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "joi2024yo2-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "joi2024yo2-d"
+path = "./src/bin/d.rs"
+
+[[bin]]
+name = "joi2024yo2-e"
+path = "./src/bin/e.rs"

@@ -4,6 +4,21 @@ version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "apc001-a", problem = "https://atcoder.jp/contests/apc001/<FIXME: screen name of the problem>"}
+b = { name = "apc001-b", problem = "https://atcoder.jp/contests/apc001/<FIXME: screen name of the problem>"}
+c = { name = "apc001-c", problem = "https://atcoder.jp/contests/apc001/<FIXME: screen name of the problem>"}
+d = { name = "apc001-d", problem = "https://atcoder.jp/contests/apc001/<FIXME: screen name of the problem>"}
+e = { name = "apc001-e", problem = "https://atcoder.jp/contests/apc001/<FIXME: screen name of the problem>"}
+f = { name = "apc001-f", problem = "https://atcoder.jp/contests/apc001/<FIXME: screen name of the problem>"}
+g = { name = "apc001-g", problem = "https://atcoder.jp/contests/apc001/<FIXME: screen name of the problem>"}
+h = { name = "apc001-h", problem = "https://atcoder.jp/contests/apc001/<FIXME: screen name of the problem>"}
+i = { name = "apc001-i", problem = "https://atcoder.jp/contests/apc001/<FIXME: screen name of the problem>"}
+j = { name = "apc001-j", problem = "https://atcoder.jp/contests/apc001/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 proconio = "*"
@@ -12,3 +27,43 @@ num = "=0.2.1"
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "apc001-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "apc001-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "apc001-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "apc001-d"
+path = "./src/bin/d.rs"
+
+[[bin]]
+name = "apc001-e"
+path = "./src/bin/e.rs"
+
+[[bin]]
+name = "apc001-f"
+path = "./src/bin/f.rs"
+
+[[bin]]
+name = "apc001-g"
+path = "./src/bin/g.rs"
+
+[[bin]]
+name = "apc001-h"
+path = "./src/bin/h.rs"
+
+[[bin]]
+name = "apc001-i"
+path = "./src/bin/i.rs"
+
+[[bin]]
+name = "apc001-j"
+path = "./src/bin/j.rs"

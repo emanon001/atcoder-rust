@@ -4,6 +4,19 @@ version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "jsc2021-a", problem = "https://atcoder.jp/contests/jsc2021/<FIXME: screen name of the problem>"}
+b = { name = "jsc2021-b", problem = "https://atcoder.jp/contests/jsc2021/<FIXME: screen name of the problem>"}
+c = { name = "jsc2021-c", problem = "https://atcoder.jp/contests/jsc2021/<FIXME: screen name of the problem>"}
+d = { name = "jsc2021-d", problem = "https://atcoder.jp/contests/jsc2021/<FIXME: screen name of the problem>"}
+e = { name = "jsc2021-e", problem = "https://atcoder.jp/contests/jsc2021/<FIXME: screen name of the problem>"}
+f = { name = "jsc2021-f", problem = "https://atcoder.jp/contests/jsc2021/<FIXME: screen name of the problem>"}
+g = { name = "jsc2021-g", problem = "https://atcoder.jp/contests/jsc2021/<FIXME: screen name of the problem>"}
+h = { name = "jsc2021-h", problem = "https://atcoder.jp/contests/jsc2021/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 alga = "=0.9.3"
@@ -37,3 +50,35 @@ whiteread = "=0.5.0"
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "jsc2021-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "jsc2021-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "jsc2021-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "jsc2021-d"
+path = "./src/bin/d.rs"
+
+[[bin]]
+name = "jsc2021-e"
+path = "./src/bin/e.rs"
+
+[[bin]]
+name = "jsc2021-f"
+path = "./src/bin/f.rs"
+
+[[bin]]
+name = "jsc2021-g"
+path = "./src/bin/g.rs"
+
+[[bin]]
+name = "jsc2021-h"
+path = "./src/bin/h.rs"

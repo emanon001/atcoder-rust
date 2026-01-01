@@ -3,6 +3,12 @@ name = "ahc042"
 version = "0.1.0"
 edition = "2021"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "ahc042-a", problem = "https://atcoder.jp/contests/ahc042/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 ac-library-rs = "=0.1.1"
@@ -72,3 +78,7 @@ smallvec = { version = "=1.11.0", features = ["const_generics", "const_new", "wr
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "ahc042-a"
+path = "./src/bin/a.rs"

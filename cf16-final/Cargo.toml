@@ -4,6 +4,21 @@ version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "cf16-final-a", problem = "https://atcoder.jp/contests/cf16-final/<FIXME: screen name of the problem>"}
+b = { name = "cf16-final-b", problem = "https://atcoder.jp/contests/cf16-final/<FIXME: screen name of the problem>"}
+c = { name = "cf16-final-c", problem = "https://atcoder.jp/contests/cf16-final/<FIXME: screen name of the problem>"}
+d = { name = "cf16-final-d", problem = "https://atcoder.jp/contests/cf16-final/<FIXME: screen name of the problem>"}
+e = { name = "cf16-final-e", problem = "https://atcoder.jp/contests/cf16-final/<FIXME: screen name of the problem>"}
+f = { name = "cf16-final-f", problem = "https://atcoder.jp/contests/cf16-final/<FIXME: screen name of the problem>"}
+g = { name = "cf16-final-g", problem = "https://atcoder.jp/contests/cf16-final/<FIXME: screen name of the problem>"}
+h = { name = "cf16-final-h", problem = "https://atcoder.jp/contests/cf16-final/<FIXME: screen name of the problem>"}
+i = { name = "cf16-final-i", problem = "https://atcoder.jp/contests/cf16-final/<FIXME: screen name of the problem>"}
+j = { name = "cf16-final-j", problem = "https://atcoder.jp/contests/cf16-final/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 proconio = "*"
@@ -11,3 +26,43 @@ proconio = "*"
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "cf16-final-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "cf16-final-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "cf16-final-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "cf16-final-d"
+path = "./src/bin/d.rs"
+
+[[bin]]
+name = "cf16-final-e"
+path = "./src/bin/e.rs"
+
+[[bin]]
+name = "cf16-final-f"
+path = "./src/bin/f.rs"
+
+[[bin]]
+name = "cf16-final-g"
+path = "./src/bin/g.rs"
+
+[[bin]]
+name = "cf16-final-h"
+path = "./src/bin/h.rs"
+
+[[bin]]
+name = "cf16-final-i"
+path = "./src/bin/i.rs"
+
+[[bin]]
+name = "cf16-final-j"
+path = "./src/bin/j.rs"

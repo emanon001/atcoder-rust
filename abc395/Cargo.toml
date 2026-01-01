@@ -3,6 +3,18 @@ name = "abc395"
 version = "0.1.0"
 edition = "2021"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "abc395-a", problem = "https://atcoder.jp/contests/abc395/<FIXME: screen name of the problem>"}
+b = { name = "abc395-b", problem = "https://atcoder.jp/contests/abc395/<FIXME: screen name of the problem>"}
+c = { name = "abc395-c", problem = "https://atcoder.jp/contests/abc395/<FIXME: screen name of the problem>"}
+d = { name = "abc395-d", problem = "https://atcoder.jp/contests/abc395/<FIXME: screen name of the problem>"}
+e = { name = "abc395-e", problem = "https://atcoder.jp/contests/abc395/<FIXME: screen name of the problem>"}
+f = { name = "abc395-f", problem = "https://atcoder.jp/contests/abc395/<FIXME: screen name of the problem>"}
+g = { name = "abc395-g", problem = "https://atcoder.jp/contests/abc395/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 ac-library-rs = "=0.1.1"
@@ -83,3 +95,31 @@ smallvec = { version = "=1.11.0", features = [
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "abc395-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "abc395-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "abc395-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "abc395-d"
+path = "./src/bin/d.rs"
+
+[[bin]]
+name = "abc395-e"
+path = "./src/bin/e.rs"
+
+[[bin]]
+name = "abc395-f"
+path = "./src/bin/f.rs"
+
+[[bin]]
+name = "abc395-g"
+path = "./src/bin/g.rs"

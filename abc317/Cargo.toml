@@ -3,6 +3,19 @@ name = "abc317"
 version = "0.1.0"
 edition = "2021"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "abc317-a", problem = "https://atcoder.jp/contests/abc317/<FIXME: screen name of the problem>"}
+b = { name = "abc317-b", problem = "https://atcoder.jp/contests/abc317/<FIXME: screen name of the problem>"}
+c = { name = "abc317-c", problem = "https://atcoder.jp/contests/abc317/<FIXME: screen name of the problem>"}
+d = { name = "abc317-d", problem = "https://atcoder.jp/contests/abc317/<FIXME: screen name of the problem>"}
+e = { name = "abc317-e", problem = "https://atcoder.jp/contests/abc317/<FIXME: screen name of the problem>"}
+ex = { name = "abc317-ex", problem = "https://atcoder.jp/contests/abc317/<FIXME: screen name of the problem>"}
+f = { name = "abc317-f", problem = "https://atcoder.jp/contests/abc317/<FIXME: screen name of the problem>"}
+g = { name = "abc317-g", problem = "https://atcoder.jp/contests/abc317/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 ac-library-rs = "=0.1.1"
@@ -72,3 +85,35 @@ smallvec = { version = "=1.11.0", features = ["const_generics", "const_new", "wr
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "abc317-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "abc317-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "abc317-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "abc317-d"
+path = "./src/bin/d.rs"
+
+[[bin]]
+name = "abc317-e"
+path = "./src/bin/e.rs"
+
+[[bin]]
+name = "abc317-ex"
+path = "./src/bin/ex.rs"
+
+[[bin]]
+name = "abc317-f"
+path = "./src/bin/f.rs"
+
+[[bin]]
+name = "abc317-g"
+path = "./src/bin/g.rs"

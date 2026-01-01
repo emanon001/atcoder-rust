@@ -4,6 +4,19 @@ version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "s8pc-4-a", problem = "https://atcoder.jp/contests/s8pc-4/<FIXME: screen name of the problem>"}
+b = { name = "s8pc-4-b", problem = "https://atcoder.jp/contests/s8pc-4/<FIXME: screen name of the problem>"}
+c = { name = "s8pc-4-c", problem = "https://atcoder.jp/contests/s8pc-4/<FIXME: screen name of the problem>"}
+d = { name = "s8pc-4-d", problem = "https://atcoder.jp/contests/s8pc-4/<FIXME: screen name of the problem>"}
+e = { name = "s8pc-4-e", problem = "https://atcoder.jp/contests/s8pc-4/<FIXME: screen name of the problem>"}
+f = { name = "s8pc-4-f", problem = "https://atcoder.jp/contests/s8pc-4/<FIXME: screen name of the problem>"}
+g = { name = "s8pc-4-g", problem = "https://atcoder.jp/contests/s8pc-4/<FIXME: screen name of the problem>"}
+h = { name = "s8pc-4-h", problem = "https://atcoder.jp/contests/s8pc-4/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 proconio = "*"
@@ -11,3 +24,35 @@ proconio = "*"
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "s8pc-4-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "s8pc-4-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "s8pc-4-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "s8pc-4-d"
+path = "./src/bin/d.rs"
+
+[[bin]]
+name = "s8pc-4-e"
+path = "./src/bin/e.rs"
+
+[[bin]]
+name = "s8pc-4-f"
+path = "./src/bin/f.rs"
+
+[[bin]]
+name = "s8pc-4-g"
+path = "./src/bin/g.rs"
+
+[[bin]]
+name = "s8pc-4-h"
+path = "./src/bin/h.rs"

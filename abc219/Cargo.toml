@@ -4,6 +4,19 @@ version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "abc219-a", problem = "https://atcoder.jp/contests/abc219/<FIXME: screen name of the problem>"}
+b = { name = "abc219-b", problem = "https://atcoder.jp/contests/abc219/<FIXME: screen name of the problem>"}
+c = { name = "abc219-c", problem = "https://atcoder.jp/contests/abc219/<FIXME: screen name of the problem>"}
+d = { name = "abc219-d", problem = "https://atcoder.jp/contests/abc219/<FIXME: screen name of the problem>"}
+e = { name = "abc219-e", problem = "https://atcoder.jp/contests/abc219/<FIXME: screen name of the problem>"}
+f = { name = "abc219-f", problem = "https://atcoder.jp/contests/abc219/<FIXME: screen name of the problem>"}
+g = { name = "abc219-g", problem = "https://atcoder.jp/contests/abc219/<FIXME: screen name of the problem>"}
+h = { name = "abc219-h", problem = "https://atcoder.jp/contests/abc219/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 alga = "=0.9.3"
@@ -37,3 +50,35 @@ whiteread = "=0.5.0"
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "abc219-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "abc219-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "abc219-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "abc219-d"
+path = "./src/bin/d.rs"
+
+[[bin]]
+name = "abc219-e"
+path = "./src/bin/e.rs"
+
+[[bin]]
+name = "abc219-f"
+path = "./src/bin/f.rs"
+
+[[bin]]
+name = "abc219-g"
+path = "./src/bin/g.rs"
+
+[[bin]]
+name = "abc219-h"
+path = "./src/bin/h.rs"

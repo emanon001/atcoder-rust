@@ -4,6 +4,15 @@ version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "indeednow-quala-a", problem = "https://atcoder.jp/contests/indeednow-quala/<FIXME: screen name of the problem>"}
+b = { name = "indeednow-quala-b", problem = "https://atcoder.jp/contests/indeednow-quala/<FIXME: screen name of the problem>"}
+c = { name = "indeednow-quala-c", problem = "https://atcoder.jp/contests/indeednow-quala/<FIXME: screen name of the problem>"}
+d = { name = "indeednow-quala-d", problem = "https://atcoder.jp/contests/indeednow-quala/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 # alga = "=0.9.3"
 # ascii = "=1.0.0"
@@ -37,3 +46,19 @@ whiteread = "=0.5.0"
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "indeednow-quala-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "indeednow-quala-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "indeednow-quala-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "indeednow-quala-d"
+path = "./src/bin/d.rs"

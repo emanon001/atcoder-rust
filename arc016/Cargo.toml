@@ -4,6 +4,15 @@ version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "arc016-a", problem = "https://atcoder.jp/contests/arc016/<FIXME: screen name of the problem>"}
+b = { name = "arc016-b", problem = "https://atcoder.jp/contests/arc016/<FIXME: screen name of the problem>"}
+c = { name = "arc016-c", problem = "https://atcoder.jp/contests/arc016/<FIXME: screen name of the problem>"}
+d = { name = "arc016-d", problem = "https://atcoder.jp/contests/arc016/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 alga = "=0.9.3"
@@ -37,3 +46,19 @@ whiteread = "=0.5.0"
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "arc016-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "arc016-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "arc016-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "arc016-d"
+path = "./src/bin/d.rs"

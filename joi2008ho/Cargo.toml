@@ -4,6 +4,16 @@ version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "joi2008ho-a", problem = "https://atcoder.jp/contests/joi2008ho/<FIXME: screen name of the problem>"}
+b = { name = "joi2008ho-b", problem = "https://atcoder.jp/contests/joi2008ho/<FIXME: screen name of the problem>"}
+c = { name = "joi2008ho-c", problem = "https://atcoder.jp/contests/joi2008ho/<FIXME: screen name of the problem>"}
+d = { name = "joi2008ho-d", problem = "https://atcoder.jp/contests/joi2008ho/<FIXME: screen name of the problem>"}
+e = { name = "joi2008ho-e", problem = "https://atcoder.jp/contests/joi2008ho/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 proconio = "*"
@@ -11,3 +21,23 @@ proconio = "*"
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "joi2008ho-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "joi2008ho-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "joi2008ho-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "joi2008ho-d"
+path = "./src/bin/d.rs"
+
+[[bin]]
+name = "joi2008ho-e"
+path = "./src/bin/e.rs"

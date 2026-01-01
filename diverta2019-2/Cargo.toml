@@ -4,6 +4,17 @@ version = "0.1.0"
 authors = ["emanon001 <emanon001@gmail.com>"]
 edition = "2018"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+a = { name = "diverta2019-2-a", problem = "https://atcoder.jp/contests/diverta2019-2/<FIXME: screen name of the problem>"}
+b = { name = "diverta2019-2-b", problem = "https://atcoder.jp/contests/diverta2019-2/<FIXME: screen name of the problem>"}
+c = { name = "diverta2019-2-c", problem = "https://atcoder.jp/contests/diverta2019-2/<FIXME: screen name of the problem>"}
+d = { name = "diverta2019-2-d", problem = "https://atcoder.jp/contests/diverta2019-2/<FIXME: screen name of the problem>"}
+e = { name = "diverta2019-2-e", problem = "https://atcoder.jp/contests/diverta2019-2/<FIXME: screen name of the problem>"}
+f = { name = "diverta2019-2-f", problem = "https://atcoder.jp/contests/diverta2019-2/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 proconio = "*"
@@ -11,3 +22,27 @@ proconio = "*"
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "diverta2019-2-a"
+path = "./src/bin/a.rs"
+
+[[bin]]
+name = "diverta2019-2-b"
+path = "./src/bin/b.rs"
+
+[[bin]]
+name = "diverta2019-2-c"
+path = "./src/bin/c.rs"
+
+[[bin]]
+name = "diverta2019-2-d"
+path = "./src/bin/d.rs"
+
+[[bin]]
+name = "diverta2019-2-e"
+path = "./src/bin/e.rs"
+
+[[bin]]
+name = "diverta2019-2-f"
+path = "./src/bin/f.rs"

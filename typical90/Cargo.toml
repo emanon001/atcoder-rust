@@ -3,6 +3,101 @@ name = "typical90"
 version = "0.1.0"
 edition = "2021"
 
+[package.metadata.cargo-compete]
+config = "../compete.toml"
+
+[package.metadata.cargo-compete.bin]
+001 = { name = "typical90-001", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+002 = { name = "typical90-002", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+003 = { name = "typical90-003", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+004 = { name = "typical90-004", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+005 = { name = "typical90-005", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+006 = { name = "typical90-006", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+007 = { name = "typical90-007", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+008 = { name = "typical90-008", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+009 = { name = "typical90-009", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+010 = { name = "typical90-010", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+011 = { name = "typical90-011", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+012 = { name = "typical90-012", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+013 = { name = "typical90-013", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+014 = { name = "typical90-014", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+015 = { name = "typical90-015", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+016 = { name = "typical90-016", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+017 = { name = "typical90-017", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+018 = { name = "typical90-018", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+019 = { name = "typical90-019", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+020 = { name = "typical90-020", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+021 = { name = "typical90-021", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+022 = { name = "typical90-022", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+023 = { name = "typical90-023", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+024 = { name = "typical90-024", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+025 = { name = "typical90-025", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+026 = { name = "typical90-026", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+027 = { name = "typical90-027", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+028 = { name = "typical90-028", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+029 = { name = "typical90-029", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+030 = { name = "typical90-030", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+031 = { name = "typical90-031", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+032 = { name = "typical90-032", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+033 = { name = "typical90-033", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+034 = { name = "typical90-034", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+035 = { name = "typical90-035", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+036 = { name = "typical90-036", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+037 = { name = "typical90-037", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+038 = { name = "typical90-038", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+039 = { name = "typical90-039", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+040 = { name = "typical90-040", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+041 = { name = "typical90-041", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+042 = { name = "typical90-042", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+043 = { name = "typical90-043", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+044 = { name = "typical90-044", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+045 = { name = "typical90-045", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+046 = { name = "typical90-046", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+047 = { name = "typical90-047", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+048 = { name = "typical90-048", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+049 = { name = "typical90-049", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+050 = { name = "typical90-050", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+051 = { name = "typical90-051", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+052 = { name = "typical90-052", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+053 = { name = "typical90-053", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+054 = { name = "typical90-054", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+055 = { name = "typical90-055", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+056 = { name = "typical90-056", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+057 = { name = "typical90-057", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+058 = { name = "typical90-058", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+059 = { name = "typical90-059", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+060 = { name = "typical90-060", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+061 = { name = "typical90-061", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+062 = { name = "typical90-062", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+063 = { name = "typical90-063", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+064 = { name = "typical90-064", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+065 = { name = "typical90-065", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+066 = { name = "typical90-066", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+067 = { name = "typical90-067", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+068 = { name = "typical90-068", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+069 = { name = "typical90-069", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+070 = { name = "typical90-070", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+071 = { name = "typical90-071", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+072 = { name = "typical90-072", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+073 = { name = "typical90-073", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+074 = { name = "typical90-074", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+075 = { name = "typical90-075", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+076 = { name = "typical90-076", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+077 = { name = "typical90-077", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+078 = { name = "typical90-078", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+079 = { name = "typical90-079", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+080 = { name = "typical90-080", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+081 = { name = "typical90-081", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+082 = { name = "typical90-082", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+083 = { name = "typical90-083", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+084 = { name = "typical90-084", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+085 = { name = "typical90-085", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+086 = { name = "typical90-086", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+087 = { name = "typical90-087", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+088 = { name = "typical90-088", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+089 = { name = "typical90-089", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+090 = { name = "typical90-090", problem = "https://atcoder.jp/contests/typical90/<FIXME: screen name of the problem>"}
+
 # dependencies added to new project
 [dependencies]
 ac-library-rs = "=0.1.1"
@@ -72,3 +167,363 @@ smallvec = { version = "=1.11.0", features = ["const_generics", "const_new", "wr
 [profile.release]
 lto = true
 panic = 'abort'
+
+[[bin]]
+name = "typical90-001"
+path = "./src/bin/001.rs"
+
+[[bin]]
+name = "typical90-002"
+path = "./src/bin/002.rs"
+
+[[bin]]
+name = "typical90-003"
+path = "./src/bin/003.rs"
+
+[[bin]]
+name = "typical90-004"
+path = "./src/bin/004.rs"
+
+[[bin]]
+name = "typical90-005"
+path = "./src/bin/005.rs"
+
+[[bin]]
+name = "typical90-006"
+path = "./src/bin/006.rs"
+
+[[bin]]
+name = "typical90-007"
+path = "./src/bin/007.rs"
+
+[[bin]]
+name = "typical90-008"
+path = "./src/bin/008.rs"
+
+[[bin]]
+name = "typical90-009"
+path = "./src/bin/009.rs"
+
+[[bin]]
+name = "typical90-010"
+path = "./src/bin/010.rs"
+
+[[bin]]
+name = "typical90-011"
+path = "./src/bin/011.rs"
+
+[[bin]]
+name = "typical90-012"
+path = "./src/bin/012.rs"
+
+[[bin]]
+name = "typical90-013"
+path = "./src/bin/013.rs"
+
+[[bin]]
+name = "typical90-014"
+path = "./src/bin/014.rs"
+
+[[bin]]
+name = "typical90-015"
+path = "./src/bin/015.rs"
+
+[[bin]]
+name = "typical90-016"
+path = "./src/bin/016.rs"
+
+[[bin]]
+name = "typical90-017"
+path = "./src/bin/017.rs"
+
+[[bin]]
+name = "typical90-018"
+path = "./src/bin/018.rs"
+
+[[bin]]
+name = "typical90-019"
+path = "./src/bin/019.rs"
+
+[[bin]]
+name = "typical90-020"
+path = "./src/bin/020.rs"
+
+[[bin]]
+name = "typical90-021"
+path = "./src/bin/021.rs"
+
+[[bin]]
+name = "typical90-022"
+path = "./src/bin/022.rs"
+
+[[bin]]
+name = "typical90-023"
+path = "./src/bin/023.rs"
+
+[[bin]]
+name = "typical90-024"
+path = "./src/bin/024.rs"
+
+[[bin]]
+name = "typical90-025"
+path = "./src/bin/025.rs"
+
+[[bin]]
+name = "typical90-026"
+path = "./src/bin/026.rs"
+
+[[bin]]
+name = "typical90-027"
+path = "./src/bin/027.rs"
+
+[[bin]]
+name = "typical90-028"
+path = "./src/bin/028.rs"
+
+[[bin]]
+name = "typical90-029"
+path = "./src/bin/029.rs"
+
+[[bin]]
+name = "typical90-030"
+path = "./src/bin/030.rs"
+
+[[bin]]
+name = "typical90-031"
+path = "./src/bin/031.rs"
+
+[[bin]]
+name = "typical90-032"
+path = "./src/bin/032.rs"
+
+[[bin]]
+name = "typical90-033"
+path = "./src/bin/033.rs"
+
+[[bin]]
+name = "typical90-034"
+path = "./src/bin/034.rs"
+
+[[bin]]
+name = "typical90-035"
+path = "./src/bin/035.rs"
+
+[[bin]]
+name = "typical90-036"
+path = "./src/bin/036.rs"
+
+[[bin]]
+name = "typical90-037"
+path = "./src/bin/037.rs"
+
+[[bin]]
+name = "typical90-038"
+path = "./src/bin/038.rs"
+
+[[bin]]
+name = "typical90-039"
+path = "./src/bin/039.rs"
+
+[[bin]]
+name = "typical90-040"
+path = "./src/bin/040.rs"
+
+[[bin]]
+name = "typical90-041"
+path = "./src/bin/041.rs"
+
+[[bin]]
+name = "typical90-042"
+path = "./src/bin/042.rs"
+
+[[bin]]
+name = "typical90-043"
+path = "./src/bin/043.rs"
+
+[[bin]]
+name = "typical90-044"
+path = "./src/bin/044.rs"
+
+[[bin]]
+name = "typical90-045"
+path = "./src/bin/045.rs"
+
+[[bin]]
+name = "typical90-046"
+path = "./src/bin/046.rs"
+
+[[bin]]
+name = "typical90-047"
+path = "./src/bin/047.rs"
+
+[[bin]]
+name = "typical90-048"
+path = "./src/bin/048.rs"
+
+[[bin]]
+name = "typical90-049"
+path = "./src/bin/049.rs"
+
+[[bin]]
+name = "typical90-050"
+path = "./src/bin/050.rs"
+
+[[bin]]
+name = "typical90-051"
+path = "./src/bin/051.rs"
+
+[[bin]]
+name = "typical90-052"
+path = "./src/bin/052.rs"
+
+[[bin]]
+name = "typical90-053"
+path = "./src/bin/053.rs"
+
+[[bin]]
+name = "typical90-054"
+path = "./src/bin/054.rs"
+
+[[bin]]
+name = "typical90-055"
+path = "./src/bin/055.rs"
+
+[[bin]]
+name = "typical90-056"
+path = "./src/bin/056.rs"
+
+[[bin]]
+name = "typical90-057"
+path = "./src/bin/057.rs"
+
+[[bin]]
+name = "typical90-058"
+path = "./src/bin/058.rs"
+
+[[bin]]
+name = "typical90-059"
+path = "./src/bin/059.rs"
+
+[[bin]]
+name = "typical90-060"
+path = "./src/bin/060.rs"
+
+[[bin]]
+name = "typical90-061"
+path = "./src/bin/061.rs"
+
+[[bin]]
+name = "typical90-062"
+path = "./src/bin/062.rs"
+
+[[bin]]
+name = "typical90-063"
+path = "./src/bin/063.rs"
+
+[[bin]]
+name = "typical90-064"
+path = "./src/bin/064.rs"
+
+[[bin]]
+name = "typical90-065"
+path = "./src/bin/065.rs"
+
+[[bin]]
+name = "typical90-066"
+path = "./src/bin/066.rs"
+
+[[bin]]
+name = "typical90-067"
+path = "./src/bin/067.rs"
+
+[[bin]]
+name = "typical90-068"
+path = "./src/bin/068.rs"
+
+[[bin]]
+name = "typical90-069"
+path = "./src/bin/069.rs"
+
+[[bin]]
+name = "typical90-070"
+path = "./src/bin/070.rs"
+
+[[bin]]
+name = "typical90-071"
+path = "./src/bin/071.rs"
+
+[[bin]]
+name = "typical90-072"
+path = "./src/bin/072.rs"
+
+[[bin]]
+name = "typical90-073"
+path = "./src/bin/073.rs"
+
+[[bin]]
+name = "typical90-074"
+path = "./src/bin/074.rs"
+
+[[bin]]
+name = "typical90-075"
+path = "./src/bin/075.rs"
+
+[[bin]]
+name = "typical90-076"
+path = "./src/bin/076.rs"
+
+[[bin]]
+name = "typical90-077"
+path = "./src/bin/077.rs"
+
+[[bin]]
+name = "typical90-078"
+path = "./src/bin/078.rs"
+
+[[bin]]
+name = "typical90-079"
+path = "./src/bin/079.rs"
+
+[[bin]]
+name = "typical90-080"
+path = "./src/bin/080.rs"
+
+[[bin]]
+name = "typical90-081"
+path = "./src/bin/081.rs"
+
+[[bin]]
+name = "typical90-082"
+path = "./src/bin/082.rs"
+
+[[bin]]
+name = "typical90-083"
+path = "./src/bin/083.rs"
+
+[[bin]]
+name = "typical90-084"
+path = "./src/bin/084.rs"
+
+[[bin]]
+name = "typical90-085"
+path = "./src/bin/085.rs"
+
+[[bin]]
+name = "typical90-086"
+path = "./src/bin/086.rs"
+
+[[bin]]
+name = "typical90-087"
+path = "./src/bin/087.rs"
+
+[[bin]]
+name = "typical90-088"
+path = "./src/bin/088.rs"
+
+[[bin]]
+name = "typical90-089"
+path = "./src/bin/089.rs"
+
+[[bin]]
+name = "typical90-090"
+path = "./src/bin/090.rs"
