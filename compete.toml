@@ -22,14 +22,26 @@ test-suite = "{{ manifest_dir }}/testcases/{{ bin_alias }}.yml"
 
 [template]
 src = '''
+#[allow(unused_imports)]
+use itertools::Itertools;
+#[allow(unused_imports)]
+use num::*;
+use proconio::input_interactive;
+#[allow(unused_imports)]
+use proconio::marker::*;
+#[allow(unused_imports)]
+use std::collections::*;
+
+#[allow(non_snake_case)]
 fn main() {
-    todo!();
+    input_interactive! {
+    };
 }
 '''
 
 [template.new]
 # `edition` for `Cargo.toml`.
-edition = "2018"
+edition = "2021"
 # `profile` for `Cargo.toml`.
 #
 # By setting this, you can run tests with `opt-level=3` while enabling `debug-assertions` and `overflow-checks`.
@@ -157,7 +169,7 @@ path = "./{{ contest }}"
 
 [test]
 # Toolchain for the test. (optional)
-toolchain = "1.42.0"
+toolchain = "1.89.0"
 # Profile for `cargo build`. ("dev" | "release")
 #
 # Defaults to `"dev"`.
