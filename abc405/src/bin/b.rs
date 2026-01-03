@@ -11,5 +11,15 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn main() {
     input_interactive! {
+        N: usize, M: usize,
+        A: [usize; N]
     };
+
+    for i in 0..=N {
+        let set = A.iter().take(N - i).collect::<HashSet<_>>();
+        if set.len() != M {
+            println!("{}", i);
+            return;
+        }
+    }
 }
