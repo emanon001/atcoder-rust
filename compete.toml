@@ -127,6 +127,7 @@ dev-dependencies = '''
 '''
 
 [template.new.copy-files]
+"./template-cargo-lock.toml" = "Cargo.lock"
 
 [new]
 kind = "cargo-compete"
