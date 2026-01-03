@@ -9,19 +9,7 @@ use proconio::marker::*;
 use std::collections::*;
 
 #[allow(non_snake_case)]
-fn solve() {
+fn main() {
     input_interactive! {
     };
-}
-
-fn main() {
-    std::thread::Builder::new()
-        .name("big stack size".into())
-        .stack_size(256 * 1024 * 1024)
-        .spawn(|| {
-            solve();
-        })
-        .unwrap()
-        .join()
-        .unwrap();
 }
