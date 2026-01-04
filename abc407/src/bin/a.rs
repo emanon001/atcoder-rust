@@ -11,5 +11,12 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn main() {
     input_interactive! {
+        A: u32, B: u32,
     };
+
+    let mut ans = A / B;
+    if (A % B) * 2 > B {
+        ans += 1;
+    }
+    println!("{}", ans);
 }
