@@ -19,5 +19,10 @@ fi
 dir="$(pwd)"
 contest_id="$(basename "${dir}")"
 
-pbcopy < "src/bin/${problem_id}.rs"
-open "https://atcoder.jp/contests/${contest_id}/submit?taskScreenName=${contest_id}_${problem_id}"
+branch="$(git branch --show-current)"
+if [[ "${branch}" =~ ^joined-.*$ ]]; then
+  cargo compete submit "${problem_id}"
+else
+  pbcopy < "src/bin/${problem_id}.rs"
+  open "https://atcoder.jp/contests/${contest_id}/submit?taskScreenName=${contest_id}_${problem_id}"
+fi
