@@ -11,5 +11,11 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn main() {
     input_interactive! {
+        N: usize,
+        A: [usize; N],
     };
+
+    let set = A.into_iter().collect::<BTreeSet<_>>();
+    println!("{}", set.len());
+    println!("{}", set.iter().join(" "));
 }
