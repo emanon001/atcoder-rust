@@ -23,6 +23,7 @@ branch="$(git branch --show-current)"
 if [[ "${branch}" =~ ^joined-.*$ ]]; then
   cargo compete submit "${problem_id}"
 else
+  cargo compete test "${problem_id}"
   pbcopy < "src/bin/${problem_id}.rs"
   open "https://atcoder.jp/contests/${contest_id}/submit?taskScreenName=${contest_id}_${problem_id}"
 fi
