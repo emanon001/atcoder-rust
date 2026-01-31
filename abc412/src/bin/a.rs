@@ -11,5 +11,10 @@ use std::collections::*;
 #[allow(non_snake_case)]
 fn main() {
     input_interactive! {
+        N: usize,
+        AB: [(usize, usize); N],
     };
+
+    let ans = AB.into_iter().filter(|(a, b)| b > a).count();
+    println!("{}", ans);
 }
